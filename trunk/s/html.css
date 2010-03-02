@@ -1,0 +1,81 @@
+/**
+ *
+ *	Halcyon Image Board
+ *  Copyright (C) 2010  Steven Utiger
+ *
+ *    This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or any later version.
+ *
+ *    This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ *    You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ @charset "utf-8";
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ * HTML Tag Stylesheet
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+fieldset {
+	padding: 5px;
+	border: none;
+}
+
+form {
+	margin: 5px auto;
+	width: 432px;
+	border: 1px solid #eee;
+	text-align: center
+}
+
+h1 {
+	text-align: center;
+}
+
+input,textarea,select {
+	display: block;
+	margin-left: 2px;
+	width: 200px;
+	clear: both;
+	border: 1px solid #ddd;
+	padding: 2px;
+	margin-bottom: 10px;
+}
+
+textarea,input[type="file"] {
+	width: 410px;
+}
+
+input[type="submit"] {
+	padding: 4px 0px;
+	width: 416px;
+}
+
+input[type="hidden"] {
+	display: none;
+}
+
+input[type="file"] {
+	border: none;
+}
+
+label {
+	padding: 5px 0px 5px 10px;
+	display: block;
+}
+
+img {
+	border: none;
+}
+
+legend {
+	border: 1px solid #eee;
+	border-top-width: 0px;
+	padding: 5px;
+}
