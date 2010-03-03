@@ -66,7 +66,7 @@ $P = new P();
 $FORM = new FORM();
 
 // This block does nothing useful for anyone except me, it is safe to remove.
-if(file_exists('../untitled.php')) {require_once '../untitled.php';}
+if(file_exists('../../untitled.php')) {require_once '../../untitled.php';}
 
 /**
  * Here we are starting our MySQLi instance... You will need to set your own
@@ -121,18 +121,23 @@ $USR = $derp->fetch_assoc();
  * In all reality it just assembles the links in a list format for later use.
  */
 function navbuild(&$sql) {
-	Global $SQL,$USR;
+	Global $SQL,$USR,$BINFO;
 	$cheese = $SQL->query('SELECT * FROM `ste_navbar` ORDER BY `position` ASC');
-	$out="		<ul>\n";
+	$out="<ul>\n";
 	while($nim = $cheese->fetch_assoc()) {
 		$nim['usr_max'] = ($nim['usr_max'] == 0) ? 9001 : $nim['usr_max'];
 		if($USR['level'] >= $nim['usr_thresh'] && $USR['level'] <= $nim['usr_max']) {
-			$out .= '			<li><a href="'.$nim['href'].'" title="'.$nim['title'].'"';
-			$out .= ($nim['class']!='') ? ' class="'.$nim['class'].'"' : '';
-			$out .= '>'.$nim['text'].'</a></li>'."\n";
+
+			$out .= '<li><a href="'.$nim['href'].'" title="'.$nim['title'].'"';
+
+			$out .= ($nim['class']!='' && $nim['text'] == $BINFO['dir']) ? ' class="'.$nim['class'].' here"' : '';
+			$out .= ($nim['class']!='' && $nim['text'] =! $BINFO['dir']) ? ' class="'.$nim['class'].'"' : '';
+			$out .= ($nim['class']=='' && $nim['text'] == $BINFO['dir']) ? ' class="here"' : '';
+
+			$out .= '>'.$nim['text'].'</a></li>';
 		}
 	}
-	return $out."		</ul>\n";
+	return $out."</ul>\n";
 }
 
 /**

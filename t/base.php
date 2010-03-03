@@ -47,12 +47,14 @@
 <body>
 <div id="header">
 
-<h1><?=$h1; ?></h1>
-<span><?=$mes; ?></span></div>
-<div class="navbar"><?=$navbar; ?></div>
+	<h1><?=$h1; ?></h1>
+	<span><?=$mes; ?></span>
+
+</div>
+<div class="navbar upper"><?=$navbar; ?></div>
 <?=$body; ?>
-<div class="navbar"><?=$navbar; ?></div>
-<div id="footer">&copy; 2009-2010 Lucent, Rev-rocom</div>
+<div class="navbar lower"><?=$navbar; ?></div>
+<div id="footer">&copy; 2010 Steven Utiger, halcyonbbs.com</div>
 
 </body>
 
