@@ -102,9 +102,9 @@ switch($_GET['mode']) {
 			 * hdn = hidden
 			 */
 			$ern = 0;
-			$ern += ($FORM->validate_text($_POST['bnm'],1,10)) ? 0 : 1;
-			$ern += ($FORM->validate_text($_POST['bttl'],3,48)) ? 0 : 2;
-			$ern += ($FORM->validate_text($_POST['bms'],3,128)) ? 0 : 4;
+			$ern += ($FORM->validate_text(htmlentities($_POST['bnm'],1,10))) ? 0 : 1;
+			$ern += ($FORM->validate_text(htmlentities($_POST['bttl'],3,48))) ? 0 : 2;
+			$ern += ($FORM->validate_text(htmlentities($_POST['bms'],3,128))) ? 0 : 4;
 			$ern += (is_numeric($_POST['blvl']) && $_POST['blvl'] < 100  && $_POST['blvl'] >= 0) ? 0 : 8;
 			$ern += (is_numeric($_POST['plvl']) && $_POST['plvl'] < 100  && $_POST['plvl'] >= 0) ? 0 : 16;
 			$_POST['lkd'] += ($_POST['lkd'] != 1) ? 0 : 1;

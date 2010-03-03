@@ -57,7 +57,7 @@ if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {
 	 * NEW POST HANDLING
 	 *
 	 */
-	if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['allowed'] && (time() - $_SESSION['postcooldown']) > 1) {
+	if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $threadInfo['reply'] && (time() - $_SESSION['postcooldown']) > 1) {
 
 		$continue = TRUE;
 		$reasons = array();
@@ -162,7 +162,7 @@ if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {
 
 	$body = $errorBoxHtml;
 
-	if($USR['level'] >= $threadInfo['allowed']) {
+	if($USR['level'] >= $threadInfo['reply']) {
 		$body .= $P->formtovar('nerds','forms.php','newpost',$formVars);
 	}
 
