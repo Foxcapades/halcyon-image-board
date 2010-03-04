@@ -150,9 +150,11 @@ a.edtbut:hover {
 	background: #f4f4f4;
 	margin-top:-1px;
 	border-color: #e4e4e4;
-	border-top:1px solid #f4f4f4;
 }
- 
+
+.navbar.upper ul li a.here {
+	border-top:1px solid #f4f4f4;
+}	
 .error {
 	background: #FFC4C4;
 	border: 1px solid #FF8080;

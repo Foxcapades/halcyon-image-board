@@ -35,6 +35,9 @@ public function parse($string)
 	// Deal with the [quote] tags
 	$this->quote();
 
+	// Handle the [url] tags
+	$this->url();
+
 	return $this->string;
 
 }
@@ -172,8 +175,28 @@ private function unorderedList () {
 
 private function url() {
 
-	$match = '/\[url((?:={1})(?:&quot;|"|\'|&#039;)?(.+?)(?:&quot;|"|\'|&#039;)?)?\](.+?)[\/url\]/is';
+	$match = '/\[url((?:={1})(?:&quot;|"|\'|&#039;)?(.+?)(?:&quot;|"|\'|&#039;)?)?\](.+?)\[\/url\]/is';
 	preg_match_all($match,$this->string,$matches);
+	foreach($matches[0] as $k => $a) {
+		if($a == '' || strlen($a) <= 8) {
+			unset($matches[0][$k],$matches[1][$k],$matches[2][$k],$matches[3][$k]);
+		}
+	}
+	$htp = array('http://','https://','ftp://','irc://');
+	foreach($matches[2] as $t => $v) {
+		if($v=='' || strlen($v) < 5) {
+			if($matches[3][$t] == '' || strlen($matches[3][$t]) < 5) {
+				//what?
+				unset($matches[0][$t],$matches[1][$t],$matches[2][$t],$matches[3][$t]);
+			} else {
+				$matches[1][$t]= '<a href="'.$matches[3][$t].'" class="link">'.$matches[3][$t].'</a>';
+			}
+		} else {
+			$matches[1][$t]= '<a href="'.$matches[2][$t].'" class="link">'.$matches[3][$t].'</a>';
+		}
+	}
+
+	$this->string = str_replace($matches[0],$matches[1],$this->string);
 
 }
 

@@ -39,16 +39,16 @@ if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {
 
 	$r = $SQL->query('SELECT * FROM `pst_threads` `p` INNER JOIN `ste_boards` `s` ON `p`.`board` = `s`.`id` WHERE `tid` = \''.$tid.'\' LIMIT 0,1');
 
-	$threadInfo = $r->fetch_assoc();
+	$BINFO = $r->fetch_assoc();
 
-	$P->set('title',$VAR['site_title'].' / '.$threadInfo['title']);
-	$P->set('h1',$threadInfo['title']);
+	$P->set('title',$VAR['site_title'].' / '.$BINFO['title']);
+	$P->set('h1',$BINFO['title']);
 
 	$P->set('navbar',navbuild($SQL));
 
 	$formVars = array(
 	'action'	=> $_SERVER['REQUEST_URI'].'&amp;post=new',
-	'ttle'		=> $threadInfo['title'],
+	'ttle'		=> $BINFO['title'],
 	'unme'		=> $USR['name']
 	);
 
@@ -57,7 +57,7 @@ if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {
 	 * NEW POST HANDLING
 	 *
 	 */
-	if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $threadInfo['reply'] && (time() - $_SESSION['postcooldown']) > 1) {
+	if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['reply'] && (time() - $_SESSION['postcooldown']) > 1) {
 
 		$continue = TRUE;
 		$reasons = array();
@@ -126,8 +126,8 @@ if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {
 					ERROR::report('Could not delete uploaded file after post failed. File: '.$newfile);
 				}
 			} else {
-				if(!$SQL->query('UPDATE `pst_threads` SET `posted` = DEFAULT WHERE `tid` = \''.$threadInfo['tid'].'\'')) {
-					ERROR::report('Could not update thread posted time on '.$threadInfo['tid']);
+				if(!$SQL->query('UPDATE `pst_threads` SET `posted` = DEFAULT WHERE `tid` = \''.$BINFO['tid'].'\'')) {
+					ERROR::report('Could not update thread posted time on '.$BINFO['tid']);
 				}
 				$refreshq = $SQL->query('SELECT `pid` FROM `pst_posts` WHERE `poster` = \''.$USR['id'].'\' AND `thread` = \''.$tid.'\' ORDER BY `post_time` DESC LIMIT 0,1');
 				$refresha = $refreshq->fetch_assoc();
@@ -162,7 +162,7 @@ if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {
 
 	$body = $errorBoxHtml;
 
-	if($USR['level'] >= $threadInfo['reply']) {
+	if($USR['level'] >= $BINFO['reply']) {
 		$body .= $P->formtovar('nerds','forms.php','newpost',$formVars);
 	}
 

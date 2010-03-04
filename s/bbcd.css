@@ -59,6 +59,10 @@
 .quote .author:hover {
 	text-decoration: underline;
 }
-/*
-.link
-*/
+
+.link {
+	color:#A91D1D;
+}
+.link:hover, .link:focus {
+	text-decoration:underline;
+}
