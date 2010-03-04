@@ -119,9 +119,9 @@ private function quote()
 	$bot = '/\[\/quote\]/is';
 	$topn = $botn = 0;
 	preg_match_all($top,$this->string,$found);
-	if(count($found[0])) {$topn++;}
+	if(count($found[0])) {$topn=count($found[0]);}
 	preg_match_all($bot,$this->string,$fund);
-	if(count($fund[0])) {$botn++;}
+	if(count($fund[0])) {$botn=count($fund[0]);}
 
 
 	$match = array(
@@ -140,17 +140,21 @@ private function quote()
 
 	$dif = ($topn-$botn);
 
-	for(; $dif < 0; $dif++) {
+//	if(abs($dif) == 1 && ($topn + $botn) == 1) {return TRUE;}
+
+	$limit = ($topn > $botn) ? $botn : '-1';
+	$limit = ($botn > $topn) ? $topn : $limit;
+/*	for(; $dif < 0; $dif++) {
 		$string .= '[quote]';
 	}
 
-	$string .= $this->string;
+	*/$string .= $this->string;/*
 
 	for(; $dif > 0; $dif--) {
 		$string .= '[/quote]';
-	}
+	}*/
 
-	$this->string = preg_replace($match,$replace,$string);
+	$this->string = preg_replace($match,$replace,$string,$limit);
 
 	return TRUE;
 }
