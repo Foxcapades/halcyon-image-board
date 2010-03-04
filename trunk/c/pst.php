@@ -166,7 +166,7 @@ class POST {
 ':
 '			<a href="#" class="repbut" title="Report Post">Report</a>
 ').
-'			<a href="javascript:post_quote(\'i'.$this->vars['pid'].'\')" class="addbut" title="Reply to this post">Reply</a>
+'			<a href="javascript:post_quote(\'t_'.$this->vars['pid'].'\')" class="addbut" title="Reply to this post">Reply</a>
 '.(($this->vars['id'] == $_SESSION['uid']) ?
 '			<a href="#" class="edtbut" title="Edit Post">Edit Post</a>
 ':
@@ -191,9 +191,7 @@ class POST {
 ';
 		$text = preg_replace('/\r\n|\n\r|\n|\r/is','<br />',$this->vars['text']);
 		$html .=
-'		<div class="text">
-			'.$text.'
-		</div>
+'		<div id="t_'.$this->vars['pid'].'" class="text">'.$text.'</div>
 	</div>
 ';
 		$this->html = $html;

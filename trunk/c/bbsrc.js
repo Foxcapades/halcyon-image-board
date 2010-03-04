@@ -16,22 +16,28 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 function post_quote(id) {
-	var textarea = document.getElementById("text");
-	var ogpost = document.getElementById(id).lastChild;
-	
-	ogpost = ogpost.innerHTML.replace(/&lt\;/ig,'<');
-	ogpost = ogpost.replace(/<div class="quote"><span><a href="(.+?)" title=(.+?)>(.+?)<\/a><\/span>(.+?)<\/div>/gi,"[quote=[url=$1]$2[/url]]$4[/quote]");
-	ogpost = ogpost.replace(/<div class="quote"><span>(.+?)<\/span>(.+?)<\/div>/gi,"[quote=$1]$2[/quote]");
-	ogpost = ogpost.replace(/<div class="quote">(.+?)<\/div>/gi,"[quote]$1[/quote]");
-	ogpost = ogpost.replace(/<a href="(.+?)" title="(.+?)">(.+?)<\/a>/ig,"[url=$1]$3[/url]");
-	ogpost = ogpost.replace(/\n|\r|/,'');
-	ogpost = ogpost.replace(/&gt\;/ig,'>');
-	ogpost = ogpost.replace(/&amp\;/ig,'&');
-	ogpost = ogpost.replace(/&npsp\;/ig,' ');
-	ogpost = ogpost.replace(/&quot\;/ig,'"');
-	var quote = "[quote]" + ogpost.replace(/<br(\s?)(\/?)>/gim,"\n") + "[/quote]";
-	
 
-	textarea.value = quote + "\n";
+	var textarea = document.getElementById("text");
+	var text = document.getElementById(id).innerHTML;
+
+	text = text.replace(/&lt\;/ig,'<');
+	
+	
+	text = text.replace(/<blockquote class="quote">/gi, '[quote]');
+	text = text.replace(/<\/blockquote>/gi, '[/quote]')
+
+	text = text.replace(/<div class="quote"><span><a href="(.+?)" title=(.+?)>(.+?)<\/a><\/span>(.+?)<\/div>/gi,"[quote=[url=$1]$2[/url]]$4[/quote]");
+	text = text.replace(/<div class="quote"><span>(.+?)<\/span>(.+?)<\/div>/gi,"[quote=$1]$2[/quote]");
+	text = text.replace(/<div class="quote">/gi,"[quote]$1[/quote]");
+	text = text.replace(/<a href="(.+?)" title="(.+?)">(.+?)<\/a>/ig,"[url=$1]$3[/url]");
+	text = text.replace(/\n|\r/,'');
+	text = text.replace(/&gt\;/ig,'>');
+	text = text.replace(/&amp\;/ig,'&');
+	text = text.replace(/&npsp\;/ig,' ');
+	text = text.replace(/&quot\;/ig,'"');
+	var quote = "[quote]" + text.replace(/<br(\s?)(\/?)>/gim,"\n") + "[/quote]";
+	
+	textarea.value = textarea.value + quote;
+
 
 }

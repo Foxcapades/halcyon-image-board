@@ -126,11 +126,11 @@ private function quote()
 		$bot
 	);
 
-	$top = (isset($found[2][0])) ? '<span>'.$found[2][0]."</span>\n" : '';
+	$top = (isset($found[2][0]) && $found[2][0] != '') ? '<span>'.$found[2][0]."</span>\n" : '';
 
 	$replace = array(
-		'<div class="quote">'.$top,
-		"</div>\n"
+		'<blockquote class="quote">'.$top,
+		"</blockquote>"
 	);
 
 	$string ='';
@@ -171,6 +171,9 @@ private function unorderedList () {
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 private function url() {
+
+	$match = '/\[url((?:={1})(?:&quot;|"|\'|&#039;)?(.+?)(?:&quot;|"|\'|&#039;)?)?\](.+?)[\/url\]/is';
+	preg_match_all($match,$this->string,$matches);
 
 }
 
