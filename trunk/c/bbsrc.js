@@ -28,6 +28,12 @@ function post_quote(id) {
 
 	text = text.replace(/<a href="(.+?)" class="link">(.+?)<\/a>/ig, "[url=$1]$2[/url]");
 	
+	text = text.replace(/<span class="bold">(.+?)<\/span>/ig, "[b]$1[/b]");
+	text = text.replace(/<span class="italic">(.+?)<\/span>/ig, "[i]$1[/i]");
+	text = text.replace(/<span class="underline">(.+?)<\/span>/ig, "[u]$1[/u]");
+	text = text.replace(/<span class="strike">(.+?)<\/span>/ig, "[s]$1[/s]");
+	text = text.replace(/<span class="cd">(.+?)<\/span>/ig, "[cd]$1[/cd]");
+
 	text = text.replace(/\n|\r/,'');
 	text = text.replace(/&gt\;/ig,'>');
 	text = text.replace(/&amp\;/ig,'&');
@@ -42,4 +48,17 @@ function post_quote(id) {
 	window.location = wind.replace(/(.+?)(?:#i(.+?))*$/gi,"$1") + "#header";
 
 
+}
+
+function yeOldeSwitcheroo(id,imagename) {
+	var thumbdir
+	thumbdir = "<?='http://'.$_SERVER['HTTP_HOST'].'/'.$thumbdir; ?>"+imagename;
+	var maindir
+	maindir = "<?='http://'.$_SERVER['HTTP_HOST'].'/'.$imagedir; ?>"+imagename;
+	var img = document.getElementById(id);
+	if(img.src == thumbdir) {
+		img.src = maindir;
+	} else {
+		img.src = thumbdir;
+	}
 }
