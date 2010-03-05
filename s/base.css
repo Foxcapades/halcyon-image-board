@@ -1,3 +1,4 @@
+@charset "utf-8";
 /**
  *
  *	Halcyon Image Board
@@ -14,8 +15,7 @@
  *
  *    You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
- @charset "utf-8";
+**/
 
 /*
 ~~~~~    General Stuff    ~~~~~
@@ -106,19 +106,37 @@ a.edtbut:hover {
 	background-position: -16px -112px;
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ * Page Headers
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 #header {
 	border-bottom: 1px solid #e4e4e4;
 	padding: 10px;
 	background: #f4f4f4;
 }
 
-#header,.navbar,#footer {
+#header,.navbar,#footer,#admheader {
 	text-align: center;
 }
 
-#footer {
-	font-size: .8em;
+#admheader {
+	background:#acd;
 }
+
+#footer {
+	clear:both;
+	font-size: .7em;
+	color:#555;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ * Base Navigation Bar
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 .navbar.lower {
 	margin: 25px auto;
@@ -146,7 +164,10 @@ a.edtbut:hover {
 	background: #f4f4f4;
 	border-color: #e4e4e4;
 }
-.navbar.upper ul li a:hover, .navbar.upper ul li a:focus, .navbar.upper ul li a.here {
+
+.navbar.upper ul li a:hover,
+.navbar.upper ul li a:focus,
+.navbar.upper ul li a.here {
 	background: #f4f4f4;
 	margin-top:-1px;
 	border-color: #e4e4e4;
@@ -154,7 +175,35 @@ a.edtbut:hover {
 
 .navbar.upper ul li a.here {
 	border-top:1px solid #f4f4f4;
-}	
+}
+
+
+.navbar.inchead {
+	background:#acd;
+	padding:14px 4px 4px 4px;
+	border-bottom:1px solid #333;
+}
+.navbar.inchead ul li a:hover,
+.navbar.inchead ul li a:focus,
+.navbar.inchead ul li a.here {
+	background: #fff;
+	border-color:#333;
+}
+
+.navbar.inchead ul li a.here {
+	border-bottom:1px solid #fff;
+}
+
+
+.navbar.inchead a {
+	border:1px solid #333;
+	background:#f4f4f4;
+}
+
+.admbody {
+	width:900px;
+	margin:5px auto;
+}
 .error {
 	background: #FFC4C4;
 	border: 1px solid #FF8080;
@@ -323,11 +372,8 @@ div.bottom {
 	text-align: center;
 }
 
-.body {
-	width: 750px;
-	margin: 0px auto;
+.admbody {
 }
-
  
 ul li ul li {
 	font-size: .7em;
