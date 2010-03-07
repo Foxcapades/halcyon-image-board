@@ -35,8 +35,8 @@ if(!isset($_SESSION['uid']) || $USR['level'] < 70) {index();}
 
 
 $P->set('title',$VAR['site_title']);
-$P->set('h1',$VAR['base_header']);
-$P->set('mes',$VAR['base_mes']);
+$P->set('h1','Halcyon Control Panel');
+$P->set('mes','Advanced Site Control');
 
 $BINFO['dir'] = 'APanel';
 

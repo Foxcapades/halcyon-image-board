@@ -28,15 +28,21 @@ if($_SERVER['PHP_SELF'] == '/forms.php'){die();}
 switch ($form) {
 	case "login":
 		?>
-<form action="<?=$action; ?>" method="post">
+<form action="<?=$action; ?>" method="post" class="miniform">
 
-<fieldset><legend>Login</legend>
-<div><label for="unme">Username</label> <input type="text" name="unme"
-	id="unme" value="<?=$unme; ?>" /></div>
-<div><label for="upss">Password</label> <input type="password"
-	name="upss" id="upss" /></div>
-<input type="submit" value="Login" /> <a href="usr.php?mode=nac"
-	title="Register a new account.">Register</a></fieldset>
+	<fieldset>
+		<legend>Login</legend>
+		<div>
+			<label for="unme">Username</label>
+			<input type="text" name="unme" id="unme" value="<?=$unme; ?>" />
+		</div>
+		<div>
+			<label for="upss">Password</label>
+			<input type="password" name="upss" id="upss" />
+		</div>
+		<input type="submit" value="Login" /><br />
+		<a href="usr.php?mode=nac" title="Register a new account.">Register</a>
+	</fieldset>
 
 </form>
 		<?php
@@ -92,9 +98,9 @@ case "newthread":
 <div class="full"><label for="text">Text</label> <textarea name="text"
 	id="text" rows="4" cols="30"><?=$text; ?></textarea></div>
 <div class="full"><label for="img1">Image</label> <input type="hidden"
-	name="MAX_FILE_SIZE" value="2621440" /> <input type="file" name="img1"
+	name="MAX_FILE_SIZE" value="2621440" /><input type="submit" value="Create Thread" /><input type="file" name="img1"
 	id="img1" /></div>
-<input type="submit" value="Create Thread" /></fieldset>
+</fieldset>
 
 </form>
 	<?php
@@ -103,20 +109,29 @@ case "newthread":
 case "newpost":
 
 	?>
-<form action="<?=$action; ?>" method="post"
-	enctype="multipart/form-data">
+<form action="<?=$action; ?>" method="post" enctype="multipart/form-data">
 
-<fieldset><legend>New Post</legend>
-<div><label for="ttle">Title</label> <input type="text" id="ttle"
-	name="ttle" readonly="readonly" value="<?=$ttle; ?>" /></div>
-<div><label for="unme">Username</label> <input type="text" name="unme"
-	id="unme" readonly="readonly" value="<?=$unme; ?>" /></div>
-<div class="full"><label for="text">Text</label> <textarea name="text"
-	id="text" rows="4" cols="30"><?=$text; ?></textarea></div>
-<div><label for="img1">Image</label> <input type="hidden"
-	name="MAX_FILE_SIZE" value="2621440" /> <input type="file" name="img1"
-	id="img1" /></div>
-<input type="submit" value="Post" /></fieldset>
+	<fieldset><legend>Reply</legend>
+<?php /* 		<div>
+			<label for="ttle">Title</label>
+			<input type="text" id="ttle" name="ttle" readonly="readonly" value="<?=$ttle; ?>" />
+		</div>
+		<div>
+			<label for="unme">Username</label>
+			<input type="text" name="unme" id="unme" readonly="readonly" value="<?=$unme; ?>" />
+		</div>
+*/?>		<div class="full">
+			<label for="text">Text</label>
+			<textarea name="text" id="text" rows="4" cols="30"><?=$text; ?></textarea>
+		</div>
+		<div class="full">
+			<label for="img1">Image</label>
+			<input type="hidden" name="MAX_FILE_SIZE" value="2621440" />
+		<input type="submit" value="Post" />
+			<input type="file" name="img1" id="img1" />
+		</div>
+
+	</fieldset>
 
 </form>
 	<?php

@@ -94,25 +94,25 @@ class POST {
 		$time_dif = time() - strtotime($this->vars['post_time']);
 
 		if($time_dif == 1) {
-			return 'Posted 1 second ago.';
+			return '1 second ago';
 		} elseif($time_dif < 60) {
-			return 'Posted '.$time_dif.' seconds ago.';
+			return $time_dif.' seconds ago';
 		} elseif($time_dif < 120) {
-			return 'Posted 1 minute ago.';
+			return '1 minute ago';
 		} elseif($time_dif < 3600) {
-			return 'Posted '.floor($time_dif / 60).' minutes ago.';
+			return floor($time_dif / 60).' minutes ago';
 		} elseif($time_dif < 7200) {
-			return 'Posted 1 hour ago.';
+			return '1 hour ago';
 		} elseif($time_dif < 86400) {
-			return 'Posted '.floor($time_dif / 3600).' hours ago.';
+			return floor($time_dif / 3600).' hours ago';
 		} elseif($time_dif < 172800) {
-			return 'Posted 1 day ago.';// at '.date('g:ia',strtotime($this->vars['post_time'])).'.';
+			return '1 day ago';// at '.date('g:ia',strtotime($this->vars['post_time'])).'.';
 		} elseif($time_dif < 604800) {
-			return 'Posted '.floor($time_dif / 86400).' days ago.';
+			return floor($time_dif / 86400).' days ago';
 		} elseif($time_dif < 1209600) {
-			return 'Posted 1 week ago.';
+			return '1 week ago';
 		} else {
-			return 'Posted '.floor($time_dif / 604800).' weeks ago.';
+			return floor($time_dif / 604800).' weeks ago';
 		}
 	}
 
@@ -208,9 +208,9 @@ class POST {
 	// need to make this more 'generic' as well
 	public function threadview($arr1,$arr2) {
 		$image_count = ($arr1['image_count'] > 1) ? $arr1['image_count'] - 1 : $arr1['image_count'];
-		$images = ($image_count > 1) ? ' images.' : ' image.';
+		$images = ($image_count > 1) ? ' images' : ' image';
 		$html = '<div class="thread"><div class="header">
-	<a href="t.php?tid='.$arr1['tid'].'" title="'.$arr1['title'].'">'.$arr1['title'].'</a>'.$arr1['count'].' posts and '.$image_count.$images/*Last Post:'.date('l M jS, Y - g:i a',strtotime($arr2['post_time']))*/.'
+	<a href="t.php?tid='.$arr1['tid'].'" title="'.$arr1['title'].'">'.$arr1['title'].'</a>'.$arr1['count'].' posts with '.$image_count.$images/*Last Post:'.date('l M jS, Y - g:i a',strtotime($arr2['post_time']))*/.'
 </div>'."\n\n";
 		$this->vars = $arr1;
 		$html .= $this->postbox();

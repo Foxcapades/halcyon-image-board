@@ -50,15 +50,3 @@ function post_quote(id) {
 
 }
 
-function yeOldeSwitcheroo(id,imagename) {
-	var thumbdir
-	thumbdir = "<?='http://'.$_SERVER['HTTP_HOST'].'/'.$thumbdir; ?>"+imagename;
-	var maindir
-	maindir = "<?='http://'.$_SERVER['HTTP_HOST'].'/'.$imagedir; ?>"+imagename;
-	var img = document.getElementById(id);
-	if(img.src == thumbdir) {
-		img.src = maindir;
-	} else {
-		img.src = thumbdir;
-	}
-}

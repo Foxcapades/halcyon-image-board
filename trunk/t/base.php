@@ -28,6 +28,19 @@
 <link href="s/html.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="c/bbsrc.js"></script>
 <?=$headstuff; ?>
+<script type="text/javascript">function yeOldeSwitcheroo(id,imagename) {
+	var thumbdir
+	thumbdir = "<?='http://'.$_SERVER['HTTP_HOST'].'/'.$thumbdir; ?>"+imagename;
+	var maindir
+	maindir = "<?='http://'.$_SERVER['HTTP_HOST'].'/'.$imagedir; ?>"+imagename;
+	var img = document.getElementById(id);
+	if(img.src == thumbdir) {
+		img.src = maindir;
+	} else {
+		img.src = thumbdir;
+	}
+}
+</script>
 </head>
 
 <body>

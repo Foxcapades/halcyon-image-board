@@ -36,14 +36,21 @@
 	text-align: left;
 }
 
+form.miniform {
+	width:400px;
+}
+form.miniform input[type="submit"] {
+	padding: 4px 0px;
+	float:none;
+}
 form div {
 	text-align: left;
-	width: 210px;
+	width: 250px;
 	float: left;
 }
 
 form div.full {
-	width: 420px;
+	width: 730px;
 }
 
 form div.half {
@@ -200,10 +207,46 @@ a.edtbut:hover {
 	background:#f4f4f4;
 }
 
+.admnav {
+	width:170px;
+	float:left;
+	border:1px solid #acd;
+}
+
+.admnav li.bold {
+	padding:10px 0px 0px 5px;
+	border-bottom:1px dotted #acd;
+	text-align:left;
+}
+
+.admnav li a {
+	display:block;
+	padding:2px;
+	text-align:center;
+}
+.admnav li a:hover, .admnav li a:focus {
+	text-decoration:underline;
+}
+
 .admbody {
 	width:900px;
 	margin:5px auto;
 }
+.admcon {
+	width:710px;
+	margin-left:auto;
+}
+
+.admcon form {
+	width:708px;
+	border:1px solid #acd;
+}
+
+.admcon form legend {
+	border:1px solid #acd;
+	border-top:0px;
+}
+
 .error {
 	background: #FFC4C4;
 	border: 1px solid #FF8080;
@@ -222,26 +265,6 @@ a.edtbut:hover {
 	line-height: 2em;
 }
 
-.conbox .menu {
-	border: 1px solid #ddd;
-	float: left;
-	width: 150px;
-}
-
-.conbox .menu .bold {
-	border-bottom: 1px dotted #ddd;
-	margin-top: 5px;
-	text-align: center;
-}
-
-.conbox .menu a {
-	display: block;
-	padding: 2px 0px;
-}
-
-.conbox .menu a:hover {
-	background: #eee;
-}
 
 /* Thread Template */
 .post {
