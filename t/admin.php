@@ -60,9 +60,9 @@
 <?=$adnav; ?>
 
 		</div>
-
+		<div class="admcon">
 <?=$body; ?>
-
+		</div>
 	</div>
 	<div id="footer">&copy; 2010 Steven Utiger, Rev-rocom</div>
 

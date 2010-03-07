@@ -29,7 +29,7 @@ fieldset {
 
 form {
 	margin: 5px auto;
-	width: 432px;
+	width: 750px;
 	border: 1px solid #eee;
 	text-align: center
 }
@@ -41,20 +41,20 @@ h1 {
 input,textarea,select {
 	display: block;
 	margin-left: 2px;
-	width: 200px;
-	clear: both;
+	width: 235px;
 	border: 1px solid #ddd;
 	padding: 2px;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 
-textarea,input[type="file"] {
-	width: 410px;
+textarea {
+	width: 728px;
 }
 
 input[type="submit"] {
 	padding: 4px 0px;
-	width: 416px;
+	float:right;
+	display:inline;
 }
 
 input[type="hidden"] {
@@ -66,7 +66,7 @@ input[type="file"] {
 }
 
 label {
-	padding: 5px 0px 5px 10px;
+	padding: 5px 0px 5px 5px;
 	display: block;
 }
 
@@ -77,5 +77,5 @@ img {
 legend {
 	border: 1px solid #eee;
 	border-top-width: 0px;
-	padding: 5px;
+	padding: 3px;
 }

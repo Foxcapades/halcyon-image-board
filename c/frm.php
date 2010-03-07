@@ -213,4 +213,119 @@ class FORM {
 	}
 
 }
+
+class newForm {
+
+	public	$elements=array();
+	private $html, $parts = array();
+
+public function __construct($action='#',$method='post',$enctype=FALSE,$name=FALSE,$id=FALSE,$class=FALSE,$accept=FALSE,$charset=FALSE)
+{
+	$html  = '<form action="'.$action.'" method="'.$method.'"';
+	$html .= ($name != FALSE) ? ' name="'.$name.'"' : '';
+	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
+	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
+	$html .= ($accept != FALSE) ? ' accept="'.$accept.'"' : '';
+	$html .= ($charset != FALSE) ? ' accept-charset="'.$charset.'"' : '';
+	$html .= ">\n\n";
+	$this->html = $html;
+}
+
+public function inputText($name,$label=FALSE,$value=FALSE,$id=FALSE,$class=FALSE,$maxlength=FALSE,$disabled=FALSE,$readonly=FALSE,$size=FALSE,$return=FALSE)
+{
+	$html  = '<div>';
+	$id = ($id === FALSE) ? $name : $id; 
+	$html .= ($label != FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= '<input type="text" name="'.$name.'"';
+	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
+	$html .= ($value != FALSE) ? ' value="'.htmlentities($value).'"' : '';
+	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
+	$html .= ($maxlength == FALSE) ? ' maxlength="'.$maxlength.'"' : '';
+	$html .= ($readonly == FALSE) ? ' readonly="'.$readonly.'"' : '';
+	$html .= ($size != FALSE) ? ' size="'.$size.'"' : '';
+	$html .= ($disabled === TRUE) ? ' disabled="disabled"' : '';
+	$html .= ' /></div>';
+	$this->html = $html;
+	$parts[] = $html;
+	if($return) {return $html;}
+}
+
+public function inputPassword($name,$label=FALSE,$value=FALSE,$id=FALSE,$class=FALSE,$maxlength=FALSE,$disabled=FALSE,$readonly=FALSE,$size=FALSE,$return=FALSE)
+{
+	$html  = '<div>';
+	$id = ($id === FALSE) ? $name : $id; 
+	$html .= ($label != FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= '<input type="password" name="'.$name.'"';
+	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
+	$html .= ($value != FALSE) ? ' value="'.htmlentities($value).'"' : '';
+	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
+	$html .= ($maxlength == FALSE) ? ' maxlength="'.$maxlength.'"' : '';
+	$html .= ($readonly == FALSE) ? ' readonly="'.$readonly.'"' : '';
+	$html .= ($size != FALSE) ? ' size="'.$size.'"' : '';
+	$html .= ($disabled === TRUE) ? ' disabled="disabled"' : '';
+	$html .= ' /></div>';
+	$this->html = $html;
+	$parts[] = $html;
+	if($return) {return $html;}
+}
+
+public function inputCheckbox($name,$label=FALSE,$value=FALSE,$id=FALSE,$class=FALSE,$checked=FALSE,$disabled=FALSE,$return=FALSE)
+{
+	$html  = '<div>';
+	$id = ($id === FALSE) ? $name : $id; 
+	$html .= ($label != FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= '<input type="checkbox" name="'.$name.'"';
+	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
+	$html .= ($value != FALSE) ? ' value="'.htmlentities($value).'"' : '';
+	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
+	$html .= ($checked == FALSE) ? ' checked="'.$checked.'"' : '';
+	$html .= ($size != FALSE) ? ' size="'.$size.'"' : '';
+	$html .= ($disabled === TRUE) ? ' disabled="disabled"' : '';
+	$html .= ' /></div>';
+	$this->html = $html;
+	$parts[] = $html;
+	if($return) {return $html;}
+}
+public function inputRadio($name,$label=FALSE,$value=FALSE,$id=FALSE,$class=FALSE,$checked=FALSE,$disabled=FALSE,$return=FALSE)
+{
+	$html  = '<div>';
+	$id = ($id === FALSE) ? $name : $id; 
+	$html .= ($label != FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= '<input type="radio" name="'.$name.'"';
+	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
+	$html .= ($value != FALSE) ? ' value="'.htmlentities($value).'"' : '';
+	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
+	$html .= ($checked == FALSE) ? ' checked="'.$checked.'"' : '';
+	$html .= ($size != FALSE) ? ' size="'.$size.'"' : '';
+	$html .= ($disabled === TRUE) ? ' disabled="disabled"' : '';
+	$html .= ' /></div>';
+	$this->html = $html;
+	$parts[] = $html;
+	if($return) {return $html;}
+}
+public function divLast($id=FALSE,$class=FALSE,$return=FALSE)
+{
+	$html = '<div';
+	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
+	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
+	$html .= '>';
+	
+	$this->html = $html;
+	$parts[] = $html.last($parts[]).'</div>';
+	if($return) {return $html;}
+}
+
+public function divEnd()
+{
+	$this->html .= '</div>';
+	$parts[] = '</div>';
+	if($return) {return '</div>';}
+	
+}
+public function formReturn() {
+	return $this->html.'</form>';
+}
+//EOC
+}
+
 ?>

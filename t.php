@@ -162,16 +162,17 @@ if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {
 
 	$body = $errorBoxHtml;
 
-	if($USR['level'] >= $BINFO['reply']) {
-		$body .= $P->formtovar('nerds','forms.php','newpost',$formVars);
-	}
 
 	$body .= '<div id="thread">'."\n";
-
+	$now = 1;
 	while($ch = $q->fetch_assoc()) {
 		$ch['text'] = $BBC->parse($ch['text']);
 		$derp = new POST($ch['id'], $ch['name'], $ch['avatar'], $ch['pid'], $ch['post_time'], $ch['text'], $ch['image'], $ch['tid']);
 		$body .= $derp->postbox();
+		if($USR['level'] >= $BINFO['reply']&& $now == 1) {
+			$body .= $P->formtovar('nerds','forms.php','newpost',$formVars);
+			$now --;
+		}
 	}
 
 	$body .= '</div>'."\n";
