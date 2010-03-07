@@ -44,8 +44,7 @@ switch($_GET['mode']) {
 	case 'login':
 
 		// Start the form variable array for the login form.
-		$formVars = array('action'=>'usr.php?mode=login');
-
+		
 		$P->set('mes','User Login');
 
 		// Check to see if were trying to log the user in or not...
@@ -119,7 +118,17 @@ switch($_GET['mode']) {
 
 
 
-		$P->formtovar('page_content','forms.php','login',$formVars);
+		$form = new newForm('usr.php?mode=login','post',FALSE,FALSE,FALSE,'miniform');
+		$form->fieldstart('Login');
+		$form->inputText('unme','Username');
+		$form->inputPassword('upss','Password');
+		$form->inputSubmit('Login');
+		$form->inputHTML('<a href="usr.php?mode=nac" title="Register a new account.">Register New Account</a>');
+		$form->fieldEnd();
+		$Lform = $form->formReturn();
+		$formVars = array('action'=>'usr.php?mode=login');
+		$P->set('page_content',$Lform);
+		//$P->formtovar('page_content','forms.php','login',$formVars);
 
 		unset($cleanPassword,$cleanUserName,$selUser,$userRow,$e,$c,$errors,$formVars);
 

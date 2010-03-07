@@ -40,6 +40,7 @@ class POST {
 	function __construct(	$uid,
 	$unm,
 	$uav,
+	$ulv,
 	$pid,
 	$ptm,
 	$ptx,
@@ -68,6 +69,9 @@ class POST {
 		// User Avatar
 		$this->vars['avatar'] = $uav;
 
+		// User Level
+		$this->vars['level'] = $ulv;
+		
 		// Post ID
 		$this->vars['pid'] = $pid;
 
@@ -147,7 +151,7 @@ class POST {
 
 				<ul>
 
-					<li class="name"><a href="u.php?view='.$this->vars['id'].'" title="View User Page">'.$this->vars['name'].'</a></li>
+					<li class="name ulv'.$this->vars['level'].'"><a href="u.php?view='.$this->vars['id'].'" title="View User Page">'.$this->vars['name'].'</a></li>
 					<li style="font-size:.8em; line-height:1.2em;">'.$this->post_time().'</li>
 
 				</ul>

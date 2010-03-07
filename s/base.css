@@ -401,3 +401,14 @@ div.bottom {
 ul li ul li {
 	font-size: .7em;
 }
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ * User Level Classes
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+li.name.ulv99 a {
+	color:#8080ff;
+}
+li.name.ulv99 {
+	background:url(../i/crown.png) no-repeat 15px 0px;
+}

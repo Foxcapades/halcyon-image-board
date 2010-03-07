@@ -158,7 +158,7 @@ if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {
 	 * just show the index, and report the issue.
 	 */
 
-	$q = $SQL->query('SELECT `p`.*, `u`.`id`, `u`.`name`, `u`.`avatar` FROM `pst_posts` as `p` INNER JOIN `usr_accounts` as `u` ON `p`.`poster` = `u`.`id` WHERE `p`.`thread` = \''.$tid.'\' ORDER BY `pid` ASC');
+	$q = $SQL->query('SELECT `p`.*, `u`.`id`, `u`.`name`, `u`.`avatar`, `u`.`level` FROM `pst_posts` as `p` INNER JOIN `usr_accounts` as `u` ON `p`.`poster` = `u`.`id` WHERE `p`.`thread` = \''.$tid.'\' ORDER BY `pid` ASC');
 
 	$body = $errorBoxHtml;
 
@@ -167,7 +167,7 @@ if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {
 	$now = 1;
 	while($ch = $q->fetch_assoc()) {
 		$ch['text'] = $BBC->parse($ch['text']);
-		$derp = new POST($ch['id'], $ch['name'], $ch['avatar'], $ch['pid'], $ch['post_time'], $ch['text'], $ch['image'], $ch['tid']);
+		$derp = new POST($ch['id'], $ch['name'], $ch['avatar'], $ch['level'], $ch['pid'], $ch['post_time'], $ch['text'], $ch['image'], $ch['tid']);
 		$body .= $derp->postbox();
 		if($USR['level'] >= $BINFO['reply']&& $now == 1) {
 			$body .= $P->formtovar('nerds','forms.php','newpost',$formVars);

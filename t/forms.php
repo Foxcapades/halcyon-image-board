@@ -26,28 +26,7 @@
 if($_SERVER['PHP_SELF'] == '/forms.php'){die();}
 
 switch ($form) {
-	case "login":
-		?>
-<form action="<?=$action; ?>" method="post" class="miniform">
 
-	<fieldset>
-		<legend>Login</legend>
-		<div>
-			<label for="unme">Username</label>
-			<input type="text" name="unme" id="unme" value="<?=$unme; ?>" />
-		</div>
-		<div>
-			<label for="upss">Password</label>
-			<input type="password" name="upss" id="upss" />
-		</div>
-		<input type="submit" value="Login" /><br />
-		<a href="usr.php?mode=nac" title="Register a new account.">Register</a>
-	</fieldset>
-
-</form>
-		<?php
-
-		break;
 case "useracc":
 	?>
 <form action="<?=$action; ?>" method="post">
