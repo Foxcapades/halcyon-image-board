@@ -58,6 +58,12 @@ if(file_exists('c/frm.php')) {
 	ERROR::dead('Could not find form validating class.');
 }
 
+// Try and import the newForm class
+if(file_exists('c/nfr.php')) {
+	require_once 'c/nfr.php';
+} else {
+	ERROR::dead('Could not find form validating class.');
+}
 
 // Create a new instance of the page building class
 $P = new P();
