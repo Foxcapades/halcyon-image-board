@@ -44,7 +44,7 @@ switch($_GET['mode']) {
 	case 'login':
 
 		// Start the form variable array for the login form.
-		
+
 		$P->set('mes','User Login');
 
 		// Check to see if were trying to log the user in or not...
@@ -124,11 +124,8 @@ switch($_GET['mode']) {
 		$form->inputPassword('upss','Password');
 		$form->inputSubmit('Login');
 		$form->inputHTML('<a href="usr.php?mode=nac" title="Register a new account.">Register New Account</a>');
-		$form->fieldEnd();
 		$Lform = $form->formReturn();
-		$formVars = array('action'=>'usr.php?mode=login');
 		$P->set('page_content',$Lform);
-		//$P->formtovar('page_content','forms.php','login',$formVars);
 
 		unset($cleanPassword,$cleanUserName,$selUser,$userRow,$e,$c,$errors,$formVars);
 
@@ -224,8 +221,11 @@ switch($_GET['mode']) {
 		break;
 
 	case 'uac':
-		$P->formtovar('page_content','forms.php','useracc');
-		$body .= $P->vars['page_content'];
+		$form = new newForm();
+		$form->fieldStart('Avatar Settings');
+		$form->inputCheckbox('grav',1,'Use Gravatar?',FALSE,FALSE,TRUE);
+		$form->inputSubmit();
+		$body .= $form->formReturn();
 		break;
 
 	default:

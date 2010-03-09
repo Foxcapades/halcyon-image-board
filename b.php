@@ -289,7 +289,7 @@ ORDER BY `posted` DESC, `pid` ASC');
 
 
 	// Create a blank instance of POST for the following loop
-	$POST = new POST('','','','','','','','','');
+	$POST = new POST('','','','','','','','','','');
 
 	if(is_array($durr)) {
 		foreach($durr as $v) {

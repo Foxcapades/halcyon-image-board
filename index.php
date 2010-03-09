@@ -23,7 +23,7 @@ session_start();
 if(file_exists('n/cnf.php')) {
 	require_once 'n/cnf.php';
 } else {
-	die('dude, wtf');
+	die('I have no idea whats going on right now.');
 }
 
 index();
