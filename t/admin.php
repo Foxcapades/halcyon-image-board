@@ -39,13 +39,13 @@
 
 <body>
 
-	<div id="admheader">
+	<div id="header">
 
 		<h1><?=$h1; ?></h1>
 		<span><?=$mes; ?></span>
 
 	</div>
-	<div class="navbar inchead">
+	<div class="navbar upper">
 
 		<ul>
 
@@ -64,7 +64,7 @@
 <?=$body; ?>
 		</div>
 	</div>
-	<div id="footer">&copy; 2010 Steven Utiger, Rev-rocom</div>
+<div id="footer">&copy; 2010 <a href="http://www.halcyonbbs.com/" title="Halcyon BBS">Halcyon Bulletin Board Systems</a> | <a href="index.php?privacy" title="Privacy Policy">Privacy Policy</a></div>
 
 </body>
 

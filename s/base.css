@@ -108,7 +108,7 @@ a.edtbut:hover {
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#header {
+#header, #admheader {
 	padding: 10px;
 	background: #f2f2f2;
 }
@@ -117,14 +117,15 @@ a.edtbut:hover {
 	text-align: center;
 }
 
-#admheader {
-	background:#acd;
-}
 
 #footer {
 	clear:both;
 	font-size: .7em;
 	color:#555;
+}
+
+#footer a:hover {
+	text-decoration:underline;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -174,28 +175,6 @@ a.edtbut:hover {
 	border-bottom:1px solid #fff;
 	margin-bottom:-1px;
 	background:#fff;
-}
-
-.navbar.inchead {
-	background:#acd;
-	padding:14px 4px 4px 4px;
-	border-bottom:1px solid #333;
-}
-.navbar.inchead ul li a:hover,
-.navbar.inchead ul li a:focus,
-.navbar.inchead ul li a.here {
-	background: #fff;
-	border-color:#333;
-}
-
-.navbar.inchead ul li a.here {
-	border-bottom:1px solid #fff;
-}
-
-
-.navbar.inchead a {
-	border:1px solid #333;
-	background:#f2f2f2;
 }
 
 .admnav {
