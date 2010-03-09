@@ -41,6 +41,7 @@ class POST {
 	$unm,
 	$uav,
 	$ulv,
+	$mil,
 	$pid,
 	$ptm,
 	$ptx,
@@ -71,7 +72,10 @@ class POST {
 
 		// User Level
 		$this->vars['level'] = $ulv;
-		
+
+		// User Level
+		$this->vars['email'] = $mil;
+
 		// Post ID
 		$this->vars['pid'] = $pid;
 
@@ -86,6 +90,7 @@ class POST {
 
 		// Thread ID
 		$this->vars['tid'] = $tid;
+
 	}
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -128,6 +133,7 @@ class POST {
 	* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	public function postbox($class = '') {
+		$this->vars['grav'] = 'http://www.gravatar.com/avatar/'.md5($this->vars['email']).'.jpg?s=50&d=identicon';
 
 		$imagename = array_shift(explode('.',$this->vars['image']));
 
@@ -146,7 +152,7 @@ class POST {
 		</div>' : '').'
 		<div class="charbox">
 
-			<img src="'.$this->avdir.$this->vars['avatar'].'" alt="Avatar" />
+			<img src="'.$this->vars['grav'].'" alt="Avatar" />
 			<div class="charinfo">
 
 				<ul>
@@ -155,12 +161,7 @@ class POST {
 					<li style="font-size:.8em; line-height:1.2em;">'.$this->post_time().'</li>
 
 				</ul>
-
-			</div>
-
-		</div>
-
-		<div class="optbox">
+				<div class="optbox">
 ';
 		if($this->vars['id'] > 1 && $_SESSION['uid'] > 1) {
 
@@ -191,7 +192,10 @@ class POST {
 ';
 		}
 		$html .=
-'		</div>
+'				</div>
+			</div>
+
+		</div>
 ';
 		$text = preg_replace('/\r\n|\n\r|\n|\r/is','<br />',$this->vars['text']);
 		$html .=

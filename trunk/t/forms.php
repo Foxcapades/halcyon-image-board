@@ -27,42 +27,6 @@ if($_SERVER['PHP_SELF'] == '/forms.php'){die();}
 
 switch ($form) {
 
-case "useracc":
-	?>
-<form action="<?=$action; ?>" method="post">
-
-<fieldset><legend>General Info</legend>
-<div><label for="unme">Username</label> <input type="text" name="unme"
-	id="unme" value="<?=$unme; ?>" /></div>
-<div class="center"><label>Current Avatar</label> <img
-	src="i/av/anon.png" /></div>
-<div class="full"><label for="avat">Upload Avatar</label> <input
-	type="file" name="avat" id="avat" /></div>
-<div><label for="grav">Use Gravatar?</label> <input type="checkbox"
-	value="1" name="grav" id="grav" /></div>
-
-</fieldset>
-<fieldset><legend>Contact Info</legend>
-<div class="full"><label for="mail">Email Address</label> <input
-	type="text" name="mail" id="mail" value="<?=$unme; ?>" /></div>
-
-</fieldset>
-<fieldset><legend>Board Settings</legend>
-<div><label for="dfor">Post Date Format</label> <select name="dfor"
-	id="dfor">
-
-	<option value="0">"Posted 3 days ago."</option>
-	<option value="1">"22 Apr 2010 10:25pm"</option>
-
-</select></div>
-
-</fieldset>
-
-
-</form>
-	<?php
-
-	break;
 case "newthread":
 
 	?>

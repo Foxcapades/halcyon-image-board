@@ -216,8 +216,8 @@ class FORM {
 
 class newForm {
 
-	public	$elements=array();
-	private $html, $parts = array();
+	public	$parts=array();
+	private $html,$fieldOpen = FALSE;
 
 public function __construct($action='#',$method='post',$enctype=FALSE,$name=FALSE,$id=FALSE,$class=FALSE,$accept=FALSE,$charset=FALSE)
 {
@@ -230,69 +230,94 @@ public function __construct($action='#',$method='post',$enctype=FALSE,$name=FALS
 	$html .= ">\n\n";
 	$this->html = $html;
 }
-
-public function inputText($name,$label=FALSE,$value=FALSE,$id=FALSE,$class=FALSE,$maxlength=FALSE,$disabled=FALSE,$readonly=FALSE,$size=FALSE,$return=FALSE)
+public function inputText
+(
+	$name,
+	$label		= FALSE,
+	$value		= FALSE,
+	$id			= FALSE,
+	$class		= FALSE,
+	$maxlength	= FALSE,
+	$disabled	= FALSE,
+	$readonly	= FALSE,
+	$size		= FALSE,
+	$return		= FALSE
+)
 {
 	$html  = '<div>';
-	$id = ($id === FALSE) ? $name : $id; 
-	$html .= ($label != FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
+
+	$id = ($id === FALSE) ? $name : $id;
+
+	$html .= ($label !== FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
+
 	$html .= '<input type="text" name="'.$name.'"';
-	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
-	$html .= ($value != FALSE) ? ' value="'.htmlentities($value).'"' : '';
-	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
-	$html .= ($maxlength == FALSE) ? ' maxlength="'.$maxlength.'"' : '';
-	$html .= ($readonly == FALSE) ? ' readonly="'.$readonly.'"' : '';
-	$html .= ($size != FALSE) ? ' size="'.$size.'"' : '';
-	$html .= ($disabled === TRUE) ? ' disabled="disabled"' : '';
+
+	$html .= ($value		!== FALSE)	? ' value="'.htmlentities($value).'"' : '';
+	$html .= ($id			!== FALSE)	? ' id="'.$id.'"' : '';
+	$html .= ($class		!== FALSE)	? ' class="'.$class.'"' : '';
+	$html .= ($maxlength	!== FALSE)	? ' maxlength="'.$maxlength.'"' : '';
+	$html .= ($disabled		=== TRUE)	? ' disabled="disabled"' : '';
+	$html .= ($readonly 	=== TRUE)	? ' readonly="readonly"' : '';
+	$html .= ($size 		!== FALSE)	? ' size="'.$size.'"' : '';
 	$html .= ' /></div>';
+
 	$this->html .= $html;
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
-public function inputPassword($name,$label=FALSE,$value=FALSE,$id=FALSE,$class=FALSE,$maxlength=FALSE,$disabled=FALSE,$readonly=FALSE,$size=FALSE,$return=FALSE)
+public function inputPassword
+(
+	$name,
+	$label		= FALSE,
+	$value		= FALSE,
+	$id			= FALSE,
+	$class		= FALSE,
+	$maxlength	= FALSE,
+	$disabled	= FALSE,
+	$readonly	= FALSE,
+	$size		= FALSE,
+	$return		= FALSE)
 {
 	$html  = '<div>';
-	$id = ($id === FALSE) ? $name : $id; 
+	$id = ($id === FALSE) ? $name : $id;
 	$html .= ($label != FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
 	$html .= '<input type="password" name="'.$name.'"';
-	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
-	$html .= ($value != FALSE) ? ' value="'.htmlentities($value).'"' : '';
-	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
-	$html .= ($maxlength == FALSE) ? ' maxlength="'.$maxlength.'"' : '';
-	$html .= ($readonly == FALSE) ? ' readonly="'.$readonly.'"' : '';
-	$html .= ($size != FALSE) ? ' size="'.$size.'"' : '';
-	$html .= ($disabled === TRUE) ? ' disabled="disabled"' : '';
+	$html .= ($value		!== FALSE)	? ' value="'.htmlentities($value).'"' : '';
+	$html .= ($id			!== FALSE)	? ' id="'.$id.'"' : '';
+	$html .= ($class		!== FALSE)	? ' class="'.$class.'"' : '';
+	$html .= ($maxlength	!== FALSE)	? ' maxlength="'.$maxlength.'"' : '';
+	$html .= ($disabled		=== TRUE)	? ' disabled="disabled"' : '';
+	$html .= ($readonly 	=== TRUE)	? ' readonly="readonly"' : '';
+	$html .= ($size 		!== FALSE)	? ' size="'.$size.'"' : '';
 	$html .= ' /></div>';
-	$this->html .= $html;
+		$this->html .= $html;
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
-public function inputCheckbox($name,$label=FALSE,$value=FALSE,$id=FALSE,$class=FALSE,$checked=FALSE,$disabled=FALSE,$return=FALSE)
+public function inputCheckbox($name,$value,$label=FALSE,$id=FALSE,$class=FALSE,$checked=FALSE,$disabled=FALSE,$return=FALSE)
 {
 	$html  = '<div>';
-	$id = ($id === FALSE) ? $name : $id; 
+	$id = ($id === FALSE) ? $name : $id;
 	$html .= ($label != FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
 	$html .= '<input type="checkbox" name="'.$name.'"';
 	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
-	$html .= ($value != FALSE) ? ' value="'.htmlentities($value).'"' : '';
+	$html .= ' value="'.htmlentities($value).'"';
 	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
-	$html .= ($checked == FALSE) ? ' checked="'.$checked.'"' : '';
+	$html .= ($checked === TRUE) ? ' checked="'.$checked.'"' : '';
 	$html .= ($disabled === TRUE) ? ' disabled="disabled"' : '';
 	$html .= ' /></div>';
 	$this->html .= $html;
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-public function inputRadio($name,$label=FALSE,$value=FALSE,$id=FALSE,$class=FALSE,$checked=FALSE,$disabled=FALSE,$return=FALSE)
+public function inputRadio($name,$value,$label=FALSE,$id=FALSE,$class=FALSE,$checked=FALSE,$disabled=FALSE,$return=FALSE)
 {
 	$html  = '<div>';
-	$id = ($id === FALSE) ? $name : $id; 
+	$id = ($id === FALSE) ? $name : $id;
 	$html .= ($label != FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
 	$html .= '<input type="radio" name="'.$name.'"';
 	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
-	$html .= ($value != FALSE) ? ' value="'.htmlentities($value).'"' : '';
+	$html .= ' value="'.htmlentities($value).'"';
 	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
 	$html .= ($checked == FALSE) ? ' checked="'.$checked.'"' : '';
 	$html .= ($disabled === TRUE) ? ' disabled="disabled"' : '';
@@ -304,7 +329,7 @@ public function inputRadio($name,$label=FALSE,$value=FALSE,$id=FALSE,$class=FALS
 public function inputSubmit($value='Submit',$name=FALSE,$label=FALSE,$id=FALSE,$class=FALSE,$disabled=FALSE,$return=FALSE)
 {
 	$html  = '<div>';
-	$id = ($id === FALSE) ? $name : $id; 
+	$id = ($id === FALSE) ? $name : $id;
 	$html .= ($label != FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
 	$html .= '<input type="submit" value="'.$value.'"';
 	$html .= ($name != FALSE) ? ' name="'.$name.'"' : '';
@@ -318,7 +343,7 @@ public function inputSubmit($value='Submit',$name=FALSE,$label=FALSE,$id=FALSE,$
 }
 public function inputHTML($html) {
 	$this->html .= $html;
-	$parts[] = $html; 
+	$parts[] = $html;
 }
 public function divLast($id=FALSE,$class=FALSE,$return=FALSE)
 {
@@ -326,7 +351,7 @@ public function divLast($id=FALSE,$class=FALSE,$return=FALSE)
 	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
 	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
 	$html .= '>';
-	
+
 	$this->html .= $html.end($parts[]).'</div>';
 	$parts[] = $html.end($parts[]).'</div>';
 	if($return) {return $html.end($parts[]).'</div>';}
@@ -339,7 +364,7 @@ public function labelBegin($text=FALSE,$for=FALSE,$id=FALSE,$class=FALSE,$return
 	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
 	$html .= '>';
 	$html .= ($text != FALSE) ? $text : '';
-	
+
 	$this->html .= $html;
 	$parts[] = $html;
 	if($return) {return $html;}
@@ -351,20 +376,23 @@ public function labelEnd($text=FALSE,$return=FALSE)
 }
 public function fieldStart($legend=FALSE,$id=FALSE,$class=FALSE,$return=FALSE)
 {
-	$html = '<fieldset>';
+	$html = ($this->fieldOpen) ? '</fieldset>' : '';
+	$html .= '<fieldset>';
 	$html .= ($legend != FALSE) ? '<legend>'.$legend.'</legend>' : '';
-	
+
 	$this->html .= $html;
 	$parts[] = $html;
+	$this->fieldOpen = TRUE;
 	if($return) {return $html;}
 }
 public function fieldEnd($return=FALSE)
 {
 	$html = '</fieldset>';
+	$this->fieldOpen = FALSE;
 }
-
 public function formReturn() {
-	return $this->html.'</form>';
+	$html = ($this->fieldOpen) ? '</fieldset></form>' : '</form>';
+	return $this->html.$html;
 }
 //EOC
 }

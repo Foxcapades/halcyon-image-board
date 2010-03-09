@@ -336,11 +336,8 @@ a.edtbut:hover {
 }
 
 .optbox {
-	margin: 5px;
+	margin: 5px auto;
 	width: 60px;
-	clear: right;
-	float: right;
-	position: relative;
 }
 
 /* Other Stuff */
@@ -411,4 +408,21 @@ li.name.ulv99 a {
 }
 li.name.ulv99 {
 	background:url(../i/crown.png) no-repeat 15px 0px;
+}
+
+.longnote {
+	font-size:.8em;
+	border:none;
+}
+
+.longnote p {
+	margin-bottom:1em;
+	color:#666;
+}
+.longnote ul {
+}
+.longnote li {
+	list-style:disc;
+	color:#666;
+	margin-left:15px;
 }
