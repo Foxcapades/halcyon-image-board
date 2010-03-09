@@ -47,9 +47,6 @@ input,textarea,select {
 	margin-bottom: 5px;
 }
 
-textarea {
-	width: 728px;
-}
 
 input[type="submit"] {
 	padding: 4px 0px;
