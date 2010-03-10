@@ -41,7 +41,7 @@ h1 {
 input,textarea,select {
 	display: block;
 	margin-left: 2px;
-	width: 235px;
+	width: 95%;
 	border: 1px solid #ddd;
 	padding: 2px;
 	margin-bottom: 5px;
@@ -75,4 +75,8 @@ legend {
 	border: 1px solid #eee;
 	border-top-width: 0px;
 	padding: 3px;
+}
+
+textarea {
+	width:99%;
 }

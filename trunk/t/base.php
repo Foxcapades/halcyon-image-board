@@ -26,6 +26,7 @@
 <link href="s/base.css" rel="stylesheet" type="text/css" />
 <link href="s/bbcd.css" rel="stylesheet" type="text/css" />
 <link href="s/html.css" rel="stylesheet" type="text/css" />
+<link rel="shortcut icon" href="http://bbs.halcyonbbs.com/favicon.ico" />
 <script type="text/javascript" src="c/bbsrc.js"></script>
 <?=$headstuff; ?>
 <script type="text/javascript">function yeOldeSwitcheroo(id,imagename) {

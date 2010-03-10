@@ -165,10 +165,10 @@ while($ch = $q->fetch_assoc()) {
 	if($USR['level'] >= $BINFO['reply']&& $now == 1) {
 		$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new','post','multipart/form-data');
 		$postForm->fieldStart('Reply');
-		$postForm->inputTextarea('text','Text',FALSE,30);
+		$postForm->inputTextarea('text','Text',FALSE,30,3,FALSE,'fullwidth');
 		$postForm->inputHidden('MAX_FILE_SIZE','2621440');
-		$postForm->inputFile('img1','Image');
-		$postForm->inputSubmit();
+		$postForm->inputFile('img1','Image',FALSE,'halfwidth');
+		$postForm->inputSubmit('Post Reply',FALSE,FALSE,FALSE,'halfwidth');
 		$body .= $postForm->returnForm();
 		$now --;
 	}
