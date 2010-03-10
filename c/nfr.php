@@ -84,7 +84,7 @@ public function inputButton
 	$html .= ($id		!== FALSE)	? ' id="div_'.$id.'"' : '';
 	$html  .= '>';
 
-	$html .= ($label	!== FALSE)	? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= ($label	!== FALSE)	? '<label for="'.$id.'">'.$label.'</label>' : '';
 
 	$html .= '<input type="checkbox" name="'.$name.'"';
 	$html .= ' value="'.htmlentities($value).'"';
@@ -119,7 +119,7 @@ public function inputCheckbox
 	$html .= ($id		!== FALSE)	? ' id="div_'.$id.'"' : '';
 	$html  .= '>';
 
-	$html .= ($label	!== FALSE)	? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= ($label	!== FALSE)	? '<label for="'.$id.'">'.$label.'</label>' : '';
 
 	$html .= '<input type="checkbox" name="'.$name.'"';
 	$html .= ' value="'.htmlentities($value).'"';
@@ -154,7 +154,7 @@ public function inputFile
 	$html .= ($id		!== FALSE)	? ' id="div_'.$id.'"' : '';
 	$html  .= '>';
 
-	$html .= ($label !== FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= ($label !== FALSE) ? '<label for="'.$id.'">'.$label.'</label>' : '';
 
 	$html .= '<input type="file" name="'.$name.'"';
 
@@ -215,7 +215,7 @@ public function inputPassword
 	$html .= ($id		!== FALSE)	? ' id="div_'.$id.'"' : '';
 	$html  .= '>';
 
-	$html .= ($label != FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= ($label != FALSE) ? '<label for="'.$id.'">'.$label.'</label>' : '';
 
 	$html .= '<input type="password" name="'.$name.'"';
 	$html .= ($value		!== FALSE)	? ' value="'.htmlentities($value).'"' : '';
@@ -252,7 +252,7 @@ public function inputRadio
 	$html .= ($id		!== FALSE)	? ' id="div_'.$id.'"' : '';
 	$html  .= '>';
 
-	$html .= ($label 	!= FALSE)	? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= ($label 	!= FALSE)	? '<label for="'.$id.'">'.$label.'</label>' : '';
 
 	$html .= '<input type="radio" name="'.$name.'"';
 	$html .= ' value="'.htmlentities($value).'"';
@@ -286,7 +286,7 @@ public function inputSubmit
 	$html .= ($id		!== FALSE)	? ' id="div_'.$id.'"' : '';
 	$html  .= '>';
 
-	$html .= ($label	!== FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= ($label	!== FALSE) ? '<label for="'.$id.'">'.$label.'</label>' : '';
 
 	$html .= '<input type="submit" value="'.$value.'"';
 	$html .= ($name		!== FALSE) ? ' name="'.$name.'"' : '';
@@ -322,7 +322,7 @@ public function inputText
 	$html .= ($id		!== FALSE)	? ' id="div_'.$id.'"' : '';
 	$html  .= '>';
 
-	$html .= ($label !== FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= ($label !== FALSE) ? '<label for="'.$id.'">'.$label.'</label>' : '';
 
 	$html .= '<input type="text" name="'.$name.'"';
 
@@ -363,7 +363,7 @@ public function inputTextarea
 	$html .= ($id		!== FALSE)	? ' id="div_'.$id.'"' : '';
 	$html  .= '>';
 
-	$html .= ($label !== FALSE) ? '<label for='.$id.'">'.$label.'</label>' : '';
+	$html .= ($label !== FALSE) ? '<label for="'.$id.'">'.$label.'</label>' : '';
 
 	$html .= '<textarea name="'.$name.'"';
 	$html .= ' cols="'.$cols.'"';

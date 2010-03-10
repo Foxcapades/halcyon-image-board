@@ -396,3 +396,12 @@ li.name.ulv99 {
 	color:#666;
 	margin-left:15px;
 }
+
+form div.halfwidth {
+	width:49%;
+	clear:none;
+}
+form div.fullwidth {
+	width:99%;
+	clear:both;
+}

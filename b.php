@@ -302,12 +302,12 @@ $cherp .= "</div>\n";
 if($USR['level'] >= $BINFO['allowed']) {
 	$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new','post','multipart/form-data');
 	$postForm->fieldStart('New Thread');
-	$postForm->inputText('ttle','Title');
-	$postForm->inputText('unme','Username',$USR['name']);
-	$postForm->inputTextarea('text','Text',FALSE,30);
+	$postForm->inputText('ttle','Title',FALSE,FALSE,'halfwidth');
+	$postForm->inputText('unme','Username',$USR['name'],FALSE,'halfwidth');
+	$postForm->inputTextarea('text','Text',FALSE,30,4,FALSE,'fullwidth');
 	$postForm->inputHidden('MAX_FILE_SIZE','2621440');
-	$postForm->inputFile('img1','Image');
-	$postForm->inputSubmit();
+	$postForm->inputFile('img1','Image',FALSE,'halfwidth');
+	$postForm->inputSubmit('Create Thread',FALSE,FALSE,FALSE,'halfwidth');
 	$body .= $postForm->returnForm();
 }
 
