@@ -16,13 +16,55 @@
  *    You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Form Generation Class
+ *
+ *	The form generation class "newForm" provides a means to dynamically create
+ * HTML forms on pages who's content is not 'set in stone'.  This removes the
+ * need for templates, and allows the site to add and remove fields as needed to
+ * keep the forms specific and on target.
+ *
+ */
 class newForm {
-
+/**
+ * newForm::parts is a public array containing the individual HTML elements
+ * contained in the form.
+ *
+ * @var array $parts
+ */
 public	$parts=array();
-private
-	$html,
-	$fieldOpen = FALSE;
-
+/**
+ * newForm::html is a private string containing the unfinished form, all added
+ * elements are appended to the string until it is returned to the calling
+ * script via $newForm::returnForm();.  This variable is kept private as the
+ * string is not finished and may contain several open tags that the class keeps
+ * track of and will close when the form's HTML is returned.
+ *
+ * @var string $html
+ */
+private $html;
+/**
+ * newForm::fieldOpen is a private variable containing a simple boolean TRUE or
+ * FALSE.  This tells the class if there is an open <fieldset> tag that needs to
+ * be closed before the HTML is returned.
+ * @var boolean $fieldOpen
+ */
+private $fieldOpen = FALSE;
+/**
+ * newForm::__construct() starts out the newForm class by building the <form>
+ * tag and starting out the HTML for the form.
+ *
+ * @param string $action
+ * @param string $method
+ * @param string $enctype
+ * @param string $name
+ * @param string $id
+ * @param string $class
+ * @param string $accept
+ * @param string $charset
+ * @return unknown_type
+ */
 public function __construct
 (
 	$action		= '#',
@@ -45,6 +87,7 @@ public function __construct
 	$html .= ">\n\n";
 
 	$this->html = $html;
+	$this->parts[] = $html;
 }
 
 public function divLast
