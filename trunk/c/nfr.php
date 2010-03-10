@@ -53,7 +53,8 @@ private $html;
 private $fieldOpen = FALSE;
 /**
  * newForm::__construct() starts out the newForm class by building the <form>
- * tag and starting out the HTML for the form.
+ * tag and starting out the HTML for the form.  The parameters follow the basic
+ * attributes that are common for the <form> tag.
  *
  * @param string $action
  * @param string $method
@@ -89,24 +90,28 @@ public function __construct
 	$this->html = $html;
 	$this->parts[] = $html;
 }
-
-public function divLast
-(
-	$id		= FALSE,
-	$class	= FALSE,
-	$return	= FALSE
-)
-{
-	$html = '<div';
-	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
-	$html .= ($class != FALSE) ? ' class="'.$class.'"' : '';
-	$html .= '>';
-
-	$this->html .= $html.end($parts[]).'</div>';
-	$parts[] = $html.end($parts[]).'</div>';
-	if($return) {return $html.end($parts[]).'</div>';}
-}
-
+/**
+ * newForm::inputButton() adds a button to the form (<input type="button" />).
+ * The parameters follow the common attributes for the equivalent HTML tag.
+ *
+ * The $extra parameter allows scripts or extra attributes to be added into the
+ * input as well.  Attributes set in the $extra parameter should be set exactly
+ * how you want them to be in the tag (i.e. $extra = 'onclick="dothis()"')
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $name
+ * @param string $value
+ * @param string $label
+ * @param string_type $id
+ * @param string_type $class
+ * @param string $checked
+ * @param string $disabled
+ * @param string $extra
+ * @param boolean $return
+ * @return string
+ */
 public function inputButton
 (
 	$name,
@@ -141,7 +146,29 @@ public function inputButton
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
+/**
+ * newForm::inputCheckbox() adds a checkbox to the form
+ * (<input type="checkbox" />). The parameters follow the common attributes for
+ * the equivalent HTML tag.
+ *
+ * The $extra parameter allows scripts or extra attributes to be added into the
+ * input as well.  Attributes set in the $extra parameter should be set exactly
+ * how you want them to be in the tag (i.e. $extra = 'onclick="dothis()"')
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $name
+ * @param string $value
+ * @param string $label
+ * @param string $id
+ * @param string $class
+ * @param string $checked
+ * @param string $disabled
+ * @param string $extra
+ * @param boolean $return
+ * @return string
+ */
 public function inputCheckbox
 (
 	$name,
@@ -176,7 +203,6 @@ public function inputCheckbox
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
 public function inputFile
 (
 	$name,
@@ -213,7 +239,6 @@ public function inputFile
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
 public function inputHidden
 (
 	$name,
@@ -236,7 +261,6 @@ public function inputHidden
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
 public function inputPassword
 (
 	$name,
@@ -274,7 +298,6 @@ public function inputPassword
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
 public function inputRadio
 (
 	$name,
@@ -309,7 +332,6 @@ public function inputRadio
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
 public function inputSubmit
 (
 	$value		='Submit',
@@ -342,7 +364,6 @@ public function inputSubmit
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
 public function inputText
 (
 	$name,
@@ -383,7 +404,6 @@ public function inputText
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
 public function inputTextarea
 (
 	$name,
@@ -425,9 +445,7 @@ public function inputTextarea
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
 public function inputHTML($html) {$this->html .= $html; $parts[] = $html;}
-
 public function labelBegin
 (
 	$text	= FALSE,
@@ -448,7 +466,6 @@ public function labelBegin
 	$parts[] = $html;
 	if($return) {return $html;}
 }
-
 public function labelEnd
 (
 	$text=FALSE,
@@ -458,7 +475,6 @@ public function labelEnd
 	$html .= ($text != FALSE) ? $text : '';
 	$html = '</label>';
 }
-
 public function fieldStart
 (
 	$legend	= FALSE,
@@ -476,13 +492,11 @@ public function fieldStart
 	$this->fieldOpen = TRUE;
 	if($return) {return $html;}
 }
-
 public function fieldEnd($return=FALSE)
 {
 	$html = "</fieldset>\n\n";
 	$this->fieldOpen = FALSE;
 }
-
 public function formReturn()
 {
 	$html = ($this->fieldOpen) ? '</fieldset></form>' : '</form>';
@@ -492,7 +506,6 @@ public function formReturn()
 	$html = ($this->fieldOpen) ? '</fieldset></form>' : '</form>';
 	return $this->html.$html;
 }
-
 //EOC
 }
 ?>
