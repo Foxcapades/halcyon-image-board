@@ -378,8 +378,9 @@ case 'bee':
 			$editBoardForm->fieldStart('Board Properties');
 			$editBoardForm->inputText('bnm','Board Name',$boardInfo['dir'],'bnm','halfwidth');
 			$editBoardForm->inputText('bttl','Board Title',$boardInfo['name'],'bttl','halfwidth');
-			$editBoardForm->inputText('bmes','Board Message',$boardInfo['mes'],'bmes','halfwidth');
-			$editBoardForm->input
+			$editBoardForm->inputText('bmes','Board Message',$boardInfo['mes']);
+			$editBoardForm->inputSelect('blvl','Access Level',FALSE,'blvl','halfwidth');
+			$body .= $editBoardForm->formReturn();
 
 			break;
 		}

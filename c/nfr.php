@@ -214,6 +214,28 @@ public function inputCheckbox
 	$parts[] = $html;
 	if($return) {return $html;}
 }
+/**
+ * newForm::inputFile() adds a file input to the form (input type="file"). The
+ * parameters follow the common attributes for the equivalent HTML tag.
+ *
+ * The $extra parameter allows scripts or extra attributes to be added into the
+ * input as well.  Attributes set in the $extra parameter should be set exactly
+ * how you want them to be in the tag (i.e. $extra = 'onclick="dothis()"')
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $name
+ * @param string $label
+ * @param string $id
+ * @param string $class
+ * @param string $accept
+ * @param boolean $disabled
+ * @param string $size
+ * @param string $extra
+ * @param boolean $return
+ * @return string
+ */
 public function inputFile
 (
 	$name,
@@ -251,6 +273,25 @@ public function inputFile
 	$parts[] = $html;
 	if($return) {return $html;}
 }
+/**
+ * newForm::inputHidden() adds a hidden input to the form (input type="hidden").
+ * The parameters follow the common attributes for the equivalent HTML tag.
+ *
+ * The $extra parameter allows scripts or extra attributes to be added into the
+ * input as well.  Attributes set in the $extra parameter should be set exactly
+ * how you want them to be in the tag (i.e. $extra = 'onclick="dothis()"')
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $name
+ * @param string $value
+ * @param string $id
+ * @param string $class
+ * @param string $extra
+ * @param boolean $return
+ * @return string
+ */
 public function inputHidden
 (
 	$name,
@@ -274,6 +315,31 @@ public function inputHidden
 	$parts[] = $html;
 	if($return) {return $html;}
 }
+/**
+ * newForm::inputPassword() adds a password input to the form
+ * (input type="password"). The parameters follow the common attributes for the
+ * equivalent HTML tag.
+ *
+ * The $extra parameter allows scripts or extra attributes to be added into the
+ * input as well.  Attributes set in the $extra parameter should be set exactly
+ * how you want them to be in the tag (i.e. $extra = 'onclick="dothis()"')
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $name
+ * @param string $label
+ * @param string $value
+ * @param string $id
+ * @param string $class
+ * @param string $maxlength
+ * @param boolean $disabled
+ * @param boolean $readonly
+ * @param string $size
+ * @param string $extra
+ * @param boolean $return
+ * @return string
+ */
 public function inputPassword
 (
 	$name,
@@ -312,6 +378,28 @@ public function inputPassword
 	$parts[] = $html;
 	if($return) {return $html;}
 }
+/**
+ * newForm::inputRadio() adds a radio button to the form (input type="radio").
+ * The parameters follow the common attributes for the equivalent HTML tag.
+ *
+ * The $extra parameter allows scripts or extra attributes to be added into the
+ * input as well.  Attributes set in the $extra parameter should be set exactly
+ * how you want them to be in the tag (i.e. $extra = 'onclick="dothis()"')
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $name
+ * @param string $value
+ * @param string $label
+ * @param string $id
+ * @param string $class
+ * @param boolean $checked
+ * @param boolean $disabled
+ * @param string $extra
+ * @param boolean $return
+ * @return string
+ */
 public function inputRadio
 (
 	$name,
@@ -347,6 +435,28 @@ public function inputRadio
 	$parts[] = $html;
 	if($return) {return $html;}
 }
+/**
+ * newForm::inputSelect() starts a select box to the form. The parameters follow
+ * the common attributes for the equivalent HTML tag.
+ *
+ * The $extra parameter allows scripts or extra attributes to be added into the
+ * input as well.  Attributes set in the $extra parameter should be set exactly
+ * how you want them to be in the tag (i.e. $extra = 'onclick="dothis()"')
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $name
+ * @param string $label
+ * @param boolean $multiple
+ * @param string $id
+ * @param string $class
+ * @param boolean $disabled
+ * @param string $size
+ * @param string $extra
+ * @param boolean $return
+ * @return string
+ */
 public function inputSelect
 (
 	$name,
@@ -361,6 +471,7 @@ public function inputSelect
 )
 {
 	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
+
 	$id = ($id === '') ? $name : $id;
 
 	$html  = '<div';
@@ -371,11 +482,11 @@ public function inputSelect
 	$html .= ($label	!== '')		? '<label for="'.$id.'">'.$label.'</label>' : '';
 
 	$html .= '<select name="'.$name.'"';
-	$html .= ($multiple	!== FALSE)	? ' id="'.$id.'"' : '';
+	$html .= ($multiple	!== FALSE)	? ' multiple="multiple"' : '';
 	$html .= ($id		!== '')		? ' id="'.$id.'"' : '';
 	$html .= ($class 	!== '')		? ' class="'.$class.'"' : '';
-	$html .= ($checked	=== TRUE)	? ' checked="checked"' : '';
 	$html .= ($disabled === TRUE)	? ' disabled="disabled"' : '';
+	$html .= ($size 	!== '')		? ' size="'.$size.'"' : '';
 	$html .= ($extra	!== FALSE)	? ' '.$extra : '';
 	$html .= ">\n";
 
@@ -385,6 +496,27 @@ public function inputSelect
 	if($return) {return $html;}
 
 }
+/**
+ * newForm::addOption() adds an option to an open select element in the form .
+ * The parameters follow the common attributes for the equivalent HTML tag.
+ *
+ * The $extra parameter allows scripts or extra attributes to be added into the
+ * input as well.  Attributes set in the $extra parameter should be set exactly
+ * how you want them to be in the tag (i.e. $extra = 'onclick="dothis()"')
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $text
+ * @param string $value
+ * @param string $selected
+ * @param string $label
+ * @param string $id
+ * @param string $class
+ * @param string $extra
+ * @param string $return
+ * @return string|string
+ */
 public function addOption
 (
 	$text,
@@ -398,7 +530,28 @@ public function addOption
 )
 {
 	if($this->selectOpen !== TRUE) {return FALSE;}
+	$html .= '<option value="'.$value.'"';
+	$html .= ($selected	!== FALSE)	? ' selected="selected"' : '';
+	$html .= ($label	!== '')		? ' label="'.$label.'"' : '';
+	$html .= ($id		!== '')		? ' id="'.$id.'"' : '';
+	$html .= ($class 	!== '')		? ' class="'.$class.'"' : '';
+	$html .= ($extra	!== FALSE)	? ' '.$extra : '';
+	$html .= $text."</option>\n";
+
+	$this->html .= $html;
+	$parts[] = $html;
+	if($return) {return $html;}
 }
+/**
+ * newForm::endSelect() closes an open select box in the form. The parameters
+ * follow the common attributes for the equivalent HTML tag.
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param boolean $return
+ * @return string
+ */
 public function endSelect($return=FALSE)
 {
 	if($this->selectOpen !== TRUE) {return FALSE;}
@@ -407,6 +560,27 @@ public function endSelect($return=FALSE)
 	$this->parts[] = $html;
 	$this->selectOpen = FALSE;
 }
+/**
+ * newForm::inputSubmit() adds a submit button to the form. The parameters
+ * follow the common attributes for the equivalent HTML tag.
+ *
+ * The $extra parameter allows scripts or extra attributes to be added into the
+ * input as well.  Attributes set in the $extra parameter should be set exactly
+ * how you want them to be in the tag (i.e. $extra = 'onclick="dothis()"')
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $value
+ * @param string $name
+ * @param string $label
+ * @param string $id
+ * @param string $class
+ * @param boolean $disabled
+ * @param string $extra
+ * @param string $return
+ * @return string
+ */
 public function inputSubmit
 (
 	$value		='Submit',
@@ -440,6 +614,30 @@ public function inputSubmit
 	$parts[] = $html;
 	if($return) {return $html;}
 }
+/**
+ * newForm::inputText() adds a text input to the form. The parameters follow the
+ * common attributes for the equivalent HTML tag.
+ *
+ * The $extra parameter allows scripts or extra attributes to be added into the
+ * input as well.  Attributes set in the $extra parameter should be set exactly
+ * how you want them to be in the tag (i.e. $extra = 'onclick="dothis()"')
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $name
+ * @param string $label
+ * @param string $value
+ * @param string $id
+ * @param string $class
+ * @param string $maxlength
+ * @param boolean $disabled
+ * @param boolean $readonly
+ * @param string $size
+ * @param string $extra
+ * @param boolean $return
+ * @return string
+ */
 public function inputText
 (
 	$name,
@@ -481,6 +679,30 @@ public function inputText
 	$parts[] = $html;
 	if($return) {return $html;}
 }
+/**
+ * newForm::inputTextarea() adds a text box to the form. The parameters follow
+ * the common attributes for the equivalent HTML tag.
+ *
+ * The $extra parameter allows scripts or extra attributes to be added into the
+ * input as well.  Attributes set in the $extra parameter should be set exactly
+ * how you want them to be in the tag (i.e. $extra = 'onclick="dothis()"')
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $name
+ * @param string $label
+ * @param string $value
+ * @param string $cols
+ * @param string $rows
+ * @param string $id
+ * @param string $class
+ * @param boolean $disabled
+ * @param boolean $readonly
+ * @param string $extra
+ * @param boolean $return
+ * @return string
+ */
 public function inputTextarea
 (
 	$name,
@@ -523,8 +745,30 @@ public function inputTextarea
 	$parts[] = $html;
 	if($return) {return $html;}
 }
+/**
+ * newForm::inputHTML() adds HTML directly to the form.  Can be used to inject
+ * any HTML, be cautious with how this is used.
+ *
+ * @param string $html
+ * @return string
+ */
 public function inputHTML($html) {$this->html .= $html; $parts[] = $html;}
-public function labelBegin
+/**
+ * newForm::labelStart() adds an open label tag to the form. The parameters
+ * follow the common attributes for the equivalent HTML tag. Text can be added
+ * here and/or with the closing tag.
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $text
+ * @param string $for
+ * @param string $id
+ * @param string $class
+ * @param boolean $return
+ * @return Ambigous <string, unknown>
+ */
+public function labelStart
 (
 	$text	= FALSE,
 	$for	= FALSE,
@@ -545,6 +789,14 @@ public function labelBegin
 	$parts[] = $html;
 	if($return) {return $html;}
 }
+/**
+ * newForm::labelEnd() ends an open label tag. Text can be added here and/or
+ * with the opening tag.
+ *
+ * @param string $text
+ * @param boolean $return
+ * @return string
+ */
 public function labelEnd
 (
 	$text=FALSE,
@@ -554,6 +806,20 @@ public function labelEnd
 	$html .= ($text != FALSE) ? $text : '';
 	$html = '</label>';
 }
+/**
+ * newForm::fieldStart() adds an open fieldset tag to the form with an optional
+ * legend tag. The parameters follow the common attributes for the equivalent
+ * HTML tag.
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param string $legend
+ * @param string $id
+ * @param string $class
+ * @param boolean $return
+ * @return string
+ */
 public function fieldStart
 (
 	$legend	= FALSE,
@@ -572,12 +838,28 @@ public function fieldStart
 	$this->fieldOpen = TRUE;
 	if($return) {return $html;}
 }
+/**
+ * newForm::fieldEnd() closes an open fieldset in the form. The parameters
+ * follow the common attributes for the equivalent HTML tag.
+ *
+ * The $return parameter is a simple TRUE or FALSE on whether or not you want
+ * the function to return the created HTML to the calling script.
+ *
+ * @param boolean $return
+ * @return string
+ */
 public function fieldEnd($return=FALSE)
 {
 	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$html = "</fieldset>\n\n";
 	$this->fieldOpen = FALSE;
 }
+/**
+ * newForm::formReturn() closes the open tags and returns the assembled HTML for
+ * form.
+ *
+ * @return string
+ */
 public function formReturn()
 {
 	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
