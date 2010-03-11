@@ -31,38 +31,43 @@ case 'newboard':
 
 	?>
 <form id="NewBoard" method="post" action="<?=$action; ?>">
-
-<fieldset><legend>New Board</legend>
-<div><label for="bnm">Board Name</label> <input type="text" name="bnm"
-	id="bnm" value="<?=$bnm; ?>" /></div>
-<div><label for="bttl">Board Header</label> <input type="text"
-	name="bttl" id="bttl" value="<?=$bttl; ?>" /></div>
-<div><label for="bms">Header Message</label> <input type="text"
-	name="bms" id="bms" value="<?=$bms; ?>" /></div>
-<div><label for="blvl">Access Level</label> <select name="blvl"
-	id="blvl">
-
-	<option value="1">Anonymous</option>
-	<option value="2">Registered</option>
-	<option value="10">Mods Only</option>
-	<option value="90">Admins Only</option>
-	<option value="0">Banned Users</option>
-
-</select></div>
-<div class="half"><label for="lkd">Locked</label> <input type="checkbox"
+	<fieldset><legend>New Board</legend>
+		<div>
+			<label for="bnm">Board Name</label>
+			<input type="text" name="bnm" id="bnm" value="<?=$bnm; ?>" /></div>
+		<div>
+			<label for="bttl">Board Header</label>
+			<input type="text" name="bttl" id="bttl" value="<?=$bttl; ?>" /></div>
+		<div>
+			<label for="bms">Header Message</label>
+			<input type="text" name="bms" id="bms" value="<?=$bms; ?>" /></div>
+		<div>
+			<label for="blvl">Access Level</label>
+			<select name="blvl" id="blvl">
+				<option value="1">Anonymous</option>
+				<option value="2">Registered</option>
+				<option value="10">Mods Only</option>
+				<option value="90">Admins Only</option>
+				<option value="0">Banned Users</option>
+			</select>
+		</div>
+		<div class="half">
+			<label for="lkd">Locked</label> <input type="checkbox"
 	value="1" name="lkd" id="lkd" /></div>
-<div class="half"><label for="hdn">Hidden</label> <input type="checkbox"
+		<div class="half">
+			<label for="hdn">Hidden</label> <input type="checkbox"
 	value="1" name="hdn" id="hdn" /></div>
-<div><label for="bplvl">Posting Level</label> <select name="plvl"
+		<div>
+			<label for="bplvl">Posting Level</label> <select name="plvl"
 	id="plvl">
 
-	<option value="1">Anonymous</option>
-	<option value="2">Registered</option>
-	<option value="10">Mods Only</option>
-	<option value="90">Admins Only</option>
-	<option value="0">Banned Users</option>
+				<option value="1">Anonymous</option>
+				<option value="2">Registered</option>
+				<option value="10">Mods Only</option>
+				<option value="90">Admins Only</option>
+				<option value="0">Banned Users</option>
 
-</select></div>
+			</select></div>
 
 <input type="submit" value="Create Board" /></fieldset>
 

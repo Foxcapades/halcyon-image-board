@@ -85,7 +85,7 @@ $P->set('adnav',$admNav);
 function newBoard(&$body)
 {
 	extract($GLOBALS);
-	
+
 	if(!count($_POST)) {
 		$P->formtovar('content','forms.php','newboard');
 		$body .= $P->vars['content'];
@@ -147,7 +147,7 @@ function newBoard(&$body)
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-* Delete Management
+* Delete Board
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -364,8 +364,50 @@ case 'bd':
 /**
  * Edit Board
 **/
+case 'bee':
+	if(count($_POST)) {
+		if($_POST['delete'] == 'GO') {
+
+		} else {
+			$boardID = $FORM->scrub_text($_POST['bdel']);
+			$boardResult = $SQL->query('SELECT * FROM `ste_boards` WHERE `id` = \''.$boardID.'\' LIMIT 0,1');
+			$boardInfo = $boardResult->fetch_assoc();
+
+			$editBoardForm = new newForm('?mode=bee');
+
+			$editBoardForm->fieldStart('Board Properties');
+			$editBoardForm->inputText('bnm','Board Name',$boardInfo['dir'],'bnm','halfwidth');
+			$editBoardForm->inputText('bttl','Board Title',$boardInfo['name'],'bttl','halfwidth');
+			$editBoardForm->inputText('bmes','Board Message',$boardInfo['mes'],'bmes','halfwidth');
+			$editBoardForm->input
+
+			break;
+		}
+	}
 case 'be':
-//	$durm = $SQL->query('SELECT * FROM `ste_boards` ORDER BY `id` ASC');
+	// Start the form
+	$listForm = new newForm('?mode=bee');
+	$listForm->fieldStart('Select Boards to Edit');
+
+	// Pull the boards from the database
+	$sqlResult = $SQL->query('SELECT `id`,`dir` FROM `ste_boards`');
+
+	// Inputs and parts for the form
+	$formHTML = '<label for="bdel">Select Boards</label><select size="8" name="bdel" id="bdel">';
+
+	// Insert the options into the <select> in the form
+	while($fetch = $sqlResult->fetch_assoc()) {
+		$formHTML .= '	<option value="'.$fetch['id'].'">'.$fetch['dir'].'</option>'."\n";
+	}
+
+	// Finish the form parts
+	$formHTML .= '</select><input type="submit" value="Delete Board(s)" />';
+
+	// add the html to the open form instance
+	$listForm->inputHTML($formHTML);
+
+	// Add form to the body
+	$body .= $listForm->formReturn();
 	break;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -31,7 +31,7 @@ class newForm {
  * newForm::parts is a public array containing the individual HTML elements
  * contained in the form.
  *
- * @var array $parts
+ * @var array
  */
 public	$parts=array();
 /**
@@ -41,20 +41,29 @@ public	$parts=array();
  * string is not finished and may contain several open tags that the class keeps
  * track of and will close when the form's HTML is returned.
  *
- * @var string $html
+ * @var string
  */
 private $html;
 /**
  * newForm::fieldOpen is a private variable containing a simple boolean TRUE or
- * FALSE.  This tells the class if there is an open <fieldset> tag that needs to
+ * FALSE.  This tells the class if there is an open fieldset tag that needs to
  * be closed before the HTML is returned.
- * @var boolean $fieldOpen
+ *
+ * @var boolean
  */
 private $fieldOpen = FALSE;
 /**
- * newForm::__construct() starts out the newForm class by building the <form>
+ * newForm::selectOpen is a private variable containing a simple boolean TRUE or
+ * FALSE.  This thells the class if there is an open select tag that needs to be
+ * clised before the HTML is returned, or another element is added.
+ *
+ * @var boolean
+ */
+private $selectOpen = FALSE;
+/**
+ * newForm::__construct() starts out the newForm class by building the form
  * tag and starting out the HTML for the form.  The parameters follow the basic
- * attributes that are common for the <form> tag.
+ * attributes that are common for the form tag.
  *
  * @param string $action
  * @param string $method
@@ -91,7 +100,7 @@ public function __construct
 	$this->parts[] = $html;
 }
 /**
- * newForm::inputButton() adds a button to the form (<input type="button" />).
+ * newForm::inputButton() adds a button to the form (input type="button").
  * The parameters follow the common attributes for the equivalent HTML tag.
  *
  * The $extra parameter allows scripts or extra attributes to be added into the
@@ -106,8 +115,8 @@ public function __construct
  * @param string $label
  * @param string_type $id
  * @param string_type $class
- * @param string $checked
- * @param string $disabled
+ * @param boolean $checked
+ * @param boolean $disabled
  * @param string $extra
  * @param boolean $return
  * @return string
@@ -125,6 +134,7 @@ public function inputButton
 	$return		=FALSE
 )
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$id = ($id === FALSE) ? $name : $id;
 
 	$html  = '<div';
@@ -148,7 +158,7 @@ public function inputButton
 }
 /**
  * newForm::inputCheckbox() adds a checkbox to the form
- * (<input type="checkbox" />). The parameters follow the common attributes for
+ * (input type="checkbox"). The parameters follow the common attributes for
  * the equivalent HTML tag.
  *
  * The $extra parameter allows scripts or extra attributes to be added into the
@@ -163,8 +173,8 @@ public function inputButton
  * @param string $label
  * @param string $id
  * @param string $class
- * @param string $checked
- * @param string $disabled
+ * @param boolean $checked
+ * @param boolean $disabled
  * @param string $extra
  * @param boolean $return
  * @return string
@@ -182,6 +192,7 @@ public function inputCheckbox
 	$return		= FALSE
 )
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$id = ($id === FALSE) ? $name : $id;
 
 	$html  = '<div';
@@ -216,6 +227,7 @@ public function inputFile
 	$return		= FALSE
 )
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$id = ($id === FALSE) ? $name : $id;
 
 	$html  = '<div';
@@ -249,6 +261,7 @@ public function inputHidden
 	$return		= FALSE
 )
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$id = ($id === FALSE) ? $name : $id;
 
 	$html .= '<input type="hidden" name="'.$name.'" value="'.htmlentities($value).'"';
@@ -275,6 +288,7 @@ public function inputPassword
 	$extra		= FALSE,
 	$return		= FALSE)
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$id = ($id === FALSE) ? $name : $id;
 
 	$html  = '<div';
@@ -311,6 +325,7 @@ public function inputRadio
 	$return		= FALSE
 )
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$id = ($id === FALSE) ? $name : $id;
 
 	$html  = '<div';
@@ -332,6 +347,66 @@ public function inputRadio
 	$parts[] = $html;
 	if($return) {return $html;}
 }
+public function inputSelect
+(
+	$name,
+	$label		= '',
+	$multiple	= FALSE,
+	$id			= '',
+	$class		= '',
+	$disabled	= FALSE,
+	$size		= '',
+	$extra		= '',
+	$return		= FALSE
+)
+{
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
+	$id = ($id === '') ? $name : $id;
+
+	$html  = '<div';
+	$html .= ($class 	!== '')		? ' class="'.$class.'"' : '';
+	$html .= ($id		!== '')		? ' id="div_'.$id.'"' : '';
+	$html  .= '>';
+
+	$html .= ($label	!== '')		? '<label for="'.$id.'">'.$label.'</label>' : '';
+
+	$html .= '<select name="'.$name.'"';
+	$html .= ($multiple	!== FALSE)	? ' id="'.$id.'"' : '';
+	$html .= ($id		!== '')		? ' id="'.$id.'"' : '';
+	$html .= ($class 	!== '')		? ' class="'.$class.'"' : '';
+	$html .= ($checked	=== TRUE)	? ' checked="checked"' : '';
+	$html .= ($disabled === TRUE)	? ' disabled="disabled"' : '';
+	$html .= ($extra	!== FALSE)	? ' '.$extra : '';
+	$html .= ">\n";
+
+	$this->selectOpen = TRUE;
+	$this->html .= $html;
+	$parts[] = $html;
+	if($return) {return $html;}
+
+}
+public function addOption
+(
+	$text,
+	$value,
+	$selected	= FALSE,
+	$label		= '',
+	$id			= '',
+	$class		= '',
+	$extra		= '',
+	$return		= FALSE
+)
+{
+	if($this->selectOpen !== TRUE) {return FALSE;}
+}
+public function endSelect($return=FALSE)
+{
+	if($this->selectOpen !== TRUE) {return FALSE;}
+	$html = "</select></div>\n\n";
+	$this->html .= $html;
+	$this->parts[] = $html;
+	$this->selectOpen = FALSE;
+}
 public function inputSubmit
 (
 	$value		='Submit',
@@ -344,6 +419,7 @@ public function inputSubmit
 	$return		= FALSE
 )
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$id = ($id === FALSE) ? $name : $id;
 
 	$html  = '<div';
@@ -379,6 +455,7 @@ public function inputText
 	$return		= FALSE
 )
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$id = ($id === FALSE) ? $name : $id;
 
 	$html  = '<div';
@@ -419,6 +496,7 @@ public function inputTextarea
 	$return		= FALSE
 )
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$id = ($id === FALSE) ? $name : $id;
 
 	$html  = '<div';
@@ -455,6 +533,7 @@ public function labelBegin
 	$return	= FALSE
 )
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$html = '<label';
 	$html .= ($for != FALSE) ? ' for="'.$for.'"' : '';
 	$html .= ($id != FALSE) ? ' id="'.$id.'"' : '';
@@ -483,6 +562,7 @@ public function fieldStart
 	$return	= FALSE
 )
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$html = ($this->fieldOpen) ? "</fieldset>\n\n" : '';
 	$html .= '<fieldset>';
 	$html .= ($legend != FALSE) ? '<legend>'.$legend.'</legend>'."\n" : '';
@@ -494,15 +574,13 @@ public function fieldStart
 }
 public function fieldEnd($return=FALSE)
 {
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$html = "</fieldset>\n\n";
 	$this->fieldOpen = FALSE;
 }
 public function formReturn()
 {
-	$html = ($this->fieldOpen) ? '</fieldset></form>' : '</form>';
-	return $this->html.$html;
-}public function returnForm()
-{
+	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$html = ($this->fieldOpen) ? '</fieldset></form>' : '</form>';
 	return $this->html.$html;
 }
