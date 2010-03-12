@@ -169,7 +169,7 @@ while($ch = $q->fetch_assoc()) {
 		$postForm->inputHidden('MAX_FILE_SIZE','2621440');
 		$postForm->inputFile('img1','Image',FALSE,'halfwidth');
 		$postForm->inputSubmit('Post Reply',FALSE,FALSE,FALSE,'halfwidth');
-		$body .= $postForm->returnForm();
+		$body .= $postForm->FormReturn();
 		$now --;
 	}
 }

@@ -462,10 +462,10 @@ public function inputSelect
 	$name,
 	$label		= '',
 	$multiple	= FALSE,
+	$size		= '',
 	$id			= '',
 	$class		= '',
 	$disabled	= FALSE,
-	$size		= '',
 	$extra		= '',
 	$return		= FALSE
 )

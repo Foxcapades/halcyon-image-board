@@ -394,18 +394,15 @@ case 'be':
 	$sqlResult = $SQL->query('SELECT `id`,`dir` FROM `ste_boards`');
 
 	// Inputs and parts for the form
-	$formHTML = '<label for="bdel">Select Boards</label><select size="8" name="bdel" id="bdel">';
+	$listForm->inputSelect('bdel','Select A Board',FALSE,8);
 
 	// Insert the options into the <select> in the form
 	while($fetch = $sqlResult->fetch_assoc()) {
-		$formHTML .= '	<option value="'.$fetch['id'].'">'.$fetch['dir'].'</option>'."\n";
+		$listForm->addOption($fetch['dir'],$fetch['id']);
 	}
 
 	// Finish the form parts
-	$formHTML .= '</select><input type="submit" value="Delete Board(s)" />';
-
-	// add the html to the open form instance
-	$listForm->inputHTML($formHTML);
+	$listForm->inputSubmit('Edit Board');
 
 	// Add form to the body
 	$body .= $listForm->formReturn();
