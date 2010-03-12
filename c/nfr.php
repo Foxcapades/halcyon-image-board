@@ -536,7 +536,7 @@ public function addOption
 	$html .= ($id		!== '')		? ' id="'.$id.'"' : '';
 	$html .= ($class 	!== '')		? ' class="'.$class.'"' : '';
 	$html .= ($extra	!== FALSE)	? ' '.$extra : '';
-	$html .= $text."</option>\n";
+	$html .= '>'.$text."</option>\n";
 
 	$this->html .= $html;
 	$parts[] = $html;

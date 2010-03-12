@@ -221,7 +221,7 @@ case 'nac':
 	}
 
 	// If we have reached this then just show the form
-	$body .= $regForm->returnForm();
+	$body .= $regForm->formReturn();
 	break;
 
 case 'uac':
@@ -229,7 +229,7 @@ case 'uac':
 	$form->fieldStart('Avatar Settings');
 	$form->inputCheckbox('grav',1,'Use Gravatar?',FALSE,FALSE,TRUE);
 	$form->inputSubmit();
-	$body .= $form->returnForm();
+	$body .= $form->formReturn();
 	break;
 
 default:
