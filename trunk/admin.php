@@ -87,8 +87,33 @@ function newBoard(&$body)
 	extract($GLOBALS);
 
 	if(!count($_POST)) {
-		$P->formtovar('content','forms.php','newboard');
-		$body .= $P->vars['content'];
+		$form = new newForm('?mode=bn');
+		$form->fieldStart('Create a Board');
+		$form->inputText('bnm','Short Title');
+		$form->inputText('bttl','Full Board Title');
+		$form->inputText('bms','Header Message');
+		$form->inputSelect('blvl','Viewing Level');
+		$form->addOption('Anonymous',1);
+		$form->addOption('Registered',2);
+		$form->addOption('Moderator',10);
+		$form->addOption('Administrator',90);
+		$form->addOption('Banned Users',0);
+		$form->inputSelect('plvl','Posting Level');
+		$form->addOption('Anonymous',1);
+		$form->addOption('Registered',2);
+		$form->addOption('Moderator',10);
+		$form->addOption('Administrator',90);
+		$form->addOption('Banned Users',0);
+		$form->inputSelect('rlvl','Reply Level');
+		$form->addOption('Anonymous',1);
+		$form->addOption('Registered',2);
+		$form->addOption('Moderator',10);
+		$form->addOption('Administrator',90);
+		$form->addOption('Banned Users',0);
+		$form->inputCheckbox('lkd',1,'Lock the board?');
+		$form->inputCheckbox('hdn',1,'Hide the board?');
+		$form->inputSubmit('Create Board');
+		$body .= $form->formReturn();
 	} else {
 		/**
 		 * bnm = board name
@@ -100,11 +125,12 @@ function newBoard(&$body)
 		 * hdn = hidden
 		 */
 		$ern = 0;
-		$ern += ($FORM->validate_text(htmlentities($_POST['bnm'],1,10))) ? 0 : 1;
-		$ern += ($FORM->validate_text(htmlentities($_POST['bttl'],3,48))) ? 0 : 2;
-		$ern += ($FORM->validate_text(htmlentities($_POST['bms'],3,128))) ? 0 : 4;
+		$ern += ($FORM->validate_text(htmlentities($_POST['bnm']),1,10)) ? 0 : 1;
+		$ern += ($FORM->validate_text(htmlentities($_POST['bttl']),3,48)) ? 0 : 2;
+		$ern += ($FORM->validate_text(htmlentities($_POST['bms']),3,128)) ? 0 : 4;
 		$ern += (is_numeric($_POST['blvl']) && $_POST['blvl'] < 100  && $_POST['blvl'] >= 0) ? 0 : 8;
 		$ern += (is_numeric($_POST['plvl']) && $_POST['plvl'] < 100  && $_POST['plvl'] >= 0) ? 0 : 16;
+		$ern += (is_numeric($_POST['plvl']) && $_POST['rlvl'] < 100  && $_POST['plvl'] >= 0) ? 0 : 32;
 		$_POST['lkd'] += ($_POST['lkd'] != 1) ? 0 : 1;
 		$_POST['hdn'] += ($_POST['hdn'] != 1) ? 0 : 1;
 
@@ -112,7 +138,7 @@ function newBoard(&$body)
 
 			$body.= '<div>Attempting to create board...<br />';
 
-			if($SQL->query('INSERT INTO `ste_boards` VALUES (NULL,\''.$_POST['bnm'].'\',\''.$_POST['bttl'].'\',\''.$_POST['bms'].'\',\''.$_POST['hdn'].'\',\''.$_POST['lkd'].'\',\''.$_POST['plvl'].'\',\''.$_POST['blvl'].'\')')) {
+			if($SQL->query('INSERT INTO `ste_boards` VALUES (NULL,\''.$_POST['bnm'].'\',\''.$_POST['bttl'].'\',\''.$_POST['bms'].'\',\''.$_POST['hdn'].'\',\''.$_POST['lkd'].'\',\''.$_POST['plvl'].'\',\''.$_POST['blvl'].'\',\''.$_POST['rlvl'].'\')')) {
 
 				if($posarr = $SQL->query('SELECT `position` FROM `ste_navbar` WHERE `position` < 250 ORDER BY `position` DESC LIMIT 0,1')) {
 
@@ -138,7 +164,7 @@ function newBoard(&$body)
 					$body .= '<span class="error">COULD NOT CREATE BOARD, SQL FAILED2</span>';
 				}
 			} else {
-				$body .= '<span class="error">COULD NOT CREATE BOARD, SQL FAILED1</span>';
+				$body .= '<span class="error">COULD NOT CREATE BOARD, SQL FAILED<br />Database Said:<br />'.$SQL->error.'</span>';
 			}
 		} else {echo $ern;}
 	}
@@ -367,14 +393,15 @@ case 'bee':
 			$boardResult = $SQL->query('SELECT * FROM `ste_boards` WHERE `id` = \''.$boardID.'\' LIMIT 0,1');
 			$boardInfo = $boardResult->fetch_assoc();
 
-			$editBoardForm = new newForm('?mode=bee');
+			$editForm = new newForm('?mode=bee');
 
-			$editBoardForm->fieldStart('Board Properties');
-			$editBoardForm->inputText('bnm','Board Name',$boardInfo['dir'],'bnm','halfwidth');
-			$editBoardForm->inputText('bttl','Board Title',$boardInfo['name'],'bttl','halfwidth');
-			$editBoardForm->inputText('bmes','Board Message',$boardInfo['mes']);
-			$editBoardForm->inputSelect('blvl','Access Level',FALSE,'blvl','halfwidth');
-			$body .= $editBoardForm->formReturn();
+			$editForm->fieldStart('Board Properties');
+			$editForm->inputText('bnm','Board Name',$boardInfo['dir'],'bnm','halfwidth');
+			$editForm->inputText('bttl','Board Title',$boardInfo['name'],'bttl','halfwidth');
+			$editForm->inputText('bmes','Board Message',$boardInfo['mes']);
+			$editForm->inputSelect('blvl','Access Level',FALSE,'blvl','halfwidth');
+//			$editForm->addOption('')
+			$body .= $editForm->formReturn();
 
 			break;
 		}
