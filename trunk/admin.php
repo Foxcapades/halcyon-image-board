@@ -162,25 +162,19 @@ function deleteBoard(&$body)
 		// Pull a list of all the boards in the database
 		$sqlResult = $SQL->query('SELECT `id`,`dir` FROM `ste_boards`');
 
-		// Form Variable array
-		$formVars = array('ninjas' => '?mode=bd');
+		$delForm = new newForm('?mode=bd');
 
-		// Inputs and parts for the form
-		$formVars['contents'] = '<fieldset><legend>Delete Boards</legend><label for="bdel">Select Boards</label><select multiple="multiple" size="8" name="bdel[]" id="bdel">';
-
+		$delForm->fieldStart('Delete Boards');
+		$delForm->inputSelect('bdel[]','Select Boards to Delete',TRUE,8);
+		
 		// Insert the options into the <select> in the form
 		while($fetch = $sqlResult->fetch_assoc()) {
-			$formVars['contents'] .= '	<option value="'.$fetch['id'].'">'.$fetch['dir'].'</option>'."\n";
+			$delForm->addOption($fetch['dir'],$fetch['id']);
 		}
 
-		// Finish the form parts
-		$formVars['contents'] .= '</select><input type="submit" value="Delete Board(s)" /></fieldset>';
+		$delForm->inputSubmit('Delete Selected Board(s)');
 
-		// Load the form from the template
-		$P->formtovar('content','forms.php','',$formVars);
-
-		// Add the loaded form to the body
-		$body .= $P->vars['content'];
+		$body .= $delForm->formReturn();
 
 		// If the form HAS been submited, then handle the input
 	} else {
