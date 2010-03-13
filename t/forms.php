@@ -27,29 +27,6 @@ if($_SERVER['PHP_SELF'] == '/forms.php'){die();}
 
 switch ($form) {
 
-case 'sitesettings':
-
-	?>
-<form method="post" action="<?=$action; ?>">
-
-<fieldset><legend>General Board Settings</legend>
-
-<div class="full"><label for="sttle">Site Title</label> <input
-	type="text" name="sttle" id="sttle" value="<?=$sttle; ?>" /></div>
-<div class="full"><label for="shdr">Site Header</label> <input
-	type="text" name="shdr" id="shdr" value="<?=$shdr; ?>" /></div>
-<div class="full"><label for="bmes">Base Header Message</label> <input
-	type="text" name="bmes" id="bmes" value="<?=$bmes; ?>" /></div>
-<div class="full"><label for="benab">Site Header</label> <input
-	type="checkbox" name="benab" id="benab" value="1" <?=$shdr; ?> /></div>
-
-</fieldset>
-
-</form>
-
-	<?php
-
-	break;
 default:
 
 	?>
