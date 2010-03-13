@@ -450,8 +450,15 @@ case 'staff':
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 case 'vars':
-	$P->formtovar('content','forms.php','sitesettings');
-	$body .= $P->vars['content'];
+	$sOps = new newForm('?mode=vars');
+	$sOps->fieldStart('Base Site Info');
+	$sOps->inputText('sttl','Site Title',$VAR['site_title']);
+	$sOps->inputText('shdr','Site Header',$VAR['base_header']);
+	$sOps->inputText('shms','Header Message',$VAR['base_mes']);
+	$sOps->fieldStart('Site Status');
+	$sOps->inputCheckbox('slkd',1,'Lock Site?');
+	$sOps->inputSubmit();
+	$body .= $sOps->formReturn();
 
 	break;
 	/* Someone shouldn't be here... */

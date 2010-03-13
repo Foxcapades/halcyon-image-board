@@ -22,6 +22,7 @@
  * HTML Tag Stylesheet
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 fieldset {
 	padding: 5px;
 	border: none;
@@ -40,7 +41,6 @@ h1 {
 input,textarea,select {
 	display: block;
 	margin-left: 2px;
-	width: 95%;
 	border: 1px solid #d9d9d9;
 	padding: 2px;
 	margin-bottom: 5px;
@@ -77,5 +77,4 @@ legend {
 }
 
 textarea {
-	width:99%;
 }
