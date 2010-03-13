@@ -1,5 +1,6 @@
 <?php
-/**
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  *	Halcyon Image Board
  *  Copyright (C) 2010  Steven Utiger
@@ -15,9 +16,10 @@
  *
  *    You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/**
+ *
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
  *
  * Configuration file
  *
@@ -33,51 +35,61 @@
  * TODO: control the allowed upload mime types from the admin panel.
  * TODO: allow choosing nav bar position when creating a board
  * TODO: HTML, CSS: Fix the avatar box going under the text in the posts
+ *
  */
-
-// Check to see if we can include the ERROR class, otherwise kill the script.
-if(file_exists('c/err.php')) {require_once 'c/err.php';} else {die('lol wat');}
-
-// This will import the page building class for use throughout the site.
-if(file_exists('c/pcc.php')) {
-	require_once 'c/pcc.php';
-} else {
-	ERROR::dead('Could not find page building class.');
-}
-
-if(file_exists('c/bbc.php')) {
-	require_once 'c/bbc.php';
-} else {
-	ERROR::dead('Could not find bbCode class.');
-}
-
-// Try and import the FORM class
-if(file_exists('c/frm.php')) {
-	require_once 'c/frm.php';
-} else {
-	ERROR::dead('Could not find form validating class.');
-}
-
-// Try and import the newForm class
-if(file_exists('c/nfr.php')) {
-	require_once 'c/nfr.php';
-} else {
-	ERROR::dead('Could not find form validating class.');
-}
-
-// Create a new instance of the page building class
-$P = new P();
-
-// Create a new instance of the form validation class
-$FORM = new FORM();
-
-// This block does nothing useful for anyone except me, it is safe to remove.
+//REMOVE
 if(file_exists('../../untitled.php')) {require_once '../../untitled.php';}
-
+//END REMOVE
+/**
+ * Required Files
+ * 
+ * Here we will check the existence of and then import files that are needed for
+ * the script to run.
+ *
+ *
+ *  Error Handling Class
+ */
+if(file_exists('c/err.php')) {require_once 'c/err.php';} else {die('lol wat');}
+/**
+ * Page Building Class
+ */
+if(file_exists('c/pcc.php')) {require_once 'c/pcc.php';} else {ERROR::dead('Could not find page building class.');}
+/**
+ * BBCode Parsing Class
+ */
+if(file_exists('c/bbc.php')) {require_once 'c/bbc.php';} else {ERROR::dead('Could not find bbCode class.');}
+/**
+ *  Form Validation Class
+ */
+if(file_exists('c/frm.php')) {require_once 'c/frm.php';} else {ERROR::dead('Could not find form validating class.');}
+/**
+ * Form Building Class
+ */
+if(file_exists('c/nfr.php')) {require_once 'c/nfr.php';} else {ERROR::dead('Could not find form validating class.');}
+/**
+ * Basic Instances
+ * 
+ * These are 'single instance' classes that will be used throughout the script.
+ * 
+/** 
+ * Open an instance of the Page Building Class
+ */
+$P = new templateForge();
+/**
+ * Open an instance of the Form Validation Class
+ */
+$FORM = new formValidate();
+/**
+ * Open an instance of the BBCode Parser
+ */
+$BBC = new BBCode();
 /**
  * Here we are starting our MySQLi instance... You will need to set your own
  * login details, or else you will see an angry error message when you try and
  * run the script.
+ * 
+ * TODO:Move this somewhere easier to access for the users.
+ *
  */
 $SQL = new mysqli(
 
@@ -98,30 +110,47 @@ REPLACE_HOST_NAME
 );
 
 // This will let you know if something went wrong...
-if ($SQL->connect_error) {
-	ERROR::dead('Connect Error ('.$SQL->connect_errno.') '.$SQL->connect_error);
-}
+if ($SQL->connect_error) {ERROR::dead('Connect Error ('.$SQL->connect_errno.') '.$SQL->connect_error);}
 
-if(!isset($_SESSION['uid'])) {
-	$_SESSION['uid'] = 1;
-}
-
-if(!$FORM->length($_SESSION['uid'],1,10)) {
-	$_SESSION['uid'] = 1;
-}
-
-$derp = $SQL->query('SELECT * FROM `usr_accounts` WHERE `id`=\''.$_SESSION['uid'].'\'');
-if($derp->num_rows > 1) {
+/**
+ * User Sessions
+ * 
+ * Here we see if you have a valid userID already in session, and if you don't
+ * we assign you the userID for the Anonymous account.
+ */
+if(!isset($_SESSION['uid'])) {$_SESSION['uid'] = 1;}
+if(!$FORM->length($_SESSION['uid'],1,10)) {$_SESSION['uid'] = 1;}
+/**
+ * Pull your info from the database
+ * @var mixed
+ */
+$userInfoResult = $SQL->query('SELECT * FROM `usr_accounts` WHERE `id`=\''.$_SESSION['uid'].'\'');
+/**
+ * If there are multiple results for the same userID then there is a database
+ * issue that needs to be sorted out.  Since we can't know for sure what result
+ * you belong to, we will stop here and error out. 
+ */
+if($userInfoResult->num_rows > 1) {
 	ERROR::dead('Duplicate entries found for UID:'.$_SESSION['uid']);
 }
-if ($derp->num_rows == 0) {
+/**
+ * If that userID doesn't show up in the database at all then we will call you
+ * anonymous and continue
+ */
+if ($userInfoResult->num_rows == 0) {
 	ERROR::report('Invalid UID:'.$_SESSION['uid'].' for IP:'.$_SERVER['REMOTE_ADDR'].'. Changed to anon.');
 	$_SESSION['uid'] = 1;
-	$derp = $SQL->query('SELECT * FROM `usr_accounts` WHERE `id`=\'1\'');
+	$userInfoResult = $SQL->query('SELECT * FROM `usr_accounts` WHERE `id`=\'1\'');
 }
-
-$USR = $derp->fetch_assoc();
-
+/**
+ * User Information
+ * 
+ * An array that contains all the information contained in the database about
+ * the current user.
+ * 
+ * @var array
+ */
+$USR = $userInfoResult->fetch_assoc();
 /**
  * As you can probably guess by the name of this function, it builds the navbar.
  * In all reality it just assembles the links in a list format for later use.
@@ -145,7 +174,6 @@ function navbuild(&$sql) {
 	}
 	return $out."</ul>\n";
 }
-
 /**
  * This randomly placed code assembles an array of site vars that are stored in
  * the database.
@@ -155,7 +183,6 @@ $VAR = array();
 while($nim = $cheese->fetch_assoc()) {
 	$VAR[$nim['key']]=$nim['value'];
 }
-
 //TODO: move this to a more fitting location:
 $P->set('thumbdir',$VAR['thdir']);
 $P->set('imagedir',$VAR['updir']);
@@ -184,33 +211,30 @@ function rand_str($length = 24, $pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm
 	return $string;
 
 } // - END rand_str()
-
+// FIXME unsecure mimetype discovery
 function mime_type($filename) {
 
 	$mime_types = array(
+		'bmp' => 'image/bmp',
+		'gif' => 'image/gif',
+		'jpe' => 'image/jpeg',
+		'jpeg' => 'image/jpeg',
+		'jpg' => 'image/jpeg',
+		'png' => 'image/png',
+		'svg' => 'image/svg+xml',
+		'svgz' => 'image/svg+xml',
+		'tif' => 'image/tiff',
+		'tiff' => 'image/tiff'
+	);
 
-                'bmp' => 'image/bmp',
-                'gif' => 'image/gif',
-                'jpe' => 'image/jpeg',
-                'jpeg' => 'image/jpeg',
-                'jpg' => 'image/jpeg',
-                'png' => 'image/png',
-                'svg' => 'image/svg+xml',
-                'svgz' => 'image/svg+xml',
-                'tif' => 'image/tiff',
-                'tiff' => 'image/tiff'
-
-                );
-
-                $ext = strtolower(array_pop(explode('.',$filename)));
-                if (array_key_exists($ext, $mime_types)) {
-                	return $mime_types[$ext];
-                }
-                else {
-                	return FALSE;
-                }
+	$ext = strtolower(array_pop(explode('.',$filename)));
+	if (array_key_exists($ext, $mime_types)) {
+		return $mime_types[$ext];
+	}
+	else {
+		return FALSE;
+	}
 }
-
 /**
  * Image Thumbnail generator
  *
@@ -286,5 +310,5 @@ function index(){
 	$P->render();
 	die();
 }
-unset($derp,$cheese,$nim);
+unset($userInfoResult,$cheese,$nim);
 ?>

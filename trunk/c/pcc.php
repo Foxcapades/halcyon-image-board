@@ -25,7 +25,7 @@
  *
  */
 
-class P {
+class templateForge {
 
 	public $vars = array();
 	public $html;

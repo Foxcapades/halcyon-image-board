@@ -27,7 +27,7 @@
  * project, and is not likely to be usefull anywhere else.
  *
  */
-class FORM {
+class formValidate {
 
 	private $string;
 	private $altered;
