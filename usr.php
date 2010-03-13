@@ -225,6 +225,9 @@ case 'nac':
 	break;
 
 case 'uac':
+$P->set('h1','Account Management');
+$P->set('mes','Set / Change your account options');
+	$BINFO['dir'] = 'Account';
 	$form = new newForm();
 	$form->fieldStart('Avatar Settings');
 	$form->inputCheckbox('grav',1,'Use Gravatar?',FALSE,FALSE,TRUE);

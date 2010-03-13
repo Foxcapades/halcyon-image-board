@@ -32,7 +32,7 @@
 #innercontent {
 	margin: 5px auto;
 	width: 432px;
-	border: 1px solid #e9e9e9;
+	border: 1px solid #c9c9c9;
 	text-align: left;
 }
 
@@ -84,10 +84,10 @@ a.edtbut:hover {background-position: -16px -112px;}
 
 #header, #admheader {
 	padding: 10px;
-	background: #e9e9e9;
+	background: #c9c9c9;
 }
 
-#header,.navbar,#footer,#admheader {
+#header,#footer,#admheader {
 	text-align: center;
 }
 
@@ -112,32 +112,38 @@ a.edtbut:hover {background-position: -16px -112px;}
 	margin: 25px auto;
 	clear: both;
 }
+.navbar.lower ul li a {
+	border:1px solid #fff;
+}
 .navbar.upper{
 	margin: 0px auto 25px auto;
 	clear: both;
-	background:#e9e9e9;
-	border-bottom: 3px solid #d9d9d9;
+	background:#c9c9c9;
+	border-bottom: 3px solid #a9a9a9;
 }
+.navbar ul {
+	margin:0px auto;
+	width:750px;
+}
+
 .navbar ul li {
 	display: inline;
-	margin:0px 2px;
+	margin-right:1px;
 }
 
 .navbar ul li a {
-	padding: 4px;
-	border: 1px solid #d9d9d9;
-	border-width: 1px 1px 3px 1px;
-	margin-bottom:-3px;
+	padding:8px 5px;
 }
 
 .navbar.upper ul li a {
 	display:inline-block;
 	background:#f5f5f5;
+	margin-bottom:-3px;
+	border-bottom:3px solid #a9a9a9;
 }
  
 .navbar ul li a:hover,.navbar ul li a:focus {
-	background: #e9e9e9;
-	border-color: #d9d9d9;
+	border-color: #a9a9a9;
 }
 
 .navbar.upper ul li a:hover,
@@ -147,6 +153,7 @@ a.edtbut:hover {background-position: -16px -112px;}
 }
 
 .navbar.upper ul li a.here {
+	border-top:3px solid #fff;
 	border-bottom-color: #fff;
 	background:#fff;
 }
@@ -154,12 +161,12 @@ a.edtbut:hover {background-position: -16px -112px;}
 .admnav {
 	width:170px;
 	float:left;
-	border:1px solid #d9d9d9;
+	border:1px solid #a9a9a9;
 }
 
 .admnav li.bold {
 	padding:10px 0px 0px 5px;
-	border-bottom:1px dotted #d9d9d9;
+	border-bottom:1px dotted #a9a9a9;
 	text-align:left;
 }
 
@@ -179,16 +186,6 @@ a.edtbut:hover {background-position: -16px -112px;}
 .admcon {
 	width:710px;
 	margin-left:auto;
-}
-
-.admcon form {
-	width:708px;
-	border:1px solid #d9d9d9;
-}
-
-.admcon form legend {
-	border:1px solid #d9d9d9;
-	border-top:0px;
 }
 
 .error {
@@ -213,15 +210,15 @@ a.edtbut:hover {background-position: -16px -112px;}
 /* Thread Template */
 .post {
 	width: 750px;
-	border: 1px solid #d9d9d9;
+	border: 1px solid #a9a9a9;
 	margin: 0px auto 5px auto;
-	background: #e9e9e9;
+	background: #c9c9c9;
 	clear: both;
 }
 
 .post .imgbox {
 	margin: 5px;
-	border: 1px solid #d9d9d9;
+	border: 1px solid #a9a9a9;
 	float: left;
 	background: #fff;
 }
@@ -236,7 +233,7 @@ a.edtbut:hover {background-position: -16px -112px;}
 .post .charbox {
 	width: 60px;
 	height: 60px;
-	border: 1px solid #d9d9d9;
+	border: 1px solid #a9a9a9;
 	background: #fff;
 	float: right;
 	margin: 5px;
@@ -271,7 +268,7 @@ a.edtbut:hover {background-position: -16px -112px;}
 	position: absolute;
 	left: 59px;
 	top: -1px;
-	border: 1px solid #d9d9d9;
+	border: 1px solid #a9a9a9;
 	border-left: 0px;
 	height: 60px;
 	width: 150px;
@@ -307,9 +304,13 @@ div.bottom {
 }
 
 .thread {
-	border: 1px solid #e9e9e9;
+	border: 1px solid #c9c9c9;
 	margin: 10px auto;
-	width: 760px;
+	width: 750px;
+}
+
+.thread .post {
+	width:740px;
 }
 
 .boards {
@@ -320,7 +321,7 @@ div.bottom {
 .boards ul li a {
 	display: block;
 	width: 150px;
-	border: 1px solid #e9e9e9;
+	border: 1px solid #c9c9c9;
 	margin: 3px;
 	text-align: center;
 	padding: 2px 0px;
@@ -328,8 +329,8 @@ div.bottom {
 }
 
 .boards ul li a:hover,.boards ul li a:focus {
-	background: #e9e9e9;
-	border-color: #d9d9d9;
+	background: #c9c9c9;
+	border-color: #a9a9a9;
 }
 
 .center {
