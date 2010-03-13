@@ -219,5 +219,4 @@ private function quoteHeader($str) {
 }
 //EOC
 }
-$BBC = new BBCode();
 ?>
