@@ -21,11 +21,6 @@ session_start();
  * Attempt to import the configuration file.
 **/
 if(file_exists('n/cnf.php')){require_once 'n/cnf.php';} else {die('dude, wtf');}
-/**
- * Verify and import the post class
- */
-if(file_exists('c/pst.php')){require_once 'c/pst.php';} else
-{ERROR::dead('Could not find post creation class.');}
 
 $threadID = $SQL->real_escape_string($_GET['tid']);
 
@@ -40,7 +35,7 @@ $BINFO = $r->fetch_assoc();
 
 $P->set('title',$VAR['site_title'].' / '.$BINFO['title']);
 $P->set('h1',$BINFO['title']);
-$P->set('mes','<a href="b.php?board='.$BINFO['dir'].'" title="Return to '.$BINFO['dir'].'">Return to '.$BINFO['dir'].'</a>');
+//$P->set('mes','&gt;&gt;<a href="b.php?board='.$BINFO['dir'].'" title="Return to '.$BINFO['dir'].'">Return to '.$BINFO['dir'].'</a>');
 
 $P->set('navbar',navbuild($SQL));
 

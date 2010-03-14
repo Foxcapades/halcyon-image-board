@@ -16,34 +16,16 @@
  *    You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 session_start();
-
 /**
- *
  * Attempt to import the configuration file.
- *
  */
-
 if(file_exists('n/cnf.php')){require_once 'n/cnf.php';} else {die('dude, wtf');}
-
-
-/**
- *
- * Attempt to find the post class
- *
- */
-
-if(file_exists('c/pst.php')){require_once 'c/pst.php';} else
-{ERROR::dead('Could not find post creation class.');}
-
-
 /**
  *
  * Strip and verify URL given board ID
  *
  */
-
 $directory = $SQL->real_escape_string($_GET['board']);
 
 // If $directory is not a valid board name then show the index.

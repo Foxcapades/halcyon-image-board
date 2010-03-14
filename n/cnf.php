@@ -42,7 +42,7 @@ if(file_exists('../../untitled.php')) {require_once '../../untitled.php';}
 //END REMOVE
 /**
  * Required Files
- * 
+ *
  * Here we will check the existence of and then import files that are needed for
  * the script to run.
  *
@@ -67,11 +67,15 @@ if(file_exists('c/frm.php')) {require_once 'c/frm.php';} else {ERROR::dead('Coul
  */
 if(file_exists('c/nfr.php')) {require_once 'c/nfr.php';} else {ERROR::dead('Could not find form validating class.');}
 /**
+ * Post Box Class
+ */
+if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {ERROR::dead('Could not find post creation class.');}
+/**
  * Basic Instances
- * 
+ *
  * These are 'single instance' classes that will be used throughout the script.
- * 
-/** 
+ *
+/**
  * Open an instance of the Page Building Class
  */
 $P = new templateForge();
@@ -87,7 +91,7 @@ $BBC = new BBCode();
  * Here we are starting our MySQLi instance... You will need to set your own
  * login details, or else you will see an angry error message when you try and
  * run the script.
- * 
+ *
  * TODO:Move this somewhere easier to access for the users.
  *
  */
@@ -114,7 +118,7 @@ if ($SQL->connect_error) {ERROR::dead('Connect Error ('.$SQL->connect_errno.') '
 
 /**
  * User Sessions
- * 
+ *
  * Here we see if you have a valid userID already in session, and if you don't
  * we assign you the userID for the Anonymous account.
  */
@@ -128,7 +132,7 @@ $userInfoResult = $SQL->query('SELECT * FROM `usr_accounts` WHERE `id`=\''.$_SES
 /**
  * If there are multiple results for the same userID then there is a database
  * issue that needs to be sorted out.  Since we can't know for sure what result
- * you belong to, we will stop here and error out. 
+ * you belong to, we will stop here and error out.
  */
 if($userInfoResult->num_rows > 1) {
 	ERROR::dead('Duplicate entries found for UID:'.$_SESSION['uid']);
@@ -144,10 +148,10 @@ if ($userInfoResult->num_rows == 0) {
 }
 /**
  * User Information
- * 
+ *
  * An array that contains all the information contained in the database about
  * the current user.
- * 
+ *
  * @var array
  */
 $USR = $userInfoResult->fetch_assoc();
