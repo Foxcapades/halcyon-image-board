@@ -40,6 +40,7 @@ $BINFO = $r->fetch_assoc();
 
 $P->set('title',$VAR['site_title'].' / '.$BINFO['title']);
 $P->set('h1',$BINFO['title']);
+$P->set('mes','<a href="b.php?board='.$BINFO['dir'].'" title="Return to '.$BINFO['dir'].'">Return to '.$BINFO['dir'].'</a>');
 
 $P->set('navbar',navbuild($SQL));
 
@@ -169,7 +170,7 @@ while($ch = $q->fetch_assoc()) {
 		$postForm->inputHidden('MAX_FILE_SIZE','2621440');
 		$postForm->inputFile('img1','Image',FALSE,'halfwidth');
 		$postForm->inputSubmit('Post Reply',FALSE,FALSE,FALSE,'halfwidth');
-		$body .= $postForm->FormReturn();
+		$body .= $postForm->formReturn();
 		$now --;
 	}
 }
