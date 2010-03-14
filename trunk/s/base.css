@@ -87,6 +87,8 @@ a.edtbut:hover {background-position: -16px -112px;}
 	background: #c9c9c9;
 }
 
+#header span a {color:#A91D1D;}
+
 #header,#footer,#admheader {
 	text-align: center;
 }
