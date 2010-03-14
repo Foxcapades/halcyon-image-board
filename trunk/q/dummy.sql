@@ -3,14 +3,21 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 25, 2010 at 07:22 PM
--- Server version: 5.1.43
+-- Generation Time: Mar 13, 2010 at 09:25 PM
+-- Server version: 5.1.44
 -- PHP Version: 5.2.9
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
 --
--- Database: `revrocom_forum`
+-- Database: `halcyonbbs
+`
 --
 
 -- --------------------------------------------------------
@@ -27,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `pst_posts` (
   `image` varchar(255) NOT NULL,
   `text` text NOT NULL,
   PRIMARY KEY (`pid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=80 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `pst_posts`
@@ -48,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `pst_threads` (
   `posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`tid`),
   KEY `key` (`key`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=41 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `pst_threads`
@@ -69,9 +76,10 @@ CREATE TABLE IF NOT EXISTS `ste_boards` (
   `disabled` enum('0','1') NOT NULL DEFAULT '0',
   `allowed` mediumint(2) NOT NULL,
   `thresh` mediumint(2) NOT NULL,
+  `reply` mediumint(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `dir` (`dir`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `ste_boards`
@@ -95,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `ste_navbar` (
   `delmo` mediumint(8) unsigned zerofill NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `position` (`position`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `ste_navbar`
@@ -126,11 +134,11 @@ CREATE TABLE IF NOT EXISTS `ste_vars` (
 --
 
 INSERT INTO `ste_vars` (`key`, `value`) VALUES
-('site_title', 'Taco Board Beta'),
-('base_header', 'Beta Board'),
-('base_mes', 'Generic Test Message'),
+('site_title', 'Halcyon BBS Demo Board'),
+('base_header', 'Halcyon Image Board DEMO'),
+('base_mes', 'This is only a test.'),
 ('board_active', '1'),
-('base_url', 'http://www.ovar9k.com'),
+('base_url', 'http://www.yoursite.com'),
 ('updir', 'i/up/images/'),
 ('avdir', 'i/av/'),
 ('thdir', 'i/up/thumbs/'),
@@ -152,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `usr_accounts` (
   `avatar` varchar(128) NOT NULL DEFAULT 'anon.png',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`,`email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `usr_accounts`
@@ -160,3 +168,4 @@ CREATE TABLE IF NOT EXISTS `usr_accounts` (
 
 INSERT INTO `usr_accounts` (`id`, `name`, `level`, `email`, `password`, `posts`, `avatar`) VALUES
 (0000000001, 'Anonymous', 1, '', '', 0, 'anon.png');
+
