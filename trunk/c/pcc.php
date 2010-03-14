@@ -31,14 +31,6 @@ class templateForge {
 	public $html;
 	private $conf = array();
 
-	function __construct() {
-
-		global $CONFIG;
-
-		$this->conf = $CONFIG['site'];
-		$this->vars['sitename'] = $CONFIG['site']['name'];
-
-	}
 
 	function loadtovar($varname, $filename) {
 
