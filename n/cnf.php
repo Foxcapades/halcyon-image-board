@@ -188,6 +188,7 @@ while($nim = $cheese->fetch_assoc()) {
 	$VAR[$nim['key']]=$nim['value'];
 }
 //TODO: move this to a more fitting location:
+$P->set('base_url',$VAR['base_url']);
 $P->set('thumbdir',$VAR['thdir']);
 $P->set('imagedir',$VAR['updir']);
 /**

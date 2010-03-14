@@ -31,9 +31,9 @@
 <?=$headstuff; ?>
 <script type="text/javascript">function yeOldeSwitcheroo(id,imagename) {
 	var thumbdir
-	thumbdir = "<?='http://'.$_SERVER['HTTP_HOST'].'/'.$thumbdir; ?>"+imagename;
+	thumbdir = "<?=$base_url.'/'.$thumbdir; ?>"+imagename;
 	var maindir
-	maindir = "<?='http://'.$_SERVER['HTTP_HOST'].'/'.$imagedir; ?>"+imagename;
+	maindir = "<?=$base_url.'/'.$imagedir; ?>"+imagename;
 	var img = document.getElementById(id);
 	if(img.src == thumbdir) {
 		img.src = maindir;
