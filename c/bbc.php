@@ -38,6 +38,9 @@ public function parse($string)
 	// Handle the [url] tags
 	$this->url();
 
+	// Poke the [code] tags
+	$this->code();
+
 	return $this->string;
 
 }
@@ -51,7 +54,7 @@ public function parse($string)
 
 private function code()
 {
-
+$this->string = preg_replace('/\[code\](.+?)\[\/code\]/is',"<pre>$1</pre>",$this->string);
 }
 
 
