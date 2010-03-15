@@ -26,6 +26,9 @@ function post_quote(id) {
 	text = text.replace(/<blockquote class="quote">/gi, '[quote]');
 	text = text.replace(/<\/blockquote>/gi, '[/quote]')
 
+	text = text.replace(/<pre>/gi, '[code]');
+	text = text.replace(/<\/pre>/gi, '[/code]')
+
 	text = text.replace(/<a href="(.+?)" class="link">(.+?)<\/a>/ig, "[url=$1]$2[/url]");
 	
 	text = text.replace(/<span class="bold">(.+?)<\/span>/ig, "[b]$1[/b]");
@@ -45,7 +48,7 @@ function post_quote(id) {
 	wind = wind.toString();
 	
 	textarea.value = textarea.value + quote;
-	window.location = wind.replace(/(.+?)(?:#i(.+?))*$/gi,"$1") + "#header";
+	window.location = wind.replace(/(.+?)(?:#i(.+?))*$/gi,"$1") + "#text";
 
 
 }
