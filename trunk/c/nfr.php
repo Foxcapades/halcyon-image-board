@@ -640,38 +640,38 @@ public function inputSubmit
 public function inputText
 (
 	$name,
-	$label		= FALSE,
-	$value		= FALSE,
-	$id			= FALSE,
-	$class		= FALSE,
-	$maxlength	= FALSE,
+	$label		= '',
+	$value		= '',
+	$id			= '',
+	$class		= '',
+	$maxlength	= '',
 	$disabled	= FALSE,
 	$readonly	= FALSE,
-	$size		= FALSE,
-	$extra		= FALSE,
+	$size		= '',
+	$extra		= '',
 	$return		= FALSE
 )
 {
 	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
-	$id = ($id === FALSE) ? $name : $id;
+	$id = ($id === '') ? $name : $id;
 
 	$html  = '<div';
-	$html .= ($class 	!== FALSE)	? ' class="'.$class.'"' : '';
-	$html .= ($id		!== FALSE)	? ' id="div_'.$id.'"' : '';
+	$html .= ($class 	!== '')	? ' class="'.$class.'"' : '';
+	$html .= ($id		!== '')	? ' id="div_'.$id.'"' : '';
 	$html  .= '>';
 
-	$html .= ($label !== FALSE) ? '<label for="'.$id.'">'.$label.'</label>' : '';
+	$html .= ($label !== '') ? '<label for="'.$id.'">'.$label.'</label>' : '';
 
 	$html .= '<input type="text" name="'.$name.'"';
 
-	$html .= ($value		!== FALSE)	? ' value="'.htmlentities($value).'"' : '';
-	$html .= ($id			!== FALSE)	? ' id="'.$id.'"' : '';
-	$html .= ($class		!== FALSE)	? ' class="'.$class.'"' : '';
-	$html .= ($maxlength	!== FALSE)	? ' maxlength="'.$maxlength.'"' : '';
+	$html .= ($value		!== '')	? ' value="'.htmlentities($value).'"' : '';
+	$html .= ($id			!== '')	? ' id="'.$id.'"' : '';
+	$html .= ($class		!== '')	? ' class="'.$class.'"' : '';
+	$html .= ($maxlength	!== '')	? ' maxlength="'.$maxlength.'"' : '';
 	$html .= ($disabled		=== TRUE)	? ' disabled="disabled"' : '';
 	$html .= ($readonly 	=== TRUE)	? ' readonly="readonly"' : '';
-	$html .= ($size 		!== FALSE)	? ' size="'.$size.'"' : '';
-	$html .= ($extra		!== FALSE)	? ' '.$extra : '';
+	$html .= ($size 		!== '')	? ' size="'.$size.'"' : '';
+	$html .= ($extra		!== '')	? ' '.$extra : '';
 	$html .= " /></div>\n\n";
 
 	$this->html .= $html;

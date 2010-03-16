@@ -89,7 +89,7 @@ function newBoard(&$body)
 	if(!count($_POST)) {
 		$form = new newForm('?mode=bn');
 		$form->fieldStart('Create a Board');
-		$form->inputText('bnm','Short Title');
+		$form->inputText('bnm','Board Name','','','',10);
 		$form->inputText('bttl','Full Board Title');
 		$form->inputText('bms','Header Message');
 		$form->inputSelect('blvl','Viewing Level');
@@ -388,52 +388,95 @@ case 'bee':
 	if(count($_POST)) {
 		if($_POST['editme'] == 'GO') {
 
-		} else {
-			$boardID = $FORM->scrub_text($_POST['bdel']);
-			$boardResult = $SQL->query('SELECT * FROM `ste_boards` WHERE `id` = \''.$boardID.'\' LIMIT 0,1');
-			$boardInfo = $boardResult->fetch_assoc();
+			$boardID = $_SESSION['editBoardID'];
+			$cleanArray = array();
+			$_POST['lkd'] += ($_POST['lkd'] != 1) ? 0 : 1;
+			$_POST['hdn'] += ($_POST['hdn'] != 1) ? 0 : 1;
 
-			$editForm = new newForm('?mode=bee');
-
-			$editForm->fieldStart('Board Properties');
-			$editForm->inputText('bnm','Board Name',$boardInfo['dir']);
-			$editForm->inputText('bttl','Board Title',$boardInfo['name']);
-			$editForm->inputText('bmes','Board Message',$boardInfo['mes']);
-			$editForm->inputSelect('blvl','Access Level');
-
-			foreach($VAR['userLevelList'] as $k => $v) {
-				if($boardInfo['thresh'] == $k) {
-					$editForm->addOption($v,$k,TRUE);
-				} else {
-					$editForm->addOption($v,$k);
-				}
+			foreach($_POST as $k => $v) {
+				$cleanArray[$k] = $FORM->scrub_text($v);
 			}
 
-			$editForm->inputSelect('plvl','Posting Level');
-
-			foreach($VAR['userLevelList'] as $k => $v) {
-				if($boardInfo['allowed'] == $k) {
-					$editForm->addOption($v,$k,TRUE);
+			$neededKeys = array('bnm'=>'','bttl'=>'','bmes'=>'','blvl'=>'','plvl'=>'','rlvl'=>'','hdn'=>'','lkd'=>'');
+			if(count($neededKeys)==count(array_intersect_key($neededKeys,$cleanArray))) {
+				$body .= '<div>Updating Tables:</div>';
+				if($SQL->query('UPDATE `ste_boards` SET `dir` = \''.$cleanArray['bnm'].'\', `name` = \''.$cleanArray['bttl'].'\', `mes` = \''.$cleanArray['bmes'].'\', `hidden` = \''.$cleanArray['hdn'].'\', `disabled` = \''.$cleanArray['lkd'].'\', `allowed` = \''.$cleanArray['plvl'].'\', `thresh` = \''.$cleanArray['blvl'].'\', `reply` = \''.$cleanArray['rlvl'].'\' WHERE `id` = \''.$boardID.'\'')) {
+					$body .= '<div class="green">Board Table Updated</div>';
+					if($SQL->query('UPDATE `ste_navbar` SET `href` = \'b.php?board='.$cleanArray['bnm'].'\', `title` = \''.$cleanArray['bttl'].'\', `text` = \''.$cleanArray['bnm'].'\', `usr_thresh` = \''.$cleanArray['blvl'].'\', `usr_max` = \'0\' WHERE `delmo` = \''.$boardID.'\'')) {
+						$body .= '<div class="green">Link Table Updated</div>';
+					} else {
+						$body .= '<div class="error">Could not update table</div>';
+						ERROR::report('Could not update link table on admin panel edit board.');
+					}
 				} else {
-					$editForm->addOption($v,$k);
+					$body .= '<div class="error">Could not update table</div>';
+					ERROR::report('Could not update board table on admin panel edit board.');
 				}
+
+			} else {
+				$body .= '<div class="error">Invalid form field count.</div>';
 			}
-
-			$editForm->inputSelect('rlvl','Reply Level');
-
-			foreach($VAR['userLevelList'] as $k => $v) {
-				if($boardInfo['reply'] == $k) {
-					$editForm->addOption($v,$k,TRUE);
-				} else {
-					$editForm->addOption($v,$k);
-				}
-			}
-
-			$editForm->inputHidden('editme','GO');
-			$body .= $editForm->formReturn();
-
-			break;
+			unset($boardID,$_SESSION['editBoardID']);
 		}
+		$boardID = $FORM->scrub_text($_POST['bdel']);
+		$boardResult = $SQL->query('SELECT * FROM `ste_boards` WHERE `id` = \''.$boardID.'\' LIMIT 0,1');
+		$_SESSION['editBoardID'] = $boardID;
+		$boardInfo = $boardResult->fetch_assoc();
+
+		$editForm = new newForm('?mode=bee');
+
+		$editForm->fieldStart('Board Properties');
+		$editForm->inputText('bnm','Board Name',$boardInfo['dir']);
+		$editForm->inputText('bttl','Board Title',$boardInfo['name']);
+		$editForm->inputText('bmes','Board Message',$boardInfo['mes']);
+		$editForm->inputSelect('blvl','Access Level');
+
+		foreach($VAR['userLevelList'] as $k => $v) {
+			if($boardInfo['thresh'] == $k) {
+				$editForm->addOption($v,$k,TRUE);
+			} else {
+				$editForm->addOption($v,$k);
+			}
+		}
+
+		$editForm->inputSelect('plvl','Posting Level');
+
+		foreach($VAR['userLevelList'] as $k => $v) {
+			if($boardInfo['allowed'] == $k) {
+				$editForm->addOption($v,$k,TRUE);
+			} else {
+				$editForm->addOption($v,$k);
+			}
+		}
+
+		$editForm->inputSelect('rlvl','Reply Level');
+
+		foreach($VAR['userLevelList'] as $k => $v) {
+			if($boardInfo['reply'] == $k) {
+				$editForm->addOption($v,$k,TRUE);
+			} else {
+				$editForm->addOption($v,$k);
+			}
+		}
+
+		$editForm->inputHidden('editme','GO');
+		$editForm->inputHidden('bdel',$boardID);
+
+		if($boardInfo['disabled'] == 1) {
+			$editForm->inputCheckbox('lkd',1,'Lock Board?','','',TRUE);
+		} else {
+			$editForm->inputCheckbox('lkd',1,'Lock Board?');
+		}
+		if($boardInfo['hidden'] == 1) {
+			$editForm->inputCheckbox('hdn',1,'Hide Board?','','',TRUE);
+		} else {
+			$editForm->inputCheckbox('hdn',1,'Hide Board?');
+		}
+		$editForm->inputSubmit('Update Board');
+		$body .= $editForm->formReturn();
+
+		break;
+
 	}
 case 'be':
 	// Start the form
