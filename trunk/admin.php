@@ -192,7 +192,7 @@ function deleteBoard(&$body)
 
 		$delForm->fieldStart('Delete Boards');
 		$delForm->inputSelect('bdel[]','Select Boards to Delete',TRUE,8);
-		
+
 		// Insert the options into the <select> in the form
 		while($fetch = $sqlResult->fetch_assoc()) {
 			$delForm->addOption($fetch['dir'],$fetch['id']);
@@ -386,7 +386,7 @@ case 'bd':
 **/
 case 'bee':
 	if(count($_POST)) {
-		if($_POST['delete'] == 'GO') {
+		if($_POST['editme'] == 'GO') {
 
 		} else {
 			$boardID = $FORM->scrub_text($_POST['bdel']);
@@ -396,11 +396,40 @@ case 'bee':
 			$editForm = new newForm('?mode=bee');
 
 			$editForm->fieldStart('Board Properties');
-			$editForm->inputText('bnm','Board Name',$boardInfo['dir'],'bnm','halfwidth');
-			$editForm->inputText('bttl','Board Title',$boardInfo['name'],'bttl','halfwidth');
+			$editForm->inputText('bnm','Board Name',$boardInfo['dir']);
+			$editForm->inputText('bttl','Board Title',$boardInfo['name']);
 			$editForm->inputText('bmes','Board Message',$boardInfo['mes']);
-			$editForm->inputSelect('blvl','Access Level',FALSE,'blvl','halfwidth');
-//			$editForm->addOption('')
+			$editForm->inputSelect('blvl','Access Level');
+
+			foreach($VAR['userLevelList'] as $k => $v) {
+				if($boardInfo['thresh'] == $k) {
+					$editForm->addOption($v,$k,TRUE);
+				} else {
+					$editForm->addOption($v,$k);
+				}
+			}
+
+			$editForm->inputSelect('plvl','Posting Level');
+
+			foreach($VAR['userLevelList'] as $k => $v) {
+				if($boardInfo['allowed'] == $k) {
+					$editForm->addOption($v,$k,TRUE);
+				} else {
+					$editForm->addOption($v,$k);
+				}
+			}
+
+			$editForm->inputSelect('rlvl','Reply Level');
+
+			foreach($VAR['userLevelList'] as $k => $v) {
+				if($boardInfo['reply'] == $k) {
+					$editForm->addOption($v,$k,TRUE);
+				} else {
+					$editForm->addOption($v,$k);
+				}
+			}
+
+			$editForm->inputHidden('editme','GO');
 			$body .= $editForm->formReturn();
 
 			break;

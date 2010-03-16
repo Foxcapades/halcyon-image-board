@@ -534,7 +534,7 @@ public function addOption
 	$html .= ($label	!== '')		? ' label="'.$label.'"' : '';
 	$html .= ($id		!== '')		? ' id="'.$id.'"' : '';
 	$html .= ($class 	!== '')		? ' class="'.$class.'"' : '';
-	$html .= ($extra	!== FALSE)	? ' '.$extra : '';
+	$html .= ($extra	!== '')	? ' '.$extra : '';
 	$html .= '>'.$text."</option>\n";
 
 	$this->html .= $html;

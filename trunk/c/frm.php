@@ -34,7 +34,7 @@ class formValidate {
 	public $error = FALSE;
 	public $invalid = FALSE;
 	public $reasons = array();
-	public $legal_chars = '/[^a-z0-9\v\-?`:;&~_!\-=+\\@#$%\^ *.	,<>\/()[\]]/i';
+	public $legal_chars = '/[^a-z0-9\v\-?`:;&~_!\-=+\\@#$%\^ *.	,<>\/(){}[\]]/i';
 
 	function __construct() {}
 
