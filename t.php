@@ -157,7 +157,7 @@ $now = 1;
 while($ch = $q->fetch_assoc()) {
 	$ch['text'] = $BBC->parse($ch['text']);
 	$derp = new POST($ch['id'], $ch['name'], $ch['avatar'], $ch['level'], $ch['email'], $ch['pid'], $ch['post_time'], $ch['text'], $ch['image'], $ch['tid']);
-	$body .= $derp->postbox();
+	if($now === 1){$body .= $derp->postbox('firstPost');} else {$body .= $derp->postbox();}
 	if($USR['level'] >= $BINFO['reply']&& $now == 1) {
 		$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new','post','multipart/form-data');
 		$postForm->fieldStart('Reply');

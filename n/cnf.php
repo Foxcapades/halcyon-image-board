@@ -50,43 +50,47 @@ if(file_exists('../../untitled.php')) {require_once '../../untitled.php';}
  *  Error Handling Class
  */
 if(file_exists('c/err.php')) {require_once 'c/err.php';} else {die('lol wat');}
-/**
- * Page Building Class
- */
+
+
+//Page Building Class
 if(file_exists('c/pcc.php')) {require_once 'c/pcc.php';} else {ERROR::dead('Could not find page building class.');}
-/**
- * BBCode Parsing Class
- */
+
+
+//BBCode Parsing Class
 if(file_exists('c/bbc.php')) {require_once 'c/bbc.php';} else {ERROR::dead('Could not find bbCode class.');}
-/**
- *  Form Validation Class
- */
+
+
+//Form Validation Class
 if(file_exists('c/frm.php')) {require_once 'c/frm.php';} else {ERROR::dead('Could not find form validating class.');}
-/**
- * Form Building Class
- */
+
+
+//Form Building Class
 if(file_exists('c/nfr.php')) {require_once 'c/nfr.php';} else {ERROR::dead('Could not find form validating class.');}
-/**
- * Post Box Class
- */
+
+
+//Post Box Class
 if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {ERROR::dead('Could not find post creation class.');}
+
+
 /**
  * Basic Instances
  *
  * These are 'single instance' classes that will be used throughout the script.
  *
-/**
- * Open an instance of the Page Building Class
  */
+
+//Open an instance of the Page Building Class
 $P = new templateForge();
-/**
- * Open an instance of the Form Validation Class
- */
+
+
+//Open an instance of the Form Validation Class
 $FORM = new formValidate();
-/**
- * Open an instance of the BBCode Parser
- */
+
+
+//Open an instance of the BBCode Parser
 $BBC = new BBCode();
+
+
 /**
  * Here we are starting our MySQLi instance... You will need to set your own
  * login details, or else you will see an angry error message when you try and
@@ -98,7 +102,7 @@ $BBC = new BBCode();
 $SQL = new mysqli(
 
 // Hostname or url of your database.
-REPLACE_HOST_NAME
+			REPLACE_HOST_NAME
 
 // Login / username to access your database
 ,			REPLACE_USERNAME
@@ -112,6 +116,7 @@ REPLACE_HOST_NAME
 // Database port (normally 3306)
 ,			REPLACE_DATABASE_PORT
 );
+
 
 // This will let you know if something went wrong...
 if ($SQL->connect_error) {ERROR::dead('Connect Error ('.$SQL->connect_errno.') '.$SQL->connect_error);}
@@ -191,6 +196,16 @@ while($nim = $cheese->fetch_assoc()) {
 $P->set('base_url',$VAR['base_url']);
 $P->set('thumbdir',$VAR['thdir']);
 $P->set('imagedir',$VAR['updir']);
+
+$tempList = array();
+
+$levelListResult = $SQL->query('SELECT * FROM `usr_levels`');
+while($returnValue=$levelListResult->fetch_assoc()) {
+	$tempList[$returnValue['level']] = $returnValue['rank'];
+}
+
+$VAR['userLevelList'] = $tempList;
+
 /**
  * Random string generator
  *
