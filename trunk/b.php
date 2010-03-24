@@ -55,7 +55,7 @@ elseif($q->num_rows > 1){
 // Pass off the pulled info to an easier to manage array.
 $BINFO = $q->fetch_assoc();
 
-if($BINFO['thresh'] > $USR['level']) {index();}
+if($BINFO['view_min_lvl'] > $USR['level']) {index();}
 
 
 
@@ -72,7 +72,7 @@ $P->set('navbar',navbuild($SQL));
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['allowed'] && (time() - $_SESSION['postcooldown']) > 1) {
+if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['post_min_lvl'] && (time() - $_SESSION['postcooldown']) > 1) {
 
 	// Simple error tracker to help shoot down the script when needed.
 	$continue = TRUE;
@@ -137,7 +137,7 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['allowed']
 	if($continue) {
 
 		// Try and create the thread
-		if(!$SQL->query('INSERT INTO `pst_threads` (`board_id`,`key`,`title`,`user`) VALUES(\''.$BINFO['id'].'\',\''.$threadkey.'\',\''.$title.'\',\''.$USR['id'].'\')')) {
+		if(!$SQL->query('INSERT INTO `pst_threads` (`board_id`,`key`,`title`,`user`) VALUES(\''.$BINFO['board_id'].'\',\''.$threadkey.'\',\''.$title.'\',\''.$USR['user_id'].'\')')) {
 
 			// If the thread could not be created, stop and delete the uploaded file
 			$continue = FALSE;
@@ -153,7 +153,7 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['allowed']
 	if($continue) {
 
 		// Select newly created thread to verify it was actually posted and to obtain the DB set thread ID and DATE
-		$nudes = $SQL->query('SELECT `thread_id`,`posted` FROM `pst_threads` WHERE `key` = \''.$threadkey.'\' AND `user` = \''.$USR['id'].'\' ORDER BY `thread_id` DESC LIMIT 0,1');
+		$nudes = $SQL->query('SELECT `thread_id`,`posted` FROM `pst_threads` WHERE `key` = \''.$threadkey.'\' AND `user` = \''.$USR['user_id'].'\' ORDER BY `thread_id` DESC LIMIT 0,1');
 
 		if(!is_object($nudes)) {
 			$continue = FALSE;
@@ -170,7 +170,7 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['allowed']
 			$nudez = $nudes->fetch_assoc();
 
 			// Insert the post into the database
-			if(!$SQL->query('INSERT INTO `pst_posts` (`thread`,`poster`,`post_time`,`image`,`text`) VALUES (\''.$nudez['thread_id'].'\',\''.$USR['id'].'\',\''.$nudez['posted'].'\',\''.$fname.'\',\''.$text.'\')')) {
+			if(!$SQL->query('INSERT INTO `pst_posts` (`thread_id`,`user_id`,`post_time`,`image`,`text`) VALUES (\''.$nudez['thread_id'].'\',\''.$USR['user_id'].'\',\''.$nudez['posted'].'\',\''.$fname.'\',\''.$text.'\')')) {
 
 				$continue = FALSE;
 				$reasons[] = 'Database error, could not create post. Please try again later.';
@@ -184,7 +184,7 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['allowed']
 					ERROR::report('Could not delete uploaded file after post failed. File: '.$newfile);
 				}
 			} else {
-				$refreshq = $SQL->query('SELECT `post_id` FROM `pst_posts` WHERE `poster` = \''.$USR['id'].'\' AND `thread` = \''.$nudez['thread_id'].'\' ORDER BY `post_time` DESC LIMIT 0,1');
+				$refreshq = $SQL->query('SELECT `post_id` FROM `pst_posts` WHERE `user_id` = \''.$USR['user_id'].'\' AND `thread_id` = \''.$nudez['thread_id'].'\' ORDER BY `post_time` DESC LIMIT 0,1');
 				$refresha = $refreshq->fetch_assoc();
 				$_SESSION['postcooldown'] = time();
 				$P->set('headstuff','<meta http-equiv="refresh" content="0;url='.$VAR['base_url'].'/t.php?thread_id='.$nudez['thread_id'].'#i'.$refresha['post_id'].'" />');
@@ -228,23 +228,38 @@ $dumo = $SQL->query('
 SELECT `a`.*, COUNT(*) AS `count`,COUNT(DISTINCT `image`) AS `image_count`
 FROM (
 
-	SELECT *
+	SELECT
+		`u`.`user_id`, `u`.`name`, `u`.`level`, `u`.`email`, `u`.`avatar`,
+		`o`.`last_ping`,
+		`p`.`post_id`, `p`.`post_time`, `p`.`text`, `p`.`image`,
+		`t`.`thread_id`, `t`.`posted`, `t`.`title`
 	FROM `pst_threads` AS `t`
 	INNER JOIN (
+
 		`pst_posts` AS `p`
-		INNER JOIN (
+		LEFT JOIN (
+
 			`user_accounts` AS `u`
-			LEFT JOIN `user_online` AS `o` ON `u`.`id` = `o`.`user_id`
-		) ON `p`.`poster` = `u`.`id`
-	) ON `p`.`thread` = `t`.`thread_id`
-	WHERE `t`.`board_id` = \''.$BINFO['id'].'\'
+			LEFT JOIN `user_online` AS `o`
+			USING (`user_id`)
+
+		) USING (`user_id`)
+
+	) USING (`thread_id`)
+	WHERE `t`.`board_id` = \''.$BINFO['board_id'].'\'
 	ORDER BY `p`.`post_id` ASC
+
 ) AS `a`
 GROUP BY `a`.`thread_id`
 ORDER BY `a`.`posted` DESC');
 
 // Sift through the results and enter them into an array
 while($mrd = $dumo->fetch_assoc()) {
+	if($mrd['user_id'] == NULL || $mrd['user_id'] == '') {
+		$mrd['user_id'] = '0000000001';
+		$mrd['name'] = 'Anonymous';
+		$mrd['level'] = 1;
+	}
 	$durr[] = $mrd;
 }
 
@@ -267,7 +282,7 @@ if(is_array($durr)) {
 // End the thread list
 $cherp .= "</div>\n";
 
-if($USR['level'] >= $BINFO['allowed']) {
+if($USR['level'] >= $BINFO['post_min_lvl']) {
 	$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new','post','multipart/form-data');
 	$postForm->fieldStart('New Thread');
 	$postForm->inputText('ttle','Title','','','halfwidth');

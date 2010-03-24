@@ -26,7 +26,7 @@ class POST {
 	/**
 	 * Post Construction
 	 *
-	 * @param int $uid User ID
+	 * @param int $user_id User ID
 	 * @param string $unm Username
 	 * @param string $uav Avatar
 	 * @param int $post_id Post Id
@@ -38,7 +38,7 @@ class POST {
 	 * @param string $updir Image Path
 	 */
 	function __construct(
-	$uid,
+	$user_id,
 	$unm,
 	$uav,
 	$ulv,
@@ -64,7 +64,7 @@ class POST {
 		$this->thdir = $thdir;
 
 		// User ID
-		$this->vars['id'] = $uid;
+		$this->vars['user_id'] = $user_id;
 
 		// User Name
 		$this->vars['name'] = $unm;
@@ -165,28 +165,28 @@ class POST {
 
 				<ul>
 
-					<li class="name ulv'.$this->vars['level'].'"><a href="u.php?view='.$this->vars['id'].'" title="View User Page">'.$this->vars['name'].'</a></li>
+					<li class="name ulv'.$this->vars['level'].'"><a href="u.php?view='.$this->vars['user_id'].'" title="View User Page">'.$this->vars['name'].'</a></li>
 					<li style="font-size:.8em; line-height:1.2em;">'.$this->post_time().'</li>
 
 				</ul>
 				<div class="optbox">
 ';
-		if($this->vars['id'] > 1 && $_SESSION['uid'] > 1) {
+		if($this->vars['user_id'] > 1 && $_SESSION['user_id'] > 1) {
 
-			$html .= (($this->vars['id'] == $_SESSION['uid']) ?
+			$html .= (($this->vars['user_id'] == $_SESSION['user_id']) ?
 
 '			<a href="#" class="delbut" title="Delete Post">Delete</a>
 ':
 '			<a href="#" class="repbut" title="Report Post">Report</a>
 ').
 '			<a href="javascript:post_quote(\'t_'.$this->vars['post_id'].'\')" class="addbut" title="Reply to this post">Reply</a>
-'.(($this->vars['id'] == $_SESSION['uid']) ?
+'.(($this->vars['user_id'] == $_SESSION['user_id']) ?
 '			<a href="#" class="edtbut" title="Edit Post">Edit Post</a>
 ':
 '			<a href="#" class="mesbut" title="Message this posts author">Message</a>
 ');
 
-		} elseif($this->vars['id'] == 1 && $_SESSION['uid'] > 1) {
+		} elseif($this->vars['user_id'] == 1 && $_SESSION['user_id'] > 1) {
 
 			$html .=
 '			<a href="#" class="repbut" title="Report Post">Report</a>

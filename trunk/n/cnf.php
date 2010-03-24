@@ -119,29 +119,29 @@ if ($SQL->connect_error) {ERROR::dead('Connect Error ('.$SQL->connect_errno.') '
  * Here we see if you have a valid userID already in session, and if you don't
  * we assign you the userID for the Anonymous account.
  */
-if(!isset($_SESSION['uid'])) {$_SESSION['uid'] = 1;}
-if(!$FORM->length($_SESSION['uid'],1,10)) {$_SESSION['uid'] = 1;}
+if(!isset($_SESSION['user_id'])) {$_SESSION['user_id'] = 1;}
+if(!$FORM->length($_SESSION['user_id'],1,10)) {$_SESSION['user_id'] = 1;}
 /**
  * Pull your info from the database
  * @var mixed
  */
-$userInfoResult = $SQL->query('SELECT * FROM `user_accounts` WHERE `id`=\''.$_SESSION['uid'].'\'');
+$userInfoResult = $SQL->query('SELECT * FROM `user_accounts` WHERE `user_id`=\''.$_SESSION['user_id'].'\'');
 /**
  * If there are multiple results for the same userID then there is a database
  * issue that needs to be sorted out.  Since we can't know for sure what result
  * you belong to, we will stop here and error out.
  */
 if($userInfoResult->num_rows > 1) {
-	ERROR::dead('Duplicate entries found for UID:'.$_SESSION['uid']);
+	ERROR::dead('Duplicate entries found for UID:'.$_SESSION['user_id']);
 }
 /**
  * If that userID doesn't show up in the database at all then we will call you
  * anonymous and continue
  */
 if ($userInfoResult->num_rows == 0) {
-	ERROR::report('Invalid UID:'.$_SESSION['uid'].' for IP:'.$_SERVER['REMOTE_ADDR'].'. Changed to anon.');
-	$_SESSION['uid'] = 1;
-	$userInfoResult = $SQL->query('SELECT * FROM `user_accounts` WHERE `id`=\'1\'');
+	ERROR::report('Invalid UID:'.$_SESSION['user_id'].' for IP:'.$_SERVER['REMOTE_ADDR'].'. Changed to anon.');
+	$_SESSION['user_id'] = 1;
+	$userInfoResult = $SQL->query('SELECT * FROM `user_accounts` WHERE `user_id`=\'1\'');
 }
 /**
  * User Information
@@ -166,14 +166,14 @@ function pingUser($forced = FALSE) {
 
 	$SQL->query('DELETE FROM `user_online` WHERE `last_ping` <= \''.($time5Ago-300).'\'');
 
-	$countVerify = $SQL->query('SELECT * FROM `user_online` WHERE `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\' AND `user_id` = \''.$_SESSION['uid'].'\'');
+	$countVerify = $SQL->query('SELECT * FROM `user_online` WHERE `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\' AND `user_id` = \''.$_SESSION['user_id'].'\'');
 	if($countVerify->num_rows == '0') {
 
-		$SQL->query('INSERT INTO `user_online` VALUES (\''.$_SESSION['uid'].'\',\''.$timeNow.'\',\''.$_SERVER['REMOTE_ADDR'].'\')');
+		$SQL->query('INSERT INTO `user_online` VALUES (\''.$_SESSION['user_id'].'\',\''.$timeNow.'\',\''.$_SERVER['REMOTE_ADDR'].'\')');
 
 	} else {
 
-		$SQL->query('UPDATE `user_online` SET `last_ping` = \''.$timeNow.'\' WHERE `user_id` = \''.$_SESSION['uid'].'\' AND `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\'');
+		$SQL->query('UPDATE `user_online` SET `last_ping` = \''.$timeNow.'\' WHERE `user_id` = \''.$_SESSION['user_id'].'\' AND `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\'');
 
 	}
 
@@ -181,7 +181,7 @@ function pingUser($forced = FALSE) {
 
 }
 pingUser();
-if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online` `o` INNER JOIN `user_accounts` `a` ON `o`.`user_id` = `a`.`id` WHERE `o`.`last_ping` >= \''.$time5Ago.'\' ORDER BY `o`.`last_ping` DESC')) {
+if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online` `o` INNER JOIN `user_accounts` `a` ON `o`.`user_id` = `a`.`user_id` WHERE `o`.`last_ping` >= \''.$time5Ago.'\' ORDER BY `o`.`last_ping` DESC')) {
 	$userbox = "<ul>\n";
 	if($userBox->num_rows > 0) {
 		while($infoLoop = $userBox->fetch_assoc()) {
