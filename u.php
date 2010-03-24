@@ -30,7 +30,7 @@ $cleanUserID = $FORM->scrub_text($_GET['view']);
 
 if(isset($cleanUserID) && $cleanUserID != '' && $cleanUserID > 1 && strlen($cleanUserID) < 11 && is_numeric($cleanUserID)) {
 
-	$currentUserQuery = $SQL->query('SELECT * FROM `usr_accounts` WHERE `id` = \''.$cleanUserID.'\' LIMIT 0,1');
+	$currentUserQuery = $SQL->query('SELECT * FROM `user_accounts` WHERE `id` = \''.$cleanUserID.'\' LIMIT 0,1');
 	$currentUserInfo = $currentUserQuery->fetch_assoc();
 
 	$P->set('title',$VAR['site_title'].' / '.$currentUserInfo['name']);

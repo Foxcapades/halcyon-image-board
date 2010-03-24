@@ -137,7 +137,7 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['allowed']
 	if($continue) {
 
 		// Try and create the thread
-		if(!$SQL->query('INSERT INTO `pst_threads` (`board`,`key`,`title`,`user`) VALUES(\''.$BINFO['id'].'\',\''.$threadkey.'\',\''.$title.'\',\''.$USR['id'].'\')')) {
+		if(!$SQL->query('INSERT INTO `pst_threads` (`board_id`,`key`,`title`,`user`) VALUES(\''.$BINFO['id'].'\',\''.$threadkey.'\',\''.$title.'\',\''.$USR['id'].'\')')) {
 
 			// If the thread could not be created, stop and delete the uploaded file
 			$continue = FALSE;
@@ -153,7 +153,7 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['allowed']
 	if($continue) {
 
 		// Select newly created thread to verify it was actually posted and to obtain the DB set thread ID and DATE
-		$nudes = $SQL->query('SELECT `tid`,`posted` FROM `pst_threads` WHERE `key` = \''.$threadkey.'\' AND `user` = \''.$USR['id'].'\' ORDER BY `tid` DESC LIMIT 0,1');
+		$nudes = $SQL->query('SELECT `thread_id`,`posted` FROM `pst_threads` WHERE `key` = \''.$threadkey.'\' AND `user` = \''.$USR['id'].'\' ORDER BY `thread_id` DESC LIMIT 0,1');
 
 		if(!is_object($nudes)) {
 			$continue = FALSE;
@@ -170,7 +170,7 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['allowed']
 			$nudez = $nudes->fetch_assoc();
 
 			// Insert the post into the database
-			if(!$SQL->query('INSERT INTO `pst_posts` (`thread`,`poster`,`post_time`,`image`,`text`) VALUES (\''.$nudez['tid'].'\',\''.$USR['id'].'\',\''.$nudez['posted'].'\',\''.$fname.'\',\''.$text.'\')')) {
+			if(!$SQL->query('INSERT INTO `pst_posts` (`thread`,`poster`,`post_time`,`image`,`text`) VALUES (\''.$nudez['thread_id'].'\',\''.$USR['id'].'\',\''.$nudez['posted'].'\',\''.$fname.'\',\''.$text.'\')')) {
 
 				$continue = FALSE;
 				$reasons[] = 'Database error, could not create post. Please try again later.';
@@ -184,10 +184,10 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['allowed']
 					ERROR::report('Could not delete uploaded file after post failed. File: '.$newfile);
 				}
 			} else {
-				$refreshq = $SQL->query('SELECT `pid` FROM `pst_posts` WHERE `poster` = \''.$USR['id'].'\' AND `thread` = \''.$nudez['tid'].'\' ORDER BY `post_time` DESC LIMIT 0,1');
+				$refreshq = $SQL->query('SELECT `post_id` FROM `pst_posts` WHERE `poster` = \''.$USR['id'].'\' AND `thread` = \''.$nudez['thread_id'].'\' ORDER BY `post_time` DESC LIMIT 0,1');
 				$refresha = $refreshq->fetch_assoc();
 				$_SESSION['postcooldown'] = time();
-				$P->set('headstuff','<meta http-equiv="refresh" content="0;url='.$VAR['base_url'].'/t.php?tid='.$nudez['tid'].'#i'.$refresha['pid'].'" />');
+				$P->set('headstuff','<meta http-equiv="refresh" content="0;url='.$VAR['base_url'].'/t.php?thread_id='.$nudez['thread_id'].'#i'.$refresha['post_id'].'" />');
 			}
 		}
 	}
@@ -233,14 +233,14 @@ FROM (
 	INNER JOIN (
 		`pst_posts` AS `p`
 		INNER JOIN (
-			`usr_accounts` AS `u`
-			INNER JOIN `usr_online` AS `o` ON `u`.`id` = `o`.`user_id`
+			`user_accounts` AS `u`
+			LEFT JOIN `user_online` AS `o` ON `u`.`id` = `o`.`user_id`
 		) ON `p`.`poster` = `u`.`id`
-	) ON `p`.`thread` = `t`.`tid`
-	WHERE `t`.`board` = \''.$BINFO['id'].'\'
-	ORDER BY `p`.`pid` ASC
+	) ON `p`.`thread` = `t`.`thread_id`
+	WHERE `t`.`board_id` = \''.$BINFO['id'].'\'
+	ORDER BY `p`.`post_id` ASC
 ) AS `a`
-GROUP BY `a`.`tid`
+GROUP BY `a`.`thread_id`
 ORDER BY `a`.`posted` DESC');
 
 // Sift through the results and enter them into an array

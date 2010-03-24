@@ -29,11 +29,11 @@ class POST {
 	 * @param int $uid User ID
 	 * @param string $unm Username
 	 * @param string $uav Avatar
-	 * @param int $pid Post Id
+	 * @param int $post_id Post Id
 	 * @param string $ptm Post Timestamp
 	 * @param string $ptx Post Text
 	 * @param string $pim Post Image Name
-	 * @param int $tid Thread ID
+	 * @param int $thread_id Thread ID
 	 * @param string $avdir Avatar Path
 	 * @param string $updir Image Path
 	 */
@@ -44,11 +44,11 @@ class POST {
 	$ulv,
 	$uon,
 	$mil,
-	$pid,
+	$post_id,
 	$ptm,
 	$ptx,
 	$pim,
-	$tid,
+	$thread_id,
 	$avdir = 'i/av/',
 	$updir = 'i/up/images/',
 	$thdir = 'i/up/thumbs/'
@@ -82,7 +82,7 @@ class POST {
 		$this->vars['email'] = $mil;
 
 		// Post ID
-		$this->vars['pid'] = $pid;
+		$this->vars['post_id'] = $post_id;
 
 		// Post Time
 		$this->vars['post_time'] = $ptm;
@@ -94,7 +94,7 @@ class POST {
 		$this->vars['image'] = $pim;
 
 		// Thread ID
-		$this->vars['tid'] = $tid;
+		$this->vars['thread_id'] = $thread_id;
 
 	}
 
@@ -147,7 +147,7 @@ class POST {
 
 		$html  =
 '
-	<div id="i'.$this->vars['pid'].'" class="post'.(($class == '') ? '">'."\n\n" : ' '.$class.'">'."\n\n");
+	<div id="i'.$this->vars['post_id'].'" class="post'.(($class == '') ? '">'."\n\n" : ' '.$class.'">'."\n\n");
 
 		$html .= (($this->vars['image'] != '' && $this->vars['image'] !=	NULL) ?
 '
@@ -179,7 +179,7 @@ class POST {
 ':
 '			<a href="#" class="repbut" title="Report Post">Report</a>
 ').
-'			<a href="javascript:post_quote(\'t_'.$this->vars['pid'].'\')" class="addbut" title="Reply to this post">Reply</a>
+'			<a href="javascript:post_quote(\'t_'.$this->vars['post_id'].'\')" class="addbut" title="Reply to this post">Reply</a>
 '.(($this->vars['id'] == $_SESSION['uid']) ?
 '			<a href="#" class="edtbut" title="Edit Post">Edit Post</a>
 ':
@@ -207,7 +207,7 @@ class POST {
 ';
 		$text = preg_replace('/\r\n|\n\r|\n|\r/is','<br />',$this->vars['text']);
 		$html .=
-'		<div id="t_'.$this->vars['pid'].'" class="text">'.$text.'</div>
+'		<div id="t_'.$this->vars['post_id'].'" class="text">'.$text.'</div>
 	</div>
 ';
 		$this->html = $html;
@@ -227,7 +227,7 @@ class POST {
 		$images = ($image_count > 1) ? ' images' : ' image';
 		$posts = ($arr1['count'] > 1) ? ' posts' : ' post';
 		$html = '<div class="thread"><div class="header">
-	<a href="t.php?tid='.$arr1['tid'].'" title="'.$arr1['title'].'">'.$arr1['title'].'</a>'.$arr1['count'].$posts.' with '.$image_count.$images.'
+	<a href="t.php?thread_id='.$arr1['thread_id'].'" title="'.$arr1['title'].'">'.$arr1['title'].'</a>'.$arr1['count'].$posts.' with '.$image_count.$images.'
 </div>'."\n\n";
 		$this->vars = $arr1;
 		$html .= $this->postbox();

@@ -126,7 +126,7 @@ if(count($_POST)) {
 	if($continue) {
 
 		// Try and create the thread
-		if(!$SQL->query('INSERT INTO `pst_threads` (`board`,`key`,`title`,`user`) VALUES(\''.$parts['id'].'\',\''.$threadkey.'\',\''.$title.'\',\''.$USR['id'].'\')')) {
+		if(!$SQL->query('INSERT INTO `pst_threads` (`board_id`,`key`,`title`,`user`) VALUES(\''.$parts['id'].'\',\''.$threadkey.'\',\''.$title.'\',\''.$USR['id'].'\')')) {
 
 			// If the thread could not be created, stop and delete the uploaded file
 			$continue = FALSE;
@@ -141,7 +141,7 @@ if(count($_POST)) {
 
 	if($continue) {
 
-		$nudes = $SQL->query('SELECT `tid`,`posted` FROM `pst_threads` WHERE `key` = \''.$threadkey.'\' AND `user` = \''.$USR['id'].'\' ORDER BY `tid` DESC LIMIT 0,1');
+		$nudes = $SQL->query('SELECT `thread_id`,`posted` FROM `pst_threads` WHERE `key` = \''.$threadkey.'\' AND `user` = \''.$USR['id'].'\' ORDER BY `thread_id` DESC LIMIT 0,1');
 
 		if(!is_object($nudes)) {
 			$continue = FALSE;
@@ -156,7 +156,7 @@ if(count($_POST)) {
 
 			$nudez = $nudes->fetch_assoc();
 
-			if(!$SQL->query('INSERT INTO `pst_posts` (`thread`,`poster`,`post_time`,`image`,`text`) VALUES (\''.$nudez['tid'].'\',\''.$USR['id'].'\',\''.$nudez['posted'].'\',\''.$fname.'\',\''.$text.'\')')) {
+			if(!$SQL->query('INSERT INTO `pst_posts` (`thread`,`poster`,`post_time`,`image`,`text`) VALUES (\''.$nudez['thread_id'].'\',\''.$USR['id'].'\',\''.$nudez['posted'].'\',\''.$fname.'\',\''.$text.'\')')) {
 
 				$continue = FALSE;
 				$reasons[] = 'Database error, could not create post. Please try again later.';

@@ -250,7 +250,7 @@ function deleteBoard(&$body)
 			$body .= '	<li>Pulling thread IDs from database...';
 
 			// Pull the threads
-			if($threadQuery = $SQL->query('SELECT * FROM `pst_threads` WHERE `board` IN (\''.$_SESSION['boards'].'\')')) {
+			if($threadQuery = $SQL->query('SELECT * FROM `pst_threads` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')')) {
 
 				// If all went well alert the user and tell them whats next
 				$body .= '<span class="green">OK.</span></li>'."\n";
@@ -262,13 +262,13 @@ function deleteBoard(&$body)
 				}
 
 				// Initialise the variable for use later
-				$tids = '';
+				$thread_ids = '';
 
 				// Build a list of ids for use in the next query and
 				foreach($thread as $k => $v) {
 
-					$tids .= ($k > 0) ? '\',\'' : '';
-					$tids .= $v['tid'];
+					$thread_ids .= ($k > 0) ? '\',\'' : '';
+					$thread_ids .= $v['thread_id'];
 
 				}
 
@@ -277,7 +277,7 @@ function deleteBoard(&$body)
 				$body .= '	<li>Pulling posts from database...';
 
 				// Next query, lets get all the posts contained in the affected threads
-				if($postQuery = $SQL->query('SELECT * FROM `pst_posts` WHERE `thread` IN (\''.$tids.'\')')) {
+				if($postQuery = $SQL->query('SELECT * FROM `pst_posts` WHERE `thread` IN (\''.$thread_ids.'\')')) {
 
 					// More updates for the user
 					$body .= '<span class="green">OK.</span></li>'."\n";
@@ -326,12 +326,12 @@ function deleteBoard(&$body)
 					$body .= '	<li>Attempting to delete posts...';
 
 					// Now lets hit the posts
-					if($SQL->query('DELETE FROM `pst_posts` WHERE `thread` IN (\''.$tids.'\')')) {
+					if($SQL->query('DELETE FROM `pst_posts` WHERE `thread` IN (\''.$thread_ids.'\')')) {
 						$body .= '<span class="green">OK.</span></li>'."\n";
 						$body .= '	<li>Attempting to delete threads...';
 
 						// Followed by the threads
-						if($SQL->query('DELETE FROM `pst_threads` WHERE `board` IN (\''.$_SESSION['boards'].'\')')) {
+						if($SQL->query('DELETE FROM `pst_threads` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')')) {
 							$body .= '<span class="green">OK.</span></li>'."\n";
 							$body .= '	<li>Attempting to delete board...';
 
