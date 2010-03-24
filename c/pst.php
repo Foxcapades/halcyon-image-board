@@ -139,7 +139,7 @@ class POST {
 
 	public function postbox($class = '') {
 
-		$onlineClass = ((time()-360) > $this->vars['last_ping']) ? '' : ' online';
+		$onlineClass = ((time()-300) > $this->vars['last_ping']) ? '' : ' online';
 
 		$this->vars['grav'] = 'http://www.gravatar.com/avatar/'.md5($this->vars['email']).'.jpg?s=50&d=identicon';
 

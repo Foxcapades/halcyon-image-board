@@ -52,4 +52,3 @@ function post_quote(id) {
 
 
 }
-

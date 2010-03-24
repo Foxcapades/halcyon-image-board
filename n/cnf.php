@@ -166,22 +166,19 @@ function pingUser($forced = FALSE) {
 
 	$SQL->query('DELETE FROM `usr_online` WHERE `last_ping` = \''.($time5Ago-300).'\'');
 
-	if($_SESSION['lastping'] <= $time5Ago || !isset($_SESSION['lastping']) || $forced == TRUE) {
+	$countVerify = $SQL->query('SELECT * FROM `usr_online` WHERE `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\' AND `user_id` = \''.$_SESSION['uid'].'\'');
+	if($countVerify->num_rows == '0') {
 
-		$countVerify = $SQL->query('SELECT * FROM `usr_online` WHERE `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\' AND `user_id` = \''.$_SESSION['uid'].'\'');
-		if($countVerify->num_rows == '0') {
+		$SQL->query('INSERT INTO `usr_online` VALUES (\''.$_SESSION['uid'].'\',\''.$timeNow.'\',\''.$_SERVER['REMOTE_ADDR'].'\')');
 
-			$SQL->query('INSERT INTO `usr_online` VALUES (\''.$_SESSION['uid'].'\',\''.$timeNow.'\',\''.$_SERVER['REMOTE_ADDR'].'\')');
+	} else {
 
-		} else {
-
-			$SQL->query('UPDATE `usr_online` SET `last_ping` = \''.$timeNow.'\' WHERE `user_id` = \''.$_SESSION['uid'].'\' AND `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\'');
-
-		}
+		$SQL->query('UPDATE `usr_online` SET `last_ping` = \''.$timeNow.'\' WHERE `user_id` = \''.$_SESSION['uid'].'\' AND `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\'');
 
 	}
 
-	$_SESSION['lastping'] = $timeNow;
+
+
 }
 pingUser();
 if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `usr_online` `o` INNER JOIN `usr_accounts` `a` ON `o`.`user_id` = `a`.`id` WHERE `o`.`last_ping` >= \''.$time5Ago.'\' ORDER BY `o`.`last_ping` DESC')) {
