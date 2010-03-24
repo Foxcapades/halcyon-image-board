@@ -85,6 +85,7 @@ case 'login':
 				$P->set('headstuff','<meta http-equiv="refresh" content="3;url='.$HERE.'" />');
 				unset($_SESSION['return']);
 				$body .= '<p>Login successful.<br /><br />Redirecting to <a href="'.$HERE.'" class="cd">'.$HERE.'</a> after 3 seconds.</p>'."\n";
+				pingUser(TRUE);
 				break;
 
 			}

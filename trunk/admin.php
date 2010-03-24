@@ -481,7 +481,7 @@ case 'bee':
 case 'be':
 	// Start the form
 	$listForm = new newForm('?mode=bee');
-	$listForm->fieldStart('Select Boards to Edit');
+	$listForm->fieldStart('Edit a Board');
 
 	// Pull the boards from the database
 	$sqlResult = $SQL->query('SELECT `id`,`dir` FROM `ste_boards`');
@@ -538,11 +538,6 @@ default:
 	$body .= 'No Default Message.';
 	break;
 }
-
-$body .= "\n";
-$P->set('body',$body);
-$navbar = navbuild($SQL);
-$P->set('navbar',$navbar);
-$P->load('admin.php');
-$P->render();
+$body.="\n";$P->set('body',$body);$navi=navbuild($SQL);$P->set('navbar',$navi);
+$P->load('admin.php');$P->render();
 ?>

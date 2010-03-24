@@ -225,40 +225,27 @@ $cherp = '<div id="thread">'."\n";
 // Retrieve the thread list from the database
 $dumo = $SQL->query('
 
-(SELECT `a`.*, COUNT(*) AS `count`,COUNT(DISTINCT `image`) AS `image_count` FROM (
+SELECT `a`.*, COUNT(*) AS `count`,COUNT(DISTINCT `image`) AS `image_count`
+FROM (
 
-SELECT * FROM `pst_threads` as `t`
-INNER JOIN (
-
-	`pst_posts` AS `p`
-	INNER JOIN `usr_accounts` AS `u`
-	ON `p`.`poster` = `u`.`id`
-
-) ON `p`.`thread` = `t`.`tid`
-WHERE `t`.`board` = \''.$BINFO['id'].'\'
-ORDER BY `p`.`pid` ASC
-
-) AS `a` GROUP BY `a`.`tid`)
-UNION
-(SELECT `b`.*, COUNT(*) AS `count`,COUNT(DISTINCT `image`) AS `image_count` FROM (
-
-SELECT * FROM `pst_threads` as `t`
-INNER JOIN (
-
-	`pst_posts` AS `p`
-	INNER JOIN `usr_accounts` AS `u`
-	ON `p`.`poster` = `u`.`id`
-
-) ON `p`.`thread` = `t`.`tid`
-WHERE `t`.`board` = \''.$BINFO['id'].'\'
-ORDER BY `p`.`pid` DESC
-
-) AS `b` GROUP BY `b`.`tid`)
-ORDER BY `posted` DESC, `pid` ASC');
+	SELECT *
+	FROM `pst_threads` AS `t`
+	INNER JOIN (
+		`pst_posts` AS `p`
+		INNER JOIN (
+			`usr_accounts` AS `u`
+			INNER JOIN `usr_online` AS `o` ON `u`.`id` = `o`.`user_id`
+		) ON `p`.`poster` = `u`.`id`
+	) ON `p`.`thread` = `t`.`tid`
+	WHERE `t`.`board` = \''.$BINFO['id'].'\'
+	ORDER BY `p`.`pid` ASC
+) AS `a`
+GROUP BY `a`.`tid`
+ORDER BY `a`.`posted` DESC');
 
 // Sift through the results and enter them into an array
 while($mrd = $dumo->fetch_assoc()) {
-	$durr[$mrd['tid']][] = $mrd;
+	$durr[$mrd['tid']] = $mrd;
 }
 
 // Close the open $SQL connection
@@ -266,14 +253,13 @@ $SQL->close();
 
 
 // Create a blank instance of POST for the following loop
-$POST = new POST('','','','','','','','','','');
+$POST = new POST('','','','','','','','','','','');
 
 if(is_array($durr)) {
 	foreach($durr as $v) {
 
-		$v[0]['text'] = $BBC->parse($v[0]['text']);
-		$v[1]['text'] = $BBC->parse($v[1]['text']);
-		$cherp .= $POST->threadview($v[0],$v[1]);
+		$v['text'] = $BBC->parse($v[0]['text']);
+		$cherp .= $POST->threadview($v);
 
 	}
 }

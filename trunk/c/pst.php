@@ -37,10 +37,12 @@ class POST {
 	 * @param string $avdir Avatar Path
 	 * @param string $updir Image Path
 	 */
-	function __construct(	$uid,
+	function __construct(
+	$uid,
 	$unm,
 	$uav,
 	$ulv,
+	$uon,
 	$mil,
 	$pid,
 	$ptm,
@@ -73,7 +75,10 @@ class POST {
 		// User Level
 		$this->vars['level'] = $ulv;
 
-		// User Level
+		// Last User Activity
+		$this->vars['last_ping'] = $uon;
+
+		// User Email Address
 		$this->vars['email'] = $mil;
 
 		// Post ID
@@ -133,6 +138,9 @@ class POST {
 	* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	public function postbox($class = '') {
+
+		$onlineClass = ((time()-360) > $this->vars['last_ping']) ? '' : ' online';
+
 		$this->vars['grav'] = 'http://www.gravatar.com/avatar/'.md5($this->vars['email']).'.jpg?s=50&d=identicon';
 
 		$imagename = array_shift(explode('.',$this->vars['image']));
@@ -150,7 +158,7 @@ class POST {
 			</a>
 
 		</div>' : '').'
-		<div class="charbox">
+		<div class="charbox'.$onlineClass.'">
 
 			<img src="'.$this->vars['grav'].'" alt="Avatar" />
 			<div class="charinfo">
@@ -214,19 +222,16 @@ class POST {
 	* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	// need to make this more 'generic' as well
-	public function threadview($arr1,$arr2) {
+	public function threadview($arr1) {
 		$image_count = ($arr1['image_count'] > 1) ? $arr1['image_count'] - 1 : $arr1['image_count'];
 		$images = ($image_count > 1) ? ' images' : ' image';
+		$posts = ($arr1['count'] > 1) ? ' posts' : ' post';
 		$html = '<div class="thread"><div class="header">
-	<a href="t.php?tid='.$arr1['tid'].'" title="'.$arr1['title'].'">'.$arr1['title'].'</a>'.$arr1['count'].' posts with '.$image_count.$images/*Last Post:'.date('l M jS, Y - g:i a',strtotime($arr2['post_time']))*/.'
+	<a href="t.php?tid='.$arr1['tid'].'" title="'.$arr1['title'].'">'.$arr1['title'].'</a>'.$arr1['count'].$posts.' with '.$image_count.$images.'
 </div>'."\n\n";
 		$this->vars = $arr1;
 		$html .= $this->postbox();
-		/*if($arr2['pid'] != '' && $arr2['pid'] != NULL) {
-		 $this->vars = $arr2;
-		 $html .= $this->postbox('bottom');
-		 }*/
-		$html .= /*"</div>*/"</div>\n\n";
+		$html .= "</div>\n\n";
 		$this->html = $html;
 		return $html;
 	}

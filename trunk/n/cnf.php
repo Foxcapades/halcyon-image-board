@@ -1,7 +1,5 @@
 <?php
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
+/**
  *	Halcyon Image Board
  *  Copyright (C) 2010  Steven Utiger
  *
@@ -17,10 +15,6 @@
  *    You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- *
  * Configuration file
  *
  * To Do's:
@@ -28,13 +22,11 @@
  * TODO: Allow up to 4 uploads per post, as an option in the admin panel
  * TODO: User pages
  * TODO: Admin Panel
- * TODO: SET avatar url as a global
  * TODO: ADD Title box to all posts
  * TODO: Sort out stickies and announcements
  * TODO: control max image upload size from the admin panel
  * TODO: control the allowed upload mime types from the admin panel.
  * TODO: allow choosing nav bar position when creating a board
- * TODO: HTML, CSS: Fix the avatar box going under the text in the posts
  *
  */
 //REMOVE
@@ -163,6 +155,52 @@ $USR = $userInfoResult->fetch_assoc();
 /**
  * As you can probably guess by the name of this function, it builds the navbar.
  * In all reality it just assembles the links in a list format for later use.
+ */
+/**
+ * Currently Online Table
+ */
+function pingUser($forced = FALSE) {
+	global $SQL,$USR;
+	$timeNow = time();
+	$time5Ago = $timeNow - 300;
+
+	$SQL->query('DELETE FROM `usr_online` WHERE `last_ping` = \''.($time5Ago-300).'\'');
+
+	if($_SESSION['lastping'] <= $time5Ago || !isset($_SESSION['lastping']) || $forced == TRUE) {
+
+		$countVerify = $SQL->query('SELECT * FROM `usr_online` WHERE `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\' AND `user_id` = \''.$_SESSION['uid'].'\'');
+		if($countVerify->num_rows == '0') {
+
+			$SQL->query('INSERT INTO `usr_online` VALUES (\''.$_SESSION['uid'].'\',\''.$timeNow.'\',\''.$_SERVER['REMOTE_ADDR'].'\')');
+
+		} else {
+
+			$SQL->query('UPDATE `usr_online` SET `last_ping` = \''.$timeNow.'\' WHERE `user_id` = \''.$_SESSION['uid'].'\' AND `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\'');
+
+		}
+
+	}
+
+	$_SESSION['lastping'] = $timeNow;
+}
+pingUser();
+if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `usr_online` `o` INNER JOIN `usr_accounts` `a` ON `o`.`user_id` = `a`.`id` WHERE `o`.`last_ping` >= \''.$time5Ago.'\' ORDER BY `o`.`last_ping` DESC')) {
+	$userbox = "<ul>\n";
+	if($userBox->num_rows > 0) {
+		while($infoLoop = $userBox->fetch_assoc()) {
+			$userbox .= '	<li class="ulv'.$infoLoop['level'].'">'.$infoLoop['name']."</li>\n";
+			$onlineUsers[$infoLoop['user_id']] = $infoLoop['name'];
+		}
+	} else {
+		$userbox .= "	<li>No Online Users</li>\n";
+	}
+	$userbox .= '</ul>';
+}
+
+/**
+ *
+ * @param $sql
+ * @return unknown_type
  */
 function navbuild(&$sql) {
 	Global $SQL,$USR,$BINFO;
