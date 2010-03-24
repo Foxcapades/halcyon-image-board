@@ -245,7 +245,7 @@ ORDER BY `a`.`posted` DESC');
 
 // Sift through the results and enter them into an array
 while($mrd = $dumo->fetch_assoc()) {
-	$durr[$mrd['tid']] = $mrd;
+	$durr[] = $mrd;
 }
 
 // Close the open $SQL connection
@@ -258,7 +258,7 @@ $POST = new POST('','','','','','','','','','','');
 if(is_array($durr)) {
 	foreach($durr as $v) {
 
-		$v['text'] = $BBC->parse($v[0]['text']);
+		$v['text'] = $BBC->parse($v['text']);
 		$cherp .= $POST->threadview($v);
 
 	}
