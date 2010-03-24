@@ -64,7 +64,7 @@ case 'login':
 		if($e == 0) {
 
 			// Try and pull the user info from the database
-			$selUser = $SQL->query('SELECT * FROM `usr_accounts` WHERE `name` = \''.$cleanUserName.'\' AND `password` = \''.$cleanPassword.'\'');
+			$selUser = $SQL->query('SELECT * FROM `user_accounts` WHERE `name` = \''.$cleanUserName.'\' AND `password` = \''.$cleanPassword.'\'');
 
 			// If the database returns a number other than 1 then something is wrong
 			if($selUser->num_rows != 1) {
@@ -179,7 +179,7 @@ case 'nac':
 			$pass = md5($_POST['upss']);
 
 			// Try and insert the new user
-			if($SQL->query('INSERT INTO `usr_accounts` VALUES (NULL,\''.$_POST['unme'].'\',2,\''.$_POST['mail'].'\',\''.$pass.'\',0,\'anon.png\')')) {
+			if($SQL->query('INSERT INTO `user_accounts` VALUES (NULL,\''.$_POST['unme'].'\',2,\''.$_POST['mail'].'\',\''.$pass.'\',0,\'anon.png\')')) {
 
 				// If it went without any problems, say so and end.
 				$body .= '<p class="green">Registration Complete, you may now log in.</p>';

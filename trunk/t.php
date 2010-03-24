@@ -22,14 +22,14 @@ session_start();
 **/
 if(file_exists('n/cnf.php')){require_once 'n/cnf.php';} else {die('dude, wtf');}
 
-$threadID = $SQL->real_escape_string($_GET['tid']);
+$threadID = $SQL->real_escape_string($_GET['thread_id']);
 
 if(!is_numeric($threadID)) {
 	ERROR::report($threadID.' given for thread ID by '.$_SERVER['REMOTE_ADDR']);
 	index();
 }
 
-$r = $SQL->query('SELECT * FROM `pst_threads` `p` INNER JOIN `ste_boards` `s` ON `p`.`board` = `s`.`id` WHERE `tid` = \''.$threadID.'\' LIMIT 0,1');
+$r = $SQL->query('SELECT * FROM `pst_threads` `p` INNER JOIN `ste_boards` `s` ON `p`.`board_id` = `s`.`id` WHERE `thread_id` = \''.$threadID.'\' LIMIT 0,1');
 
 $BINFO = $r->fetch_assoc();
 
@@ -115,13 +115,13 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['reply'] &
 				ERROR::report('Could not delete uploaded file after post failed. File: '.$newfile);
 			}
 		} else {
-			if(!$SQL->query('UPDATE `pst_threads` SET `posted` = DEFAULT WHERE `tid` = \''.$BINFO['tid'].'\'')) {
-				ERROR::report('Could not update thread posted time on '.$BINFO['tid']);
+			if(!$SQL->query('UPDATE `pst_threads` SET `posted` = DEFAULT WHERE `thread_id` = \''.$BINFO['thread_id'].'\'')) {
+				ERROR::report('Could not update thread posted time on '.$BINFO['thread_id']);
 			}
-			$refreshq = $SQL->query('SELECT `pid` FROM `pst_posts` WHERE `poster` = \''.$USR['id'].'\' AND `thread` = \''.$threadID.'\' ORDER BY `post_time` DESC LIMIT 0,1');
+			$refreshq = $SQL->query('SELECT `post_id` FROM `pst_posts` WHERE `poster` = \''.$USR['id'].'\' AND `thread` = \''.$threadID.'\' ORDER BY `post_time` DESC LIMIT 0,1');
 			$refresha = $refreshq->fetch_assoc();
 			$_SESSION['postcooldown'] = time();
-			$P->set('headstuff','<meta http-equiv="refresh" content="0;url='.$VAR['base_url'].'/t.php?tid='.$threadID.'#i'.$refresha['pid'].'" />');
+			$P->set('headstuff','<meta http-equiv="refresh" content="0;url='.$VAR['base_url'].'/t.php?thread_id='.$threadID.'#i'.$refresha['post_id'].'" />');
 		}
 	}
 
@@ -147,7 +147,7 @@ ini_restore('upload_max_filesize');
  * just show the index, and report the issue.
  */
 
-$q = $SQL->query('SELECT * FROM `pst_posts` as `p` INNER JOIN (`usr_accounts` as `u` INNER JOIN `usr_online` AS `o` ON `u`.`id` = `o`.`user_id`) ON `p`.`poster` = `u`.`id` WHERE `p`.`thread` = \''.$threadID.'\' ORDER BY `pid` ASC');
+$q = $SQL->query('SELECT * FROM `pst_posts` as `p` INNER JOIN (`user_accounts` as `u` LEFT JOIN `user_online` AS `o` ON `u`.`id` = `o`.`user_id`) ON `p`.`poster` = `u`.`id` WHERE `p`.`thread` = \''.$threadID.'\' ORDER BY `post_id` ASC');
 
 $body = $errorBoxHtml;
 
@@ -158,7 +158,7 @@ $onlineUsers = array_flip($onlineUsers);
 while($ch = $q->fetch_assoc()) {
 	$ch['text'] = $BBC->parse($ch['text']);
 	if(in_array($ch['id'],$onlineUsers)) {$online = TRUE;} else {$online = FALSE;}
-	$derp = new POST($ch['id'], $ch['name'], $ch['avatar'], $ch['level'], $ch['last_ping'], $ch['email'], $ch['pid'], $ch['post_time'], $ch['text'], $ch['image'], $ch['tid']);
+	$derp = new POST($ch['id'], $ch['name'], $ch['avatar'], $ch['level'], $ch['last_ping'], $ch['email'], $ch['post_id'], $ch['post_time'], $ch['text'], $ch['image'], $ch['thread_id']);
 	if($now === 1){$body .= $derp->postbox('firstPost');} else {$body .= $derp->postbox();}
 	if($USR['level'] >= $BINFO['reply']&& $now == 1) {
 		$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new','post','multipart/form-data');
