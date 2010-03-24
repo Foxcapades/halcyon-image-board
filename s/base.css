@@ -278,6 +278,9 @@ a.edtbut:hover {background-position: -16px -112px;}
 	display: block;
 }
 
+.post .charbox.online:hover .charinfo {
+	background:#fff url(../i/online.gif) right center no-repeat;
+}
 .optbox {
 	margin: 5px auto;
 	width: 60px;

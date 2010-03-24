@@ -147,16 +147,18 @@ ini_restore('upload_max_filesize');
  * just show the index, and report the issue.
  */
 
-$q = $SQL->query('SELECT `p`.*, `u`.* FROM `pst_posts` as `p` INNER JOIN `usr_accounts` as `u` ON `p`.`poster` = `u`.`id` WHERE `p`.`thread` = \''.$threadID.'\' ORDER BY `pid` ASC');
+$q = $SQL->query('SELECT * FROM `pst_posts` as `p` INNER JOIN (`usr_accounts` as `u` INNER JOIN `usr_online` AS `o` ON `u`.`id` = `o`.`user_id`) ON `p`.`poster` = `u`.`id` WHERE `p`.`thread` = \''.$threadID.'\' ORDER BY `pid` ASC');
 
 $body = $errorBoxHtml;
 
 
 $body .= '<div id="thread">'."\n";
 $now = 1;
+$onlineUsers = array_flip($onlineUsers);
 while($ch = $q->fetch_assoc()) {
 	$ch['text'] = $BBC->parse($ch['text']);
-	$derp = new POST($ch['id'], $ch['name'], $ch['avatar'], $ch['level'], $ch['email'], $ch['pid'], $ch['post_time'], $ch['text'], $ch['image'], $ch['tid']);
+	if(in_array($ch['id'],$onlineUsers)) {$online = TRUE;} else {$online = FALSE;}
+	$derp = new POST($ch['id'], $ch['name'], $ch['avatar'], $ch['level'], $ch['last_ping'], $ch['email'], $ch['pid'], $ch['post_time'], $ch['text'], $ch['image'], $ch['tid']);
 	if($now === 1){$body .= $derp->postbox('firstPost');} else {$body .= $derp->postbox();}
 	if($USR['level'] >= $BINFO['reply']&& $now == 1) {
 		$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new','post','multipart/form-data');
