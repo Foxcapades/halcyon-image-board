@@ -29,7 +29,7 @@ if(!is_numeric($threadID)) {
 	index();
 }
 
-$r = $SQL->query('SELECT * FROM `pst_threads` `p` INNER JOIN `ste_boards` `s` ON `p`.`board_id` = `s`.`id` WHERE `thread_id` = \''.$threadID.'\' LIMIT 0,1');
+$r = $SQL->query('SELECT * FROM `pst_threads` INNER JOIN `ste_boards` USING (`board_id`) WHERE `thread_id` = \''.$threadID.'\' LIMIT 0,1');
 
 $BINFO = $r->fetch_assoc();
 
@@ -46,7 +46,7 @@ $P->set('navbar',navbuild($SQL));
 * New Post Handler
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['reply'] && (time() - $_SESSION['postcooldown']) > 1) {
+if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['reply_min_lvl'] && (time() - $_SESSION['postcooldown']) > 1) {
 
 	$continue = TRUE;
 	$reasons = array();
@@ -106,7 +106,7 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['reply'] &
 
 	if($continue && $_GET['post'] == 'new') {
 
-		if(!$SQL->query('INSERT INTO `pst_posts` (`thread`,`poster`,`image`,`text`) VALUES (\''.$threadID.'\',\''.$USR['id'].'\',\''.$fname.'\',\''.$text.'\')')) {
+		if(!$SQL->query('INSERT INTO `pst_posts` (`thread_id`,`user_id`,`image`,`text`) VALUES (\''.$threadID.'\',\''.$USR['user_id'].'\',\''.$fname.'\',\''.$text.'\')')) {
 			$continue = FALSE;
 			$reasons[] = 'Database error, could not create post. Please try again later.';
 			ERROR::report('Could not create post, attempting to remove traces. DB said: '.$SQL->error);
@@ -118,7 +118,7 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['reply'] &
 			if(!$SQL->query('UPDATE `pst_threads` SET `posted` = DEFAULT WHERE `thread_id` = \''.$BINFO['thread_id'].'\'')) {
 				ERROR::report('Could not update thread posted time on '.$BINFO['thread_id']);
 			}
-			$refreshq = $SQL->query('SELECT `post_id` FROM `pst_posts` WHERE `poster` = \''.$USR['id'].'\' AND `thread` = \''.$threadID.'\' ORDER BY `post_time` DESC LIMIT 0,1');
+			$refreshq = $SQL->query('SELECT `post_id` FROM `pst_posts` WHERE `user_id` = \''.$USR['user_id'].'\' AND `thread_id` = \''.$threadID.'\' ORDER BY `post_time` DESC LIMIT 0,1');
 			$refresha = $refreshq->fetch_assoc();
 			$_SESSION['postcooldown'] = time();
 			$P->set('headstuff','<meta http-equiv="refresh" content="0;url='.$VAR['base_url'].'/t.php?thread_id='.$threadID.'#i'.$refresha['post_id'].'" />');
@@ -147,7 +147,16 @@ ini_restore('upload_max_filesize');
  * just show the index, and report the issue.
  */
 
-$q = $SQL->query('SELECT * FROM `pst_posts` as `p` INNER JOIN (`user_accounts` as `u` LEFT JOIN `user_online` AS `o` ON `u`.`id` = `o`.`user_id`) ON `p`.`poster` = `u`.`id` WHERE `p`.`thread` = \''.$threadID.'\' ORDER BY `post_id` ASC');
+$q = $SQL->query('
+SELECT *
+FROM `pst_posts` as `p`
+LEFT JOIN (
+	`user_accounts` as `u`
+	LEFT JOIN `user_online` AS `o`
+	USING (`user_id`)
+) USING (`user_id`)
+WHERE `p`.`thread_id` = \''.$threadID.'\'
+ORDER BY `post_id` ASC');
 
 $body = $errorBoxHtml;
 
@@ -156,11 +165,16 @@ $body .= '<div id="thread">'."\n";
 $now = 1;
 $onlineUsers = array_flip($onlineUsers);
 while($ch = $q->fetch_assoc()) {
+	if($ch['user_id'] == NULL || $ch['user_id'] == '') {
+		$ch['user_id'] = '0000000001';
+		$ch['name'] = 'Anonymous';
+		$ch['level'] = 1;
+	}
 	$ch['text'] = $BBC->parse($ch['text']);
-	if(in_array($ch['id'],$onlineUsers)) {$online = TRUE;} else {$online = FALSE;}
-	$derp = new POST($ch['id'], $ch['name'], $ch['avatar'], $ch['level'], $ch['last_ping'], $ch['email'], $ch['post_id'], $ch['post_time'], $ch['text'], $ch['image'], $ch['thread_id']);
+	if(in_array($ch['user_id'],$onlineUsers)) {$online = TRUE;} else {$online = FALSE;}
+	$derp = new POST($ch['user_id'], $ch['name'], $ch['avatar'], $ch['level'], $ch['last_ping'], $ch['email'], $ch['post_id'], $ch['post_time'], $ch['text'], $ch['image'], $ch['thread_id']);
 	if($now === 1){$body .= $derp->postbox('firstPost');} else {$body .= $derp->postbox();}
-	if($USR['level'] >= $BINFO['reply']&& $now == 1) {
+	if($USR['level'] >= $BINFO['reply_min_lvl']&& $now == 1) {
 		$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new','post','multipart/form-data');
 		$postForm->fieldStart('Reply');
 		$postForm->inputTextarea('text','Text',FALSE,30,3,FALSE,'fullwidth');

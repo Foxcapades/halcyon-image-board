@@ -79,7 +79,7 @@ case 'login':
 			} else {
 
 				$userRow = $selUser->fetch_row();
-				$_SESSION['uid'] = $userRow[0];
+				$_SESSION['user_id'] = $userRow[0];
 				$_SESSION['password'] = $userRow[3];
 				$HERE = (strpos($_SESSION['return'],$VAR['base_url']) === FALSE) ? $VAR['base_url'] : $_SESSION['return'];
 				$P->set('headstuff','<meta http-equiv="refresh" content="3;url='.$HERE.'" />');
