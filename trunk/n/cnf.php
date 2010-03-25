@@ -143,6 +143,8 @@ if ($userInfoResult->num_rows == 0) {
 	$_SESSION['user_id'] = 1;
 	$userInfoResult = $SQL->query('SELECT * FROM `user_accounts` WHERE `user_id`=\'1\'');
 }
+if($userInfoResult->num_rows > 0)
+{
 /**
  * User Information
  *
@@ -151,7 +153,8 @@ if ($userInfoResult->num_rows == 0) {
  *
  * @var array
  */
-$USR = $userInfoResult->fetch_assoc();
+	$USR = $userInfoResult->fetch_assoc();
+}
 /**
  * As you can probably guess by the name of this function, it builds the navbar.
  * In all reality it just assembles the links in a list format for later use.
@@ -224,8 +227,11 @@ function navbuild(&$sql) {
  */
 $cheese = $SQL->query('SELECT * FROM `ste_vars`');
 $VAR = array();
-while($nim = $cheese->fetch_assoc()) {
-	$VAR[$nim['key']]=$nim['value'];
+if($cheese->num_rows > 0)
+{
+	while($nim = $cheese->fetch_assoc()) {
+		$VAR[$nim['key']]=$nim['value'];
+	}
 }
 //TODO: move this to a more fitting location:
 $P->set('base_url',$VAR['base_url']);
@@ -235,8 +241,11 @@ $P->set('imagedir',$VAR['updir']);
 $tempList = array();
 
 $levelListResult = $SQL->query('SELECT * FROM `user_levels`');
-while($returnValue=$levelListResult->fetch_assoc()) {
-	$tempList[$returnValue['level']] = $returnValue['rank'];
+if($levelListResult->num_rows > 0)
+{
+	while($returnValue=$levelListResult->fetch_assoc()) {
+		$tempList[$returnValue['level']] = $returnValue['rank'];
+	}
 }
 
 $VAR['userLevelList'] = $tempList;
