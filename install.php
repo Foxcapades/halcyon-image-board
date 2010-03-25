@@ -20,14 +20,14 @@ $welcomepost = 'Welcome to [url=http://bbs.halcyonbbs.com]Halcyon Image Board[/u
 
 Please remember this is not a finished image board, and [b]SHOULD NOT BE USED FOR ANYTHING BUT TESTING[/b].  Many functions, especially in the admin panel are not finished yet.
 
-Also, this release will more than likely not be at all compatable with any later release. This is being released for the few people that are helping test and come up with ideas.
+Also, this release will more than likely not be at all compatible with any later release. This is being released for the few people that are helping test and come up with ideas.
 
-That being said, here\'s
+That being said, here&#039;s
 [b]HOW TO EDIT THIS BOARD[/b]
 If you are logged in to the administrator account, you should see a link on the right of the navbar that says "APanel".  Click that link and you will be brought to the administrative control panel.  Once you are there, click either "Edit Board" to edit and keep this board, or "Delete Board" to remove this board completely.
 If you choose to keep this board, this post will remain, as there is no function to delete individual posts or threads yet.
 
-Everything else in the admin panel should be fairly self explanitory.
+Everything else in the admin panel should be fairly self explanatory.
 
 Thank you for choosing Halcyon BBS';
 if(!file_exists('c/nfr.php'))
@@ -68,7 +68,6 @@ $fileList=array(
 'i/crown-silver.png',
 'n/cnf.php',
 'n/index.html',
-'q/dummy.sql',
 's/base.css',
 's/html.css',
 's/bbcd.css',
@@ -360,11 +359,11 @@ PRIMARY KEY (`level`)
 		$html .= 'Adding Default Site Vars: ';
 		if(!$SQL->query(
 'INSERT INTO `ste_vars` (`key`, `value`) VALUES
-(\'site_title\', \'Halcyon Image Board\'),
-(\'base_header\', \'Halcyon Image Board\'),
-(\'base_mes\', \'Rockin\'\' the alpha\'),
+(\'site_title\', \''.$_SESSION['array']['ttl'].'\'),
+(\'base_header\', \''.$_SESSION['array']['shd'].'\'),
+(\'base_mes\', \''.$_SESSION['array']['bms'].'\'),
 (\'board_active\', \'1\'),
-(\'base_url\', \'http://www.myURL.com\'),
+(\'base_url\', \''.$_SESSION['array']['url'].'\'),
 (\'updir\', \'i/up/images/\'),
 (\'avdir\', \'i/av/\'),
 (\'thdir\', \'i/up/thumbs/\'),
@@ -383,7 +382,7 @@ PRIMARY KEY (`level`)
 		if(!$SQL->query(
 'INSERT INTO `user_accounts` (`user_id`, `name`, `level`, `email`, `password`, `posts`, `avatar`) VALUES
 (0000000001, \'Anonymous\', 1, \'\', \'\', 0, \'anon.png\'),
-(0000000002, \''.$_SESSION['array']['unm'].'\', \'99\', \''.$_SESSION['array']['umi'].'\',\''.$_SESSION['array']['umi'].'\',\'0\',\'anon.png\')'
+(0000000002, \''.$_SESSION['array']['anm'].'\', \'99\', \''.$_SESSION['array']['ami'].'\',\''.$_SESSION['array']['aps'].'\',\'0\',\'anon.png\')'
 		))
 		{
 			$html .= '<span class="error">FAILED</span>';
@@ -546,7 +545,10 @@ PRIMARY KEY (`level`)
 							'anm' => $admin_name,
 							'aps' => md5($admin_pass),
 							'ami' => $admin_mail,
-							'url' => $base_url
+							'url' => $base_url,
+							'ttl' => $site_title,
+							'shd' => $site_header,
+							'bms' => $base_mes
 						);
 						break;
 					}
