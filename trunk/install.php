@@ -16,6 +16,20 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 session_start();
+$welcomepost = 'Welcome to [url=http://bbs.halcyonbbs.com]Halcyon Image Board[/url] Pre-Alpha 2.
+
+Please remember this is not a finished image board, and [b]SHOULD NOT BE USED FOR ANYTHING BUT TESTING[/b].  Many functions, especially in the admin panel are not finished yet.
+
+Also, this release will more than likely not be at all compatable with any later release. This is being released for the few people that are helping test and come up with ideas.
+
+That being said, here\'s
+[b]HOW TO EDIT THIS BOARD[/b]
+If you are logged in to the administrator account, you should see a link on the right of the navbar that says "APanel".  Click that link and you will be brought to the administrative control panel.  Once you are there, click either "Edit Board" to edit and keep this board, or "Delete Board" to remove this board completely.
+If you choose to keep this board, this post will remain, as there is no function to delete individual posts or threads yet.
+
+Everything else in the admin panel should be fairly self explanitory.
+
+Thank you for choosing Halcyon BBS';
 if(!file_exists('c/nfr.php'))
 {
 	die('<br><br><h1>Fatal Error</h1><p>Could Not find one of the required files, please re-upload all files.</p>');
@@ -84,6 +98,70 @@ $page		= new templateForge();
 $html		= '<div style="width:750px; margin:0px auto;">';
 $vars		= array('title'=>'Halcyon Image Board Installation');
 $ok			= TRUE;
+function check_email_address($email)
+{
+	$isValid = true;
+	$atIndex = strrpos($email, "@");
+	if (is_bool($atIndex) && !$atIndex)
+	{
+		$isValid = false;
+	}
+	else
+	{
+		$domain = substr($email, $atIndex+1);
+		$local = substr($email, 0, $atIndex);
+		$localLen = strlen($local);
+		$domainLen = strlen($domain);
+		if ($localLen < 1 || $localLen > 64)
+		{
+			// local part length exceeded
+			$isValid = false;
+		}
+		else if ($domainLen < 1 || $domainLen > 255)
+		{
+			// domain part length exceeded
+			$isValid = false;
+		}
+		else if ($local[0] == '.' || $local[$localLen-1] == '.')
+		{
+			// local part starts or ends with '.'
+			$isValid = false;
+		}
+		else if (preg_match('/\\.\\./', $local))
+		{
+			// local part has two consecutive dots
+			$isValid = false;
+		}
+		else if (!preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain))
+		{
+			// character not valid in domain part
+			$isValid = false;
+		}
+		else if (preg_match('/\\.\\./', $domain))
+		{
+			// domain part has two consecutive dots
+			$isValid = false;
+		}
+		else if
+(!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/',
+					  str_replace("\\\\","",$local)))
+		{
+			// character not valid in local part unless
+			// local part is quoted
+			if (!preg_match('/^"(\\\\"|[^"])+"$/',
+				 str_replace("\\\\","",$local)))
+			{
+				$isValid = false;
+			}
+		}
+		if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A")))
+		{
+			// domain not found in DNS
+			$isValid = false;
+		}
+	}
+	return $isValid;
+}
 
 switch($_SESSION['steps'])
 {
@@ -93,7 +171,16 @@ switch($_SESSION['steps'])
 		$vars['mes']= 'Almost finished...';
 		$html .= '<div class="box">Attempting to create tables...</div><br />';
 		$html .= 'Creating Post table: ';
-		if(!$SQL->query('CREATE TABLE IF NOT EXISTS `pst_posts` (`post_id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT, `thread_id` int(10) unsigned zerofill NOT NULL, `user_id` int(10) unsigned zerofill NOT NULL, `post_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `image` varchar(255) NOT NULL, `text` text NOT NULL, PRIMARY KEY (`post_id`) ) ENGINE=MyISAM  DEFAULT CHARSET=latin1'))
+		if(!$SQL->query(
+'CREATE TABLE `pst_posts` (
+`post_id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`thread_id` int(10) unsigned zerofill NOT NULL,
+`user_id` int(10) unsigned zerofill NOT NULL,
+`post_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`image` varchar(255) NOT NULL, `text` text NOT NULL,
+PRIMARY KEY (`post_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1'
+		))
 		{
 			$html .= '<span class="error">FAILED</span>';
 			$ok = FALSE;
@@ -104,7 +191,17 @@ switch($_SESSION['steps'])
 		}
 		$html .= '<br />';
 		$html .= 'Creating Thread table: ';
-		if(!$SQL->query('CREATE TABLE IF NOT EXISTS `pst_threads` (`thread_id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,`board_id` mediumint(8) unsigned zerofill NOT NULL,`key` varchar(10) DEFAULT NULL,`title` varchar(128) NOT NULL,`user` int(10) unsigned zerofill NOT NULL,`posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY (`thread_id`),KEY `key` (`key`)) ENGINE=MyISAM  DEFAULT CHARSET=latin1'))
+		if(!$SQL->query(
+'CREATE TABLE `pst_threads` (
+`thread_id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`board_id` mediumint(8) unsigned zerofill NOT NULL,
+`key` varchar(10) DEFAULT NULL,`title` varchar(128) NOT NULL,
+`user` int(10) unsigned zerofill NOT NULL,
+`posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`thread_id`),
+KEY `key` (`key`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1'
+		))
 		{
 			$html .= '<span class="error">FAILED</span>';
 			$ok = FALSE;
@@ -115,7 +212,21 @@ switch($_SESSION['steps'])
 		}
 		$html .= '<br />';
 		$html .= 'Creating Board table: ';
-		if(!$SQL->query('CREATE TABLE IF NOT EXISTS `ste_boards` (`board_id` mediumint(8) unsigned zerofill NOT NULL AUTO_INCREMENT,`dir` varchar(10) NOT NULL,`name` varchar(32) NOT NULL,`mes` varchar(128) NOT NULL,`hidden` enum(\'0\',\'1\') NOT NULL DEFAULT \'0\',`disabled` enum(\'0\',\'1\') NOT NULL DEFAULT \'0\',`post_min_lvl` mediumint(2) NOT NULL,`view_min_lvl` mediumint(2) NOT NULL,`reply_min_lvl` mediumint(2) NOT NULL DEFAULT \'0\',PRIMARY KEY (`board_id`),UNIQUE KEY `dir` (`dir`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8'))
+		if(!$SQL->query(
+'CREATE TABLE `ste_boards` (
+`board_id` mediumint(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`dir` varchar(10) NOT NULL,
+`name` varchar(32) NOT NULL,
+`mes` varchar(128) NOT NULL,
+`hidden` enum(\'0\',\'1\') NOT NULL DEFAULT \'0\',
+`disabled` enum(\'0\',\'1\') NOT NULL DEFAULT \'0\',
+`post_min_lvl` mediumint(2) NOT NULL,
+`view_min_lvl` mediumint(2) NOT NULL,
+`reply_min_lvl` mediumint(2) NOT NULL DEFAULT \'0\',
+PRIMARY KEY (`board_id`),
+UNIQUE KEY `dir` (`dir`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8'
+		))
 		{
 			$html .= '<span class="error">FAILED</span>';
 			$ok = FALSE;
@@ -126,7 +237,21 @@ switch($_SESSION['steps'])
 		}
 		$html .= '<br />';
 		$html .= 'Creating NavBar table: ';
-		if(!$SQL->query('CREATE TABLE IF NOT EXISTS `ste_navbar` (`id` smallint(5) unsigned zerofill NOT NULL AUTO_INCREMENT,`position` tinyint(3) unsigned NOT NULL,`href` varchar(255) NOT NULL,`title` varchar(255) NOT NULL,`text` varchar(255) NOT NULL,`class` varchar(48) NOT NULL,`usr_thresh` tinyint(3) unsigned NOT NULL DEFAULT \'0\',`usr_max` tinyint(4) NOT NULL DEFAULT \'0\',`board_id` mediumint(8) unsigned zerofill NOT NULL,PRIMARY KEY (`id`),UNIQUE KEY `position` (`position`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8'))
+		if(!$SQL->query(
+'CREATE TABLE `ste_navbar` (
+`id` smallint(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`position` tinyint(3) unsigned NOT NULL,
+`href` varchar(255) NOT NULL,
+`title` varchar(255) NOT NULL,
+`text` varchar(255) NOT NULL,
+`class` varchar(48) NOT NULL,
+`usr_thresh` tinyint(3) unsigned NOT NULL DEFAULT \'0\',
+`usr_max` tinyint(4) NOT NULL DEFAULT \'0\',
+`board_id` mediumint(8) unsigned zerofill NOT NULL,
+PRIMARY KEY (`id`),
+UNIQUE KEY `position` (`position`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8'
+		))
 		{
 			$html .= '<span class="error">FAILED</span>';
 			$ok = FALSE;
@@ -137,7 +262,13 @@ switch($_SESSION['steps'])
 		}
 		$html .= '<br />';
 		$html .= 'Creating SiteVars table: ';
-		if(!$SQL->query('CREATE TABLE IF NOT EXISTS `ste_vars` (`key` varchar(64) NOT NULL,`value` varchar(255) NOT NULL,PRIMARY KEY (`key`)) ENGINE=MyISAM DEFAULT CHARSET=utf8'))
+		if(!$SQL->query(
+'CREATE TABLE `ste_vars` (
+`key` varchar(64) NOT NULL,
+`value` varchar(255) NOT NULL,
+PRIMARY KEY (`key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8'
+		))
 		{
 			$html .= '<span class="error">FAILED</span>';
 			$ok = FALSE;
@@ -148,7 +279,19 @@ switch($_SESSION['steps'])
 		}
 		$html .= '<br />';
 		$html .= 'Creating User Accounts table: ';
-		if(!$SQL->query('CREATE TABLE IF NOT EXISTS `user_accounts` (`user_id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,`name` varchar(32) NOT NULL,`level` smallint(2) NOT NULL DEFAULT \'2\',`email` varchar(48) NOT NULL,`password` varchar(32) NOT NULL,`posts` int(6) unsigned NOT NULL,`avatar` varchar(128) NOT NULL DEFAULT \'anon.png\',PRIMARY KEY (`user_id`),UNIQUE KEY `name` (`name`,`email`)) ENGINE=MyISAM  DEFAULT CHARSET=latin1'))
+		if(!$SQL->query(
+'CREATE TABLE `user_accounts` (
+`user_id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`name` varchar(32) NOT NULL,
+`level` smallint(2) NOT NULL DEFAULT \'2\',
+`email` varchar(48) NOT NULL,
+`password` varchar(32) NOT NULL,
+`posts` int(6) unsigned NOT NULL,
+`avatar` varchar(128) NOT NULL DEFAULT \'anon.png\',
+PRIMARY KEY (`user_id`),
+UNIQUE KEY `name` (`name`,`email`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1'
+		))
 		{
 			$html .= '<span class="error">FAILED</span>';
 			$ok = FALSE;
@@ -159,7 +302,13 @@ switch($_SESSION['steps'])
 		}
 		$html .= '<br />';
 		$html .= 'Creating User Level table: ';
-		if(!$SQL->query('CREATE TABLE IF NOT EXISTS `user_levels` (`level` smallint(6) NOT NULL,`rank` varchar(64) NOT NULL,PRIMARY KEY (`level`)) ENGINE=MyISAM DEFAULT CHARSET=latin1'))
+		if(!$SQL->query(
+'CREATE TABLE `user_levels` (
+`level` smallint(6) NOT NULL,
+`rank` varchar(64) NOT NULL,
+PRIMARY KEY (`level`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1'
+		))
 		{
 			$html .= '<span class="error">FAILED</span>';
 			$ok = FALSE;
@@ -170,7 +319,13 @@ switch($_SESSION['steps'])
 		}
 		$html .= '<br />';
 		$html .= 'Creating Online Users table: ';
-		if(!$SQL->query('CREATE TABLE IF NOT EXISTS `user_online` (`user_id` int(10) unsigned zerofill NOT NULL,`last_ping` int(11) NOT NULL,`current_ip` varchar(16) NOT NULL) ENGINE=MyISAM DEFAULT CHARSET=latin1'))
+		if(!$SQL->query(
+'CREATE TABLE `user_online` (
+`user_id` int(10) unsigned zerofill NOT NULL,
+`last_ping` int(11) NOT NULL,
+`current_ip` varchar(16) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1'
+		))
 		{
 			$html .= '<span class="error">FAILED</span>';
 			$ok = FALSE;
@@ -180,7 +335,7 @@ switch($_SESSION['steps'])
 			$html .= '<span class="green">OK</span>';
 		}
 		$html .= '<br /><br />';
-		$html .= '<div class="box">Attempting to insert default Values into the database...';
+		$html .= '<div class="box">Attempting to insert default Values into the database...</div>';
 		$html .= '<br />';
 		$html .= 'Adding NavBar Links: ';
 		if(!$SQL->query(
@@ -190,7 +345,8 @@ switch($_SESSION['steps'])
 (00005, 252, \'usr.php?mode=uac\', \'Account Control Panel\', \'Account\', \'\', 2, 0, 00000000),
 (00007, 254, \'usr.php?mode=logout\', \'Logout\', \'Logout\', \'\', 2, 0, 00000000),
 (00008, 251, \'faq.php\', \'Frequently Asked Questions\', \'FAQ\', \'\', 0, 0, 00000000),
-(00009, 255, \'admin.php\', \'Administration Panel\', \'APanel\', \'\', 70, 0, 00000000)'
+(00009, 255, \'admin.php\', \'Administration Panel\', \'APanel\', \'\', 70, 0, 00000000),
+(00010, 1, \'b.php?board=Welcome\', \'Sample Board\', \'Welcome\', \'\', 1, 0, 00000001)'
 		))
 		{
 			$html .= '<span class="error">FAILED</span>';
@@ -226,7 +382,50 @@ switch($_SESSION['steps'])
 		$html .= 'Adding Users: ';
 		if(!$SQL->query(
 'INSERT INTO `user_accounts` (`user_id`, `name`, `level`, `email`, `password`, `posts`, `avatar`) VALUES
-(0000000001, \'Anonymous\', 1, \'\', \'\', 0, \'anon.png\')'
+(0000000001, \'Anonymous\', 1, \'\', \'\', 0, \'anon.png\'),
+(0000000002, \''.$_SESSION['array']['unm'].'\', \'99\', \''.$_SESSION['array']['umi'].'\',\''.$_SESSION['array']['umi'].'\',\'0\',\'anon.png\')'
+		))
+		{
+			$html .= '<span class="error">FAILED</span>';
+			$ok = FALSE;
+		}
+		else
+		{
+			$html .= '<span class="green">OK</span>';
+		}
+		$html .= '<br />';
+		$html .= 'Adding Example Board: ';
+		if(!$SQL->query(
+'INSERT INTO `ste_boards` (`board_id`, `dir`, `name`, `mes`, `hidden`, `disabled`, `post_min_lvl`, `view_min_lvl`, `reply_min_lvl`) VALUES
+(00000001, \'Welcome\', \'Sample Board\', \'You can edit this board in the control panel\', \'0\', \'0\', \'2\', \'1\', \'2\')'
+		))
+		{
+			$html .= '<span class="error">FAILED</span>';
+			$ok = FALSE;
+		}
+		else
+		{
+			$html .= '<span class="green">OK</span>';
+		}
+		$html .= '<br />';
+		$html .= 'Adding Example Thread: ';
+		if(!$SQL->query(
+'INSERT INTO `pst_threads` (`thread_id`, `board_id`, `title`, `user`) VALUES
+(0000000001, 00000001, \'Welcome to your new board!\', 0000000002)'
+		))
+		{
+			$html .= '<span class="error">FAILED</span>';
+			$ok = FALSE;
+		}
+		else
+		{
+			$html .= '<span class="green">OK</span>';
+		}
+		$html .= '<br />';
+		$html .= 'Adding Example Post: ';
+		if(!$SQL->query(
+'INSERT INTO `pst_posts` (`post_id`, `thread_id`, `user_id`, `image`, `text`) VALUES
+(0000000001, 0000000001, 0000000002, \'sample.jpg\', \''.$welcomepost.'\')'
 		))
 		{
 			$html .= '<span class="error">FAILED</span>';
@@ -258,9 +457,9 @@ switch($_SESSION['steps'])
 		}
 
 		$_SESSION['steps'] = 'admin';
-		$html .= '<div class="green">Tables Installed</div>';
+		$html .= ($ok) ? '<div class="green">Tables Installed</div>' : '<div class="error">Something went wrong</div>';
 		$html .= '<br />';
-		$html .= '<a href="install.php" title="continue">Create Admin Account</a>';
+		$html .= '<a href="'.$_SESSION['array']['url'].'" title="continue">Continue</a>';
 		break;
 
 	case '1492':
@@ -287,28 +486,72 @@ switch($_SESSION['steps'])
 			$admin_pass	= $_POST['admin_pass'];
 			$admin_veri	= $_POST['admin_veri'];
 			$admin_mail	= $_POST['admin_mail'];
-			@$sql = new mysqli($host,$username,$password,$database,$port);
-			if($sql->connect_error)
+			if(strlen($site_title) < 4)
 			{
-				$html .= '<div class="error">Connect Error ('.$sql->connect_errno.') '.$sql->connect_error.'</div>';
+				$ok = FALSE;
+				$html .= '<div class="error">The Site Title must be at least 4 characters.</div>';
 			}
-			else
+			if(strlen($site_header) < 4)
 			{
-				$html .= '<div class="green">DATABASE CONNECTION SUCCESSFUL</div>';
-				$html .= '<p class="box">Attempting to write login info to the config file.</p>';
-				$conf = file_get_contents('n/cnf.php');
-				$with = array('\''.$host.'\'','\''.$username.'\'','\''.$password.'\'','\''.$database.'\'','\''.$port.'\'');
-				$replace = array('REPLACE_HOST_NAME','REPLACE_USERNAME','REPLACE_PASSWORD','REPLACE_DATABASE_NAME','REPLACE_DATABASE_PORT');
-				$newconf = str_replace($replace,$with,$conf);
-				if(file_put_contents('n/cnf.php',$newconf))
+				$ok = FALSE;
+				$html .= '<div class="error">The Site header must be at least 4 characters.</div>';
+			}
+			if(!preg_match('#^http(?:s)?://[a-z0-9_-]+\.[a-z0-9-_]+(?:\.[a-z0-9-_]+)*(?:/[a-z0-9-_]+)*$#',$base_url))
+			{
+				$ok = FALSE;
+				$html .= '<div class="error">Please enter a valid url.</div>';
+			}
+			if(strlen($admin_name) < 4)
+			{
+				$ok = FALSE;
+				$html .= '<div class="error">Admin username must be at least 4 characters.</div>';
+			}
+			if(strlen($admin_pass) < 4)
+			{
+				$ok = FALSE;
+				$html .= '<div class="error">Admin password must be at least 4 characters.</div>';
+			}
+			if(!check_email_address($admin_mail))
+			{
+				$ok = FALSE;
+				$html .= '<div class="error">Please enter a valid email address.</div>';
+			}
+			if($admin_veri != $admin_pass)
+			{
+				$ok = FALSE;
+				$html .= '<div class="error">Admin passwords did not match</div>';
+			}
+			if($ok)
+			{
+				@$sql = new mysqli($host,$username,$password,$database,$port);
+				if($sql->connect_error)
 				{
-					$html .= '<div class="green">Configuration successfully altered.</div>';
-					$html .= '<br />';
-					$html .= '<a href="install.php" title="continue">Install Tables</a>';
-					$_SESSION['steps'] = 'install';
-					break;
+					$html .= '<div class="error">Connect Error ('.$sql->connect_errno.') '.$sql->connect_error.'</div>';
 				}
-				$html .= '<div ="error">Could not write to the config file, please check your server\'s permissions and try again.</div>';
+				else
+				{
+					$html .= '<div class="green">DATABASE CONNECTION SUCCESSFUL</div>';
+					$html .= '<p class="box">Attempting to write login info to the config file.</p>';
+					$conf = file_get_contents('n/cnf.php');
+					$with = array('\''.$host.'\'','\''.$username.'\'','\''.$password.'\'','\''.$database.'\'','\''.$port.'\'');
+					$replace = array('REPLACE_HOST_NAME','REPLACE_USERNAME','REPLACE_PASSWORD','REPLACE_DATABASE_NAME','REPLACE_DATABASE_PORT');
+					$newconf = str_replace($replace,$with,$conf);
+					if(file_put_contents('n/cnf.php',$newconf))
+					{
+						$html .= '<div class="green">Configuration successfully altered.</div>';
+						$html .= '<br />';
+						$html .= '<a href="install.php" title="continue">Install Tables</a>';
+						$_SESSION['steps'] = 'install';
+						$_SESSION['array'] = array(
+							'anm' => $admin_name,
+							'aps' => md5($admin_pass),
+							'ami' => $admin_mail,
+							'url' => $base_url
+						);
+						break;
+					}
+					$html .= '<div ="error">Could not write to the config file, please check your server\'s permissions and try again.</div>';
+				}
 			}
 		}
 		$vars['h1'] = 'Site Setup';
@@ -339,9 +582,9 @@ switch($_SESSION['steps'])
 		$formBase->inputHTML('<div>');
 		$formBase->inputText('admin_name','Admin Username',$admin_name);
 		$formBase->inputHTML('<div class="admfexp">The username of the admin account on the board.</div></div><div>');
-		$formBase->inputText('admin_pass','Admin Password',$admin_pass);
+		$formBase->inputPassword('admin_pass','Admin Password',$admin_pass);
 		$formBase->inputHTML('<div class="admfexp">The password for the admin account.</div></div><div>');
-		$formBase->inputText('admin_veri','Verify Password',$admin_veri);
+		$formBase->inputPassword('admin_veri','Verify Password',$admin_veri);
 		$formBase->inputHTML('<div class="admfexp">Verify the password.</div></div><div>');
 		$formBase->inputText('admin_mail','Admin Email',$admin_mail);
 		$formBase->inputHTML('<div class="admfexp">Email address for the admin account (nothing is sent here by default).</div></div>');
@@ -400,7 +643,7 @@ switch($_SESSION['steps'])
 		{
 			$html .= '<p>It appears that everything checks out, click the link below to continue to the next step.</p><br />';
 			$_SESSION['steps'] = '1492';
-			$html .= '<a href="install.php" title="continue to next step">Continue to set up database</a>';
+			$html .= '<a href="install.php" title="continue to next step">Continue to setup site</a>';
 		}
 		else
 		{
