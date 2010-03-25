@@ -22,7 +22,9 @@
  * HTML Tag Stylesheet
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+a {
+	color:#A91D1D;
+}
 fieldset {
 	padding: 5px;
 	border: none;

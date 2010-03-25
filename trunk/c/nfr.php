@@ -851,6 +851,7 @@ public function fieldEnd($return=FALSE)
 {
 	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$html = "</fieldset>\n\n";
+	$this->html .= $html;
 	$this->fieldOpen = FALSE;
 }
 /**
