@@ -30,31 +30,31 @@ If you choose to keep this board, this post will remain, as there is no function
 Everything else in the admin panel should be fairly self explanatory.
 
 Thank you for choosing Halcyon BBS';
-if(!file_exists('c/nfr.php'))
+if(!file_exists('classes/nfr.php'))
 {
 	die('<br><br><h1>Fatal Error</h1><p>Could Not find one of the required files, please re-upload all files.</p>');
 }
 else
 {
-	require_once 'c/nfr.php';
+	require_once 'classes/nfr.php';
 }
-if(!file_exists('c/pcc.php'))
+if(!file_exists('classes/pcc.php'))
 {
 	die('<br><br><h1>Fatal Error</h1><p>Could not find one of the required files, please re-upload all files.</p>');
 }
 else
 {
-	require_once 'c/pcc.php';
+	require_once 'classes/pcc.php';
 }
 $fileList=array(
-'c/bbc.php',
-'c/bbsrc.js',
-'c/err.php',
-'c/frm.php',
-'c/index.html',
-'c/nfr.php',
-'c/pcc.php',
-'c/pst.php',
+'classes/bbc.php',
+'classes/bbsrc.js',
+'classes/err.php',
+'classes/frm.php',
+'classes/index.html',
+'classes/nfr.php',
+'classes/pcc.php',
+'classes/pst.php',
 'i/av/index.html',
 'i/av/anon.png',
 'i/up/index.html',
@@ -67,7 +67,7 @@ $fileList=array(
 'i/crown.png',
 'i/crown-silver.png',
 'config/config.php',
-'n/index.html',
+'config/index.php',
 's/base.css',
 's/html.css',
 's/bbcd.css',
@@ -601,7 +601,7 @@ PRIMARY KEY (`level`)
 		$vars['h1'] = 'Verifying Permissions';
 		$vars['mes'] = 'Checking to see if we can create and delete files on the server';
 		$html .= 'Attempting to create test file...';
-		if(!file_put_contents('n/potato.flarg','I AM FROM IRELAND'))
+		if(!file_put_contents('potato.flarg','I AM FROM IRELAND'))
 		{
 			$html .= '<span class="error">FAILED</span>';
 			$ok = FALSE;
@@ -612,7 +612,7 @@ PRIMARY KEY (`level`)
 		}
 		$html .= '<br />';
 		$html .= 'Verifying test file...';
-		if(!($contents = file_get_contents('n/potato.flarg')))
+		if(!($contents = file_get_contents('potato.flarg')))
 		{
 			$html .= '<span class="error">FAILED</span>';
 			$ok = FALSE;
@@ -631,7 +631,7 @@ PRIMARY KEY (`level`)
 		}
 		$html .= '<br />';
 		$html .= 'Attempting to delete test file...';
-		if(!unlink('n/potato.flarg'))
+		if(!unlink('potato.flarg'))
 		{
 			$html .= '<span class="error">FAILED</span>';
 			$ok = FALSE;
