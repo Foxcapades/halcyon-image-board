@@ -29,7 +29,8 @@
 <link rel="shortcut icon" href="http://bbs.halcyonbbs.com/favicon.ico" />
 <script type="text/javascript" src="c/bbsrc.js"></script>
 <?=$headstuff; ?>
-<script type="text/javascript">function yeOldeSwitcheroo(id,imagename) {
+<script type="text/javascript">function yeOldeSwitcheroo(id,imagename)
+{
 	var thumbdir
 	thumbdir = "<?=$base_url.'/'.$thumbdir; ?>"+imagename;
 	var maindir

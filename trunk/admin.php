@@ -65,9 +65,14 @@ $menu = array(
 );
 
 $admNav .= '<ul>'."\n";
-foreach($menu as $v) {
-	if($v[0]=='t'){$admNav.='<li class="bold">'.$v[1]."</li>\n";} elseif
-	($v[0]=='a'){
+foreach($menu as $v)
+{
+	if($v[0]=='t')
+	{
+		$admNav.='<li class="bold">'.$v[1]."</li>\n";
+	}
+	elseif($v[0]=='a')
+	{
 		$admNav.='<li><a href="'.$v[1].'" title="'.$v[2].'">'.$v[3]."</a></li>\n";
 	}
 }
@@ -82,7 +87,7 @@ $P->set('adnav',$admNav);
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-function newBoard(&$body)
+function newBoard(&$strPageHTML)
 {
 	extract($GLOBALS);
 
@@ -113,7 +118,7 @@ function newBoard(&$body)
 		$form->inputCheckbox('lkd',1,'Lock the board?');
 		$form->inputCheckbox('hdn',1,'Hide the board?');
 		$form->inputSubmit('Create Board');
-		$body .= $form->formReturn();
+		$strPageHTML .= $form->formReturn();
 	} else {
 		/**
 		 * bnm = board name
@@ -136,7 +141,7 @@ function newBoard(&$body)
 
 		if($ern == 0) {
 
-			$body.= '<div>Attempting to create board...<br />';
+			$strPageHTML.= '<div>Attempting to create board...<br />';
 
 			if($SQL->query('INSERT INTO `ste_boards` VALUES (NULL,\''.$_POST['bnm'].'\',\''.$_POST['bttl'].'\',\''.$_POST['bms'].'\',\''.$_POST['hdn'].'\',\''.$_POST['lkd'].'\',\''.$_POST['plvl'].'\',\''.$_POST['blvl'].'\',\''.$_POST['rlvl'].'\')')) {
 
@@ -155,16 +160,16 @@ function newBoard(&$body)
 						if($SQL->query('INSERT INTO `ste_navbar` VALUES (NULL,\''.$nurm['position'].'\',\'b.php?board='.$_POST['bnm'].'\',\''.$_POST['bttl'].'\',\''.$_POST['bnm'].'\',\'\',\''.$_POST['blvl'].'\',\'0\',\''.$hurp['board_id'].'\')')) {
 
 							// TODO: verify this
-							$body .= '<span class="green">Board Created</span>';
+							$strPageHTML .= '<span class="green">Board Created</span>';
 						}else{
-							$body .= '<span class="error">COULD NOT CREATE BOARD, SQL FAILED3</span>';
+							$strPageHTML .= '<span class="error">COULD NOT CREATE BOARD, SQL FAILED3</span>';
 						}
 					}
 				} else {
-					$body .= '<span class="error">COULD NOT CREATE BOARD, SQL FAILED2</span>';
+					$strPageHTML .= '<span class="error">COULD NOT CREATE BOARD, SQL FAILED2</span>';
 				}
 			} else {
-				$body .= '<span class="error">COULD NOT CREATE BOARD, SQL FAILED<br />Database Said:<br />'.$SQL->error.'</span>';
+				$strPageHTML .= '<span class="error">COULD NOT CREATE BOARD, SQL FAILED<br />Database Said:<br />'.$SQL->error.'</span>';
 			}
 		} else {echo $ern;}
 	}
@@ -177,13 +182,14 @@ function newBoard(&$body)
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-function deleteBoard(&$body)
+function deleteBoard(&$strPageHTML)
 {
 	extract($GLOBALS);
 	// To delete the board we will need to remove all posts and files associated with the board, so it may be slow
 
 	// If the form HAS NOT been submited, then show the form
-	if(!count($_POST) && $_GET['yesdb'] != 'yes') {
+	if(!count($_POST) && $_GET['yesdb'] != 'yes')
+	{
 
 		// Pull a list of all the boards in the database
 		$sqlResult = $SQL->query('SELECT `board_id`,`dir` FROM `ste_boards`');
@@ -194,27 +200,33 @@ function deleteBoard(&$body)
 		$delForm->inputSelect('bdel[]','Select Boards to Delete',TRUE,8);
 
 		// Insert the options into the <select> in the form
-		while($fetch = $sqlResult->fetch_assoc()) {
+		while($fetch = $sqlResult->fetch_assoc())
+		{
 			$delForm->addOption($fetch['dir'],$fetch['board_id']);
 		}
 
 		$delForm->inputSubmit('Delete Selected Board(s)');
 
-		$body .= $delForm->formReturn();
+		$strPageHTML .= $delForm->formReturn();
 
 		// If the form HAS been submited, then handle the input
-	} else {
+	}
+	else
+	{
 
 		// Double check to make sure this is what the user wants to do as
 		//  there is no going back after this...
-		if($_GET['yesdb'] != 'yes') {
+		if($_GET['yesdb'] != 'yes')
+		{
 
 			// Alert the user they cannot undo this
 			$pageHTML = '<p>You are about to delete the following boards:<br /><br /><ul>';
 
 			// Make sure all the given IDs are valid
-			foreach($_POST['bdel'] as $bdel) {
-				if(strlen($bdel) == 8 && $bdel != 0) {
+			foreach($_POST['bdel'] as $bdel)
+			{
+				if(strlen($bdel) == 8 && $bdel != 0)
+				{
 					$boards[] = $bdel;
 				}
 			}
@@ -227,7 +239,8 @@ function deleteBoard(&$body)
 
 			// Get the names of the boards they want to delete
 			$sqlResult = $SQL->query('SELECT `dir` FROM `ste_boards` WHERE `board_id` IN (\''.$boards.'\')');
-			while($fetch = $sqlResult->fetch_assoc()) {
+			while($fetch = $sqlResult->fetch_assoc())
+			{
 				$pageHTML .= '<li>'.$fetch['dir'].'</li>';
 			}
 
@@ -236,28 +249,32 @@ function deleteBoard(&$body)
 			$pageHTML .= '<a href="?mode=bd&yesdb=yes" title="Continue">Continue</a>';
 
 			// Send the built HTML to the body
-			$body .= $pageHTML;
+			$strPageHTML .= $pageHTML;
 
-		} else {
+		}
+		else
+		{
 
 			//ok, were going to delete the board now, lets start by getting a list of whats contained on this board
 
-			// This is going be dumped straight into the $body var
+			// This is going be dumped straight into the $strPageHTML var
 			// Start the output
-			$body .= "<div id=\"innercontent\"><ul>\n";
+			$strPageHTML .= "<div id=\"innercontent\"><ul>\n";
 
 			// Alert the user we are now pulling thread IDs
-			$body .= '	<li>Pulling thread IDs from database...';
+			$strPageHTML .= '	<li>Pulling thread IDs from database...';
 
 			// Pull the threads
-			if($threadQuery = $SQL->query('SELECT * FROM `pst_threads` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')')) {
+			if($threadQuery = $SQL->query('SELECT * FROM `pst_threads` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+			{
 
 				// If all went well alert the user and tell them whats next
-				$body .= '<span class="green">OK.</span></li>'."\n";
-				$body .= '	<li>Sorting thread IDs...';
+				$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
+				$strPageHTML .= '	<li>Sorting thread IDs...';
 
 				// sort out the info we got from the database and store it for later
-				while($threadResult = $threadQuery->fetch_assoc()) {
+				while($threadResult = $threadQuery->fetch_assoc())
+				{
 					$thread[] = $threadResult;
 				}
 
@@ -265,7 +282,8 @@ function deleteBoard(&$body)
 				$thread_ids = '';
 
 				// Build a list of ids for use in the next query and
-				foreach($thread as $k => $v) {
+				foreach($thread as $k => $v)
+				{
 
 					$thread_ids .= ($k > 0) ? '\',\'' : '';
 					$thread_ids .= $v['thread_id'];
@@ -273,87 +291,126 @@ function deleteBoard(&$body)
 				}
 
 				// Keep the user up to date
-				$body .= '<span class="green">OK.</span></li>'."\n";
-				$body .= '	<li>Pulling posts from database...';
+				$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
+				$strPageHTML .= '	<li>Pulling posts from database...';
 
 				// Next query, lets get all the posts contained in the affected threads
-				if($postQuery = $SQL->query('SELECT * FROM `pst_posts` WHERE `thread_id` IN (\''.$thread_ids.'\')')) {
+				if($postQuery = $SQL->query('SELECT * FROM `pst_posts` WHERE `thread_id` IN (\''.$thread_ids.'\')'))
+				{
 
 					// More updates for the user
-					$body .= '<span class="green">OK.</span></li>'."\n";
-					$body .= '	<li>Getting Image Names...';
+					$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
+					$strPageHTML .= '	<li>Getting Image Names...';
 
 					// Store the posts for later
-					while($postResult = $postQuery->fetch_assoc()) {
+					while($postResult = $postQuery->fetch_assoc())
+					{
 						$post[] = $postResult;
 					}
 
 					// get the image names from the affected posts
 					foreach($post as $v) {
 
-						if($v['image'] != '') {$pimg[] = $v['image'];}
+						if($v['image'] != '')
+						{
+							$pimg[] = $v['image'];
+						}
 
 					}
 
 					// more updates
-					$body .= '<span class="green">OK.</span></li>'."\n";
-					$body .= '	<li>Attempting to delete images...<ul>';
+					$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
+					$strPageHTML .= '	<li>Attempting to delete images...<ul>';
 
 					// Lets begin shall we, starting from the lowest part of the chain and moving up...
 					// Attempt to remove all the images that go with our posts
 					foreach($pimg as $v) {
 
 						// The original image
-						$body .= '		<li>'.$VAR['updir'].$v.'...';
-						if(unlink($VAR['updir'].$v)) {
-							$body .= '<span class="green">OK.</span></li>'."\n";
-						} else {
+						$strPageHTML .= '		<li>'.$VAR['updir'].$v.'...';
+						if(unlink($VAR['updir'].$v))
+						{
+							$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
+						}
+						else
+						{
 							ERROR::report('could not delete: '.$VAR['updir'].$v);
-							$body .= '<span class="error">FAILED</span></li>'."\n";
+							$strPageHTML .= '<span class="error">FAILED</span></li>'."\n";
 						}
 
 						// The Thumbnail image
-						$body .= '		<li>'.$VAR['thdir'].$v.'...';
-						if(unlink($VAR['thdir'].$v)) {
-							$body .= '<span class="green">OK.</span></li>'."\n";
-						} else {
+						$strPageHTML .= '		<li>'.$VAR['thdir'].$v.'...';
+						if(unlink($VAR['thdir'].$v))
+						{
+							$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
+						}
+						else
+						{
 							ERROR::report('could not delete: '.$VAR['thdir'].$v);
-							$body .= '<span class="error">FAILED</span></li>'."\n";
+							$strPageHTML .= '<span class="error">FAILED</span></li>'."\n";
 						}
 					}
-					$body .= '</ul></li>';
+					$strPageHTML .= '</ul></li>';
 
-					$body .= '	<li>Attempting to delete posts...';
+					$strPageHTML .= '	<li>Attempting to delete posts...';
 
 					// Now lets hit the posts
-					if($SQL->query('DELETE FROM `pst_posts` WHERE `thread_id` IN (\''.$thread_ids.'\')')) {
-						$body .= '<span class="green">OK.</span></li>'."\n";
-						$body .= '	<li>Attempting to delete threads...';
+					if($SQL->query('DELETE FROM `pst_posts` WHERE `thread_id` IN (\''.$thread_ids.'\')'))
+					{
+						$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
+						$strPageHTML .= '	<li>Attempting to delete threads...';
 
 						// Followed by the threads
-						if($SQL->query('DELETE FROM `pst_threads` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')')) {
-							$body .= '<span class="green">OK.</span></li>'."\n";
-							$body .= '	<li>Attempting to delete board...';
+						if($SQL->query('DELETE FROM `pst_threads` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+						{
+							$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
+							$strPageHTML .= '	<li>Attempting to delete board...';
 
 							// And now the board itself
-							if($SQL->query('DELETE FROM `ste_boards` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')')) {
-								$body .= '<span class="green">OK.</span></li>'."\n";
-								$body .= '	<li>Deleting Link...';
+							if($SQL->query('DELETE FROM `ste_boards` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+							{
+								$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
+								$strPageHTML .= '	<li>Deleting Link...';
 
 								// And the last thing to remove is the link
-								if($SQL->query('DELETE FROM `ste_navbar` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')')) {
-									$body .= '<span class="green">OK.</span></li>'."\n";
-									$body .= '	<li>Verifying...';
+								if($SQL->query('DELETE FROM `ste_navbar` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+								{
+									$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
+									$strPageHTML .= '	<li>Verifying...';
 
 									// Now verify all traces were removed...
 
-								} else {$body .= '<span class="error">FAILED</span></li>';}
-							} else {$body .= '<span class="error">FAILED</span></li>';}
-						} else {$body .= '<span class="error">FAILED</span></li>';}
-					} else {$body .= '<span class="error">FAILED</span></li>';}
-				} else {$body .= '<span class="error">FAILED</span></li>';}
-			} else {$body .= '<span class="error">FAILED</span></li>';}
-			$body .= '</ul></div>';
+								}
+								else
+								{
+									$strPageHTML .= '<span class="error">FAILED</span></li>';
+								}
+							}
+							else
+							{
+								$strPageHTML .= '<span class="error">FAILED</span></li>';
+							}
+						}
+						else
+						{
+							$strPageHTML .= '<span class="error">FAILED</span></li>';
+						}
+					}
+					else
+					{
+						$strPageHTML .= '<span class="error">FAILED</span></li>';
+					}
+				}
+				else
+				{
+					$strPageHTML .= '<span class="error">FAILED</span></li>';
+				}
+			}
+			else
+			{
+				$strPageHTML .= '<span class="error">FAILED</span></li>';
+			}
+			$strPageHTML .= '</ul></div>';
 		}
 	}
 }
@@ -371,50 +428,61 @@ switch($_GET['mode']) {
  * New Board
 **/
 case 'bn':
-	newBoard($body);
+	newBoard($strPageHTML);
 	break;
 
 /**
  * Delete Board
 **/
 case 'bd':
-	deleteBoard($body);
+	deleteBoard($strPageHTML);
 	break;
 
 /**
  * Edit Board
 **/
 case 'bee':
-	if(count($_POST)) {
-		if($_POST['editme'] == 'GO') {
+	if(count($_POST))
+	{
+		if($_POST['editme'] == 'GO')
+		{
 
 			$boardID = $_SESSION['editBoardID'];
 			$cleanArray = array();
 			$_POST['lkd'] += ($_POST['lkd'] != 1) ? 0 : 1;
 			$_POST['hdn'] += ($_POST['hdn'] != 1) ? 0 : 1;
 
-			foreach($_POST as $k => $v) {
+			foreach($_POST as $k => $v)
+			{
 				$cleanArray[$k] = $FORM->scrub_text($v);
 			}
 
 			$neededKeys = array('bnm'=>'','bttl'=>'','bmes'=>'','blvl'=>'','plvl'=>'','rlvl'=>'','hdn'=>'','lkd'=>'');
-			if(count($neededKeys)==count(array_intersect_key($neededKeys,$cleanArray))) {
-				$body .= '<div>Updating Tables:</div>';
-				if($SQL->query('UPDATE `ste_boards` SET `dir` = \''.$cleanArray['bnm'].'\', `name` = \''.$cleanArray['bttl'].'\', `mes` = \''.$cleanArray['bmes'].'\', `hidden` = \''.$cleanArray['hdn'].'\', `disabled` = \''.$cleanArray['lkd'].'\', `post_min_lvl` = \''.$cleanArray['plvl'].'\', `view_min_lvl` = \''.$cleanArray['blvl'].'\', `reply_min_lvl` = \''.$cleanArray['rlvl'].'\' WHERE `board_id` = \''.$boardID.'\'')) {
-					$body .= '<div class="green">Board Table Updated</div>';
-					if($SQL->query('UPDATE `ste_navbar` SET `href` = \'b.php?board='.$cleanArray['bnm'].'\', `title` = \''.$cleanArray['bttl'].'\', `text` = \''.$cleanArray['bnm'].'\', `usr_view_min_lvl` = \''.$cleanArray['blvl'].'\', `usr_max` = \'0\' WHERE `board_id` = \''.$boardID.'\'')) {
-						$body .= '<div class="green">Link Table Updated</div>';
-					} else {
-						$body .= '<div class="error">Could not update table</div>';
+			if(count($neededKeys)==count(array_intersect_key($neededKeys,$cleanArray)))
+			{
+				$strPageHTML .= '<div>Updating Tables:</div>';
+				if($SQL->query('UPDATE `ste_boards` SET `dir` = \''.$cleanArray['bnm'].'\', `name` = \''.$cleanArray['bttl'].'\', `mes` = \''.$cleanArray['bmes'].'\', `hidden` = \''.$cleanArray['hdn'].'\', `disabled` = \''.$cleanArray['lkd'].'\', `post_min_lvl` = \''.$cleanArray['plvl'].'\', `view_min_lvl` = \''.$cleanArray['blvl'].'\', `reply_min_lvl` = \''.$cleanArray['rlvl'].'\' WHERE `board_id` = \''.$boardID.'\''))
+				{
+					$strPageHTML .= '<div class="green">Board Table Updated</div>';
+					if($SQL->query('UPDATE `ste_navbar` SET `href` = \'b.php?board='.$cleanArray['bnm'].'\', `title` = \''.$cleanArray['bttl'].'\', `text` = \''.$cleanArray['bnm'].'\', `usr_view_min_lvl` = \''.$cleanArray['blvl'].'\', `usr_max` = \'0\' WHERE `board_id` = \''.$boardID.'\''))
+					{
+						$strPageHTML .= '<div class="green">Link Table Updated</div>';
+					}
+					else
+					{
+						$strPageHTML .= '<div class="error">Could not update table</div>';
 						ERROR::report('Could not update link table on admin panel edit board.');
 					}
-				} else {
-					$body .= '<div class="error">Could not update table</div>';
+				}
+				else
+				{
+					$strPageHTML .= '<div class="error">Could not update table</div>';
 					ERROR::report('Could not update board table on admin panel edit board.');
 				}
-
-			} else {
-				$body .= '<div class="error">Invalid form field count.</div>';
+			}
+			else
+			{
+				$strPageHTML .= '<div class="error">Invalid form field count.</div>';
 			}
 			unset($boardID,$_SESSION['editBoardID']);
 		}
@@ -431,30 +499,42 @@ case 'bee':
 		$editForm->inputText('bmes','Board Message',$boardInfo['mes']);
 		$editForm->inputSelect('blvl','Access Level');
 
-		foreach($VAR['userLevelList'] as $k => $v) {
-			if($boardInfo['view_min_lvl'] == $k) {
+		foreach($VAR['userLevelList'] as $k => $v)
+		{
+			if($boardInfo['view_min_lvl'] == $k)
+			{
 				$editForm->addOption($v,$k,TRUE);
-			} else {
+			}
+			else
+			{
 				$editForm->addOption($v,$k);
 			}
 		}
 
 		$editForm->inputSelect('plvl','Posting Level');
 
-		foreach($VAR['userLevelList'] as $k => $v) {
-			if($boardInfo['post_min_lvl'] == $k) {
+		foreach($VAR['userLevelList'] as $k => $v)
+		{
+			if($boardInfo['post_min_lvl'] == $k)
+			{
 				$editForm->addOption($v,$k,TRUE);
-			} else {
+			}
+			else
+			{
 				$editForm->addOption($v,$k);
 			}
 		}
 
 		$editForm->inputSelect('rlvl','Reply Level');
 
-		foreach($VAR['userLevelList'] as $k => $v) {
-			if($boardInfo['reply_min_lvl'] == $k) {
+		foreach($VAR['userLevelList'] as $k => $v)
+		{
+			if($boardInfo['reply_min_lvl'] == $k)
+			{
 				$editForm->addOption($v,$k,TRUE);
-			} else {
+			}
+			else
+			{
 				$editForm->addOption($v,$k);
 			}
 		}
@@ -462,18 +542,24 @@ case 'bee':
 		$editForm->inputHidden('editme','GO');
 		$editForm->inputHidden('bdel',$boardID);
 
-		if($boardInfo['disabled'] == 1) {
+		if($boardInfo['disabled'] == 1)
+		{
 			$editForm->inputCheckbox('lkd',1,'Lock Board?','','',TRUE);
-		} else {
+		}
+		else
+		{
 			$editForm->inputCheckbox('lkd',1,'Lock Board?');
 		}
-		if($boardInfo['hidden'] == 1) {
+		if($boardInfo['hidden'] == 1)
+		{
 			$editForm->inputCheckbox('hdn',1,'Hide Board?','','',TRUE);
-		} else {
+		}
+		else
+		{
 			$editForm->inputCheckbox('hdn',1,'Hide Board?');
 		}
 		$editForm->inputSubmit('Update Board');
-		$body .= $editForm->formReturn();
+		$strPageHTML .= $editForm->formReturn();
 
 		break;
 
@@ -490,7 +576,8 @@ case 'be':
 	$listForm->inputSelect('bdel','Select A Board',FALSE,8);
 
 	// Insert the options into the <select> in the form
-	while($fetch = $sqlResult->fetch_assoc()) {
+	while($fetch = $sqlResult->fetch_assoc())
+	{
 		$listForm->addOption($fetch['dir'],$fetch['board_id']);
 	}
 
@@ -498,46 +585,32 @@ case 'be':
 	$listForm->inputSubmit('Edit Board');
 
 	// Add form to the body
-	$body .= $listForm->formReturn();
+	$strPageHTML .= $listForm->formReturn();
 	break;
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-* User Management
-
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-case 'user':
-	break;
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-* Staff Management
-
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-case 'staff':
-
-	break;
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 * Site Management
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 case 'vars':
-	$sOps = new newForm('?mode=vars');
-	$sOps->fieldStart('Base Site Info');
-	$sOps->inputText('sttl','Site Title',$VAR['site_title']);
-	$sOps->inputText('shdr','Site Header',$VAR['base_header']);
-	$sOps->inputText('shms','Header Message',$VAR['base_mes']);
-	$sOps->fieldStart('Site Status');
-	$sOps->inputCheckbox('slkd',1,'Lock Site?');
-	$sOps->inputSubmit();
-	$body .= $sOps->formReturn();
+
+	$siteVarsForm = new newForm('?mode=vars');
+	$siteVarsForm->fieldStart('Base Site Info');
+	$siteVarsForm->inputText('sttl','Site Title',$VAR['site_title']);
+	$siteVarsForm->inputText('shdr','Site Header',$VAR['base_header']);
+	$siteVarsForm->inputText('shms','Header Message',$VAR['base_mes']);
+	$siteVarsForm->fieldStart('Site Status');
+	$siteVarsForm->inputCheckbox('slkd',1,'Lock Site?');
+	$siteVarsForm->inputSubmit();
+	$strPageHTML .= $siteVarsForm->formReturn();
 
 	break;
 	/* Someone shouldn't be here... */
 default:
-	$body .= 'No Default Message.';
+	$strPageHTML .= 'No Default Message.';
 	break;
 }
-$body.="\n";$P->set('body',$body);$navi=navbuild($SQL);$P->set('navbar',$navi);
+$strPageHTML.="\n";$P->set('body',$strPageHTML);$navi=navbuild($SQL);$P->set('navbar',$navi);
 $P->load('admin.php');$P->render();
 ?>

@@ -30,7 +30,9 @@
  *
  */
 //REMOVE
-if(file_exists('../../untitled.php')) {require_once '../../untitled.php';}
+if(file_exists('../../untitled.php'))
+{
+require_once '../../untitled.php';}
 //END REMOVE
 /**
  * Required Files
@@ -41,27 +43,57 @@ if(file_exists('../../untitled.php')) {require_once '../../untitled.php';}
  *
  *  Error Handling Class
  */
-if(file_exists('c/err.php')) {require_once 'c/err.php';} else {die('lol wat');}
+if(file_exists('c/err.php'))
+{
+require_once 'c/err.php';}
+else
+{
+die('lol wat');}
 
 
 //Page Building Class
-if(file_exists('c/pcc.php')) {require_once 'c/pcc.php';} else {ERROR::dead('Could not find page building class.');}
+if(file_exists('c/pcc.php'))
+{
+require_once 'c/pcc.php';}
+else
+{
+ERROR::dead('Could not find page building class.');}
 
 
 //BBCode Parsing Class
-if(file_exists('c/bbc.php')) {require_once 'c/bbc.php';} else {ERROR::dead('Could not find bbCode class.');}
+if(file_exists('c/bbc.php'))
+{
+require_once 'c/bbc.php';}
+else
+{
+ERROR::dead('Could not find bbCode class.');}
 
 
 //Form Validation Class
-if(file_exists('c/frm.php')) {require_once 'c/frm.php';} else {ERROR::dead('Could not find form validating class.');}
+if(file_exists('c/frm.php'))
+{
+require_once 'c/frm.php';}
+else
+{
+ERROR::dead('Could not find form validating class.');}
 
 
 //Form Building Class
-if(file_exists('c/nfr.php')) {require_once 'c/nfr.php';} else {ERROR::dead('Could not find form validating class.');}
+if(file_exists('c/nfr.php'))
+{
+require_once 'c/nfr.php';}
+else
+{
+ERROR::dead('Could not find form validating class.');}
 
 
 //Post Box Class
-if(file_exists('c/pst.php')){require_once 'c/pst.php';} else {ERROR::dead('Could not find post creation class.');}
+if(file_exists('c/pst.php'))
+{
+require_once 'c/pst.php';}
+else
+{
+ERROR::dead('Could not find post creation class.');}
 
 
 /**
@@ -111,7 +143,9 @@ $SQL = new mysqli(
 
 
 // This will let you know if something went wrong...
-if ($SQL->connect_error) {ERROR::dead('Connect Error ('.$SQL->connect_errno.') '.$SQL->connect_error);}
+if ($SQL->connect_error)
+{
+ERROR::dead('Connect Error ('.$SQL->connect_errno.') '.$SQL->connect_error);}
 
 /**
  * User Sessions
@@ -119,8 +153,12 @@ if ($SQL->connect_error) {ERROR::dead('Connect Error ('.$SQL->connect_errno.') '
  * Here we see if you have a valid userID already in session, and if you don't
  * we assign you the userID for the Anonymous account.
  */
-if(!isset($_SESSION['user_id'])) {$_SESSION['user_id'] = 1;}
-if(!$FORM->length($_SESSION['user_id'],1,10)) {$_SESSION['user_id'] = 1;}
+if(!isset($_SESSION['user_id']))
+{
+$_SESSION['user_id'] = 1;}
+if(!$FORM->length($_SESSION['user_id'],1,10))
+{
+$_SESSION['user_id'] = 1;}
 /**
  * Pull your info from the database
  * @var mixed
@@ -131,14 +169,16 @@ $userInfoResult = $SQL->query('SELECT * FROM `user_accounts` WHERE `user_id`=\''
  * issue that needs to be sorted out.  Since we can't know for sure what result
  * you belong to, we will stop here and error out.
  */
-if($userInfoResult->num_rows > 1) {
+if($userInfoResult->num_rows > 1)
+{
 	ERROR::dead('Duplicate entries found for UID:'.$_SESSION['user_id']);
 }
 /**
  * If that userID doesn't show up in the database at all then we will call you
  * anonymous and continue
  */
-if ($userInfoResult->num_rows == 0) {
+if ($userInfoResult->num_rows == 0)
+{
 	ERROR::report('Invalid UID:'.$_SESSION['user_id'].' for IP:'.$_SERVER['REMOTE_ADDR'].'. Changed to anon.');
 	$_SESSION['user_id'] = 1;
 	$userInfoResult = $SQL->query('SELECT * FROM `user_accounts` WHERE `user_id`=\'1\'');
@@ -162,7 +202,8 @@ if($userInfoResult->num_rows > 0)
 /**
  * Currently Online Table
  */
-function pingUser($forced = FALSE) {
+function pingUser($forced = FALSE)
+{
 	global $SQL,$USR;
 	$timeNow = time();
 	$time5Ago = $timeNow - 300;
@@ -170,11 +211,14 @@ function pingUser($forced = FALSE) {
 	$SQL->query('DELETE FROM `user_online` WHERE `last_ping` <= \''.($time5Ago-300).'\'');
 
 	$countVerify = $SQL->query('SELECT * FROM `user_online` WHERE `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\' AND `user_id` = \''.$_SESSION['user_id'].'\'');
-	if($countVerify->num_rows == '0') {
+	if($countVerify->num_rows == '0')
+	{
 
 		$SQL->query('INSERT INTO `user_online` VALUES (\''.$_SESSION['user_id'].'\',\''.$timeNow.'\',\''.$_SERVER['REMOTE_ADDR'].'\')');
 
-	} else {
+	}
+	else
+	{
 
 		$SQL->query('UPDATE `user_online` SET `last_ping` = \''.$timeNow.'\' WHERE `user_id` = \''.$_SESSION['user_id'].'\' AND `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\'');
 
@@ -184,14 +228,19 @@ function pingUser($forced = FALSE) {
 
 }
 pingUser();
-if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online` `o` INNER JOIN `user_accounts` `a` ON `o`.`user_id` = `a`.`user_id` WHERE `o`.`last_ping` >= \''.$time5Ago.'\' ORDER BY `o`.`last_ping` DESC')) {
+if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online` `o` INNER JOIN `user_accounts` `a` ON `o`.`user_id` = `a`.`user_id` WHERE `o`.`last_ping` >= \''.$time5Ago.'\' ORDER BY `o`.`last_ping` DESC'))
+{
 	$userbox = "<ul>\n";
-	if($userBox->num_rows > 0) {
-		while($infoLoop = $userBox->fetch_assoc()) {
+	if($userBox->num_rows > 0)
+	{
+		while($infoLoop = $userBox->fetch_assoc())
+		{
 			$userbox .= '	<li class="ulv'.$infoLoop['level'].'">'.$infoLoop['name']."</li>\n";
 			$onlineUsers[$infoLoop['user_id']] = $infoLoop['name'];
 		}
-	} else {
+	}
+	else
+{
 		$userbox .= "	<li>No Online Users</li>\n";
 	}
 	$userbox .= '</ul>';
@@ -202,13 +251,16 @@ if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online
  * @param $sql
  * @return unknown_type
  */
-function navbuild(&$sql) {
+function navbuild(&$sql)
+{
 	Global $SQL,$USR,$BINFO;
 	$cheese = $SQL->query('SELECT * FROM `ste_navbar` ORDER BY `position` ASC');
 	$out="<ul>\n";
-	while($nim = $cheese->fetch_assoc()) {
+	while($nim = $cheese->fetch_assoc())
+	{
 		$nim['usr_max'] = ($nim['usr_max'] == 0) ? 9001 : $nim['usr_max'];
-		if($USR['level'] >= $nim['usr_thresh'] && $USR['level'] <= $nim['usr_max']) {
+		if($USR['level'] >= $nim['usr_thresh'] && $USR['level'] <= $nim['usr_max'])
+		{
 
 			$out .= '<li><a href="'.$nim['href'].'" title="'.$nim['title'].'"';
 
@@ -229,7 +281,8 @@ $cheese = $SQL->query('SELECT * FROM `ste_vars`');
 $VAR = array();
 if($cheese->num_rows > 0)
 {
-	while($nim = $cheese->fetch_assoc()) {
+	while($nim = $cheese->fetch_assoc())
+	{
 		$VAR[$nim['key']]=$nim['value'];
 	}
 }
@@ -243,7 +296,8 @@ $tempList = array();
 $levelListResult = $SQL->query('SELECT * FROM `user_levels`');
 if($levelListResult->num_rows > 0)
 {
-	while($returnValue=$levelListResult->fetch_assoc()) {
+	while($returnValue=$levelListResult->fetch_assoc())
+	{
 		$tempList[$returnValue['level']] = $returnValue['rank'];
 	}
 }
@@ -259,13 +313,15 @@ $VAR['userLevelList'] = $tempList;
  * @param string $chars Character pool to pull from
  * @return string
  */
-function rand_str($length = 24, $pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_-') {
+function rand_str($length = 24, $pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_-')
+{
 
 	$poolcount = strlen($pool) - 1;
 
 	$string = $pool{rand(0, $poolcount)};
 
-	for ($i = 1; $i < $length; $i = strlen($string)) {
+	for ($i = 1; $i < $length; $i = strlen($string))
+	{
 
 		$r = $pool{rand(0, $poolcount)};
 		if ($r != $string{$i - 1}) $string .=  $r;
@@ -276,7 +332,8 @@ function rand_str($length = 24, $pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm
 
 } // - END rand_str()
 // FIXME unsecure mimetype discovery
-function mime_type($filename) {
+function mime_type($filename)
+{
 
 	$mime_types = array(
 		'bmp' => 'image/bmp',
@@ -292,10 +349,12 @@ function mime_type($filename) {
 	);
 
 	$ext = strtolower(array_pop(explode('.',$filename)));
-	if (array_key_exists($ext, $mime_types)) {
+	if (array_key_exists($ext, $mime_types))
+	{
 		return $mime_types[$ext];
 	}
-	else {
+	else
+	{
 		return FALSE;
 	}
 }
@@ -311,7 +370,8 @@ function mime_type($filename) {
  * @param string $thumb Target Thumbnail Path - 'i/up/thumbs/name.file'
  * @return boolean
  */
-function makethumb($image,$thumb) {
+function makethumb($image,$thumb)
+{
 
 	$memin = getimagesize($image);
 	$size = (memory_get_usage()+ceil($memin[0]*$memin[1]*$memin['bits']))*1.5;
@@ -320,40 +380,62 @@ function makethumb($image,$thumb) {
 
 	$mType = mime_type($image);
 
-	if($memin[0] != $memin[1]) {
-		if($memin[0] > $memin[1]) {
+	if($memin[0] != $memin[1])
+	{
+		if($memin[0] > $memin[1])
+		{
 
 			$newx = 150;
 			$tarp = round(150/$memin[0],4);
 			$newy = round($memin[1]*$tarp);
 
-		} else {
+		}
+		else
+{
 			$newy = 150;
 			$tarp = round(150/$memin[1],4);
 			$newx = round($memin[0]*$tarp);
 
 		}
 
-	} else {
+	}
+	else
+{
 		$newx = 150;
 		$newy = 150;
 
 	}
 
-	if($mType == 'image/jpeg') {$gump = imagecreatefromjpeg($image);}
-	elseif ($mType == 'image/gif') {$gump = imagecreatefromgif($image);}
-	elseif ($mType == 'image/png') {$gump = imagecreatefrompng($image);}
-	else {return FALSE;}
+	if($mType == 'image/jpeg')
+	{
+	$gump = imagecreatefromjpeg($image);}
+	elseif ($mType == 'image/gif')
+	{
+	$gump = imagecreatefromgif($image);}
+	elseif ($mType == 'image/png')
+	{
+	$gump = imagecreatefrompng($image);}
+	else
+	{
+	return FALSE;}
 
 	$gimp = imagecreatetruecolor($newx,$newy);
 	imagecopyresampled($gimp,$gump,0,0,0,0,$newx,$newy,$memin[0],$memin[1]);
 
 	imagedestroy($gump);
 
-	if($mType == 'image/jpeg') {imagejpeg($gimp,$thumb);}
-	elseif ($mType == 'image/gif') {imagegif($gimp,$thumb);}
-	elseif ($mType == 'image/png') {imagepng($gimp,$thumb);}
-	else {return FALSE;}
+	if($mType == 'image/jpeg')
+	{
+	imagejpeg($gimp,$thumb);}
+	elseif ($mType == 'image/gif')
+	{
+	imagegif($gimp,$thumb);}
+	elseif ($mType == 'image/png')
+	{
+	imagepng($gimp,$thumb);}
+	else
+	{
+	return FALSE;}
 
 	imagedestroy($gimp);
 	ini_restore('memory_limit');
@@ -361,15 +443,16 @@ function makethumb($image,$thumb) {
 
 } // - END makethumb()
 
-function index(){
+function index()
+{
 	global $P,$VAR;
 	$P->set('title',$VAR['site_title']);
 	$P->set('h1',$VAR['base_header']);
 	$P->set('mes',$VAR['base_mes']);
-	$body = "<div class=\"boards\">\n";
-	$body .= navbuild($SQL);
-	$body .= "	\n</div>";
-	$P->set('body',$body);
+	$strPageHTML = "<div class=\"boards\">\n";
+	$strPageHTML .= navbuild($SQL);
+	$strPageHTML .= "	\n</div>";
+	$P->set('body',$strPageHTML);
 	$P->load('base.php');
 	$P->render();
 	die();

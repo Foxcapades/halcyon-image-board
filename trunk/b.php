@@ -20,7 +20,14 @@ session_start();
 /**
  * Attempt to import the configuration file.
  */
-if(file_exists('n/cnf.php')){require_once 'n/cnf.php';} else {die('dude, wtf');}
+if(file_exists('n/cnf.php'))
+{
+	require_once 'n/cnf.php';
+}
+else
+{
+	die('dude, wtf');
+}
 /**
  *
  * Strip and verify URL given board ID
@@ -29,7 +36,10 @@ if(file_exists('n/cnf.php')){require_once 'n/cnf.php';} else {die('dude, wtf');}
 $directory = $SQL->real_escape_string($_GET['board']);
 
 // If $directory is not a valid board name then show the index.
-if(strlen($directory) > 10 || strlen($directory) == 0){index();}
+if(strlen($directory) > 10 || strlen($directory) == 0)
+{
+	index();
+}
 
 
 /**
@@ -42,11 +52,15 @@ $q = $SQL->query('SELECT * FROM `ste_boards` WHERE `dir` = \''.$directory.'\'');
 
 
 // If the number of rows found less than 1 then show the index.
-if($q->num_rows < 1){index();}
+if($q->num_rows < 1)
+{
+	index();
+}
 
 
 // If the number of rows found was greater than 1, report the error and show the index.
-elseif($q->num_rows > 1){
+elseif($q->num_rows > 1)
+{
 	ERROR::report('More than one board was found with the ID: '.$directory);
 	index();
 }
@@ -55,15 +69,18 @@ elseif($q->num_rows > 1){
 // Pass off the pulled info to an easier to manage array.
 $BINFO = $q->fetch_assoc();
 
-if($BINFO['view_min_lvl'] > $USR['level']) {index();}
+if($BINFO['view_min_lvl'] > $USR['level'])
+{
+	index();
+}
 
 
 
 // Page construction Variables
-$P->set('title',$VAR['site_title'].' / '.$BINFO['dir']);
-$P->set('h1',$BINFO['name']);
-$P->set('mes',$BINFO['mes']);
-$P->set('navbar',navbuild($SQL));
+$P->set('title', $VAR['site_title'].' / '.$BINFO['dir']);
+$P->set('h1', $BINFO['name']);
+$P->set('mes', $BINFO['mes']);
+$P->set('navbar', navbuild($SQL));
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -72,7 +89,13 @@ $P->set('navbar',navbuild($SQL));
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['post_min_lvl'] && (time() - $_SESSION['postcooldown']) > 1) {
+if(
+count($_POST) &&
+$_GET['post'] == 'new' &&
+$USR['level'] >= $BINFO['post_min_lvl'] &&
+(time() - $_SESSION['postcooldown']) > 1
+)
+{
 
 	// Simple error tracker to help shoot down the script when needed.
 	$continue = TRUE;
@@ -81,7 +104,7 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['post_min_
 	$reasons = array();
 
 	// Set the php file size limit at the level you need (it will be restored)
-	ini_set('upload_max_filesize',$VAR['maxFileSize']);
+	ini_set('upload_max_filesize', $VAR['maxFileSize']);
 
 	// Allowed Image types
 	$imageTypes = array(
@@ -97,68 +120,104 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['post_min_
 
 	// Clean and check the length of the user given post text
 	$text = $FORM->scrub_text($_POST['text']);
-	if(strlen($text) < 3) {$continue = FALSE; $reasons[] = "Posts must be at least 3 characters.";}
+	if(strlen($text) < 3)
+	{
+		$continue = FALSE;
+		$reasons[] = "Posts must be at least 3 characters.";
+	}
 
 	// Generate random 10 digit string for the thread key
 	$threadkey = rand_str(10);
 
 	$errmes='';
-	$continue = ($FORM->file_check($file['img1'],$imageTypes,$errmes)) ? $continue : FALSE;
+	$continue = ($FORM->file_check($file['img1'], $imageTypes, $errmes)) ? $continue : FALSE;
 	$reasons[] = $errmes;
 
 	// Generate a 24 random digit file name
-	$fname = rand_str().'.'.array_pop(explode('.',$_FILES['img1']['name']));
+	$fname = rand_str().'.'.array_pop(explode('.', $_FILES['img1']['name']));
 
 	// Target upload directory + Generated file name
 	$newfile = $VAR['updir'] .= $fname;
 
 	// Stop if the file is too big
-	if($_FILES['img1']['size'] > $VAR['maxFileSize']) {
+	if($_FILES['img1']['size'] > $VAR['maxFileSize'])
+	{
 		$reasons[] = 'File too big, try resizing it or uploading something else.';
 		$continue = FALSE;
 	}
 
 	// Check if we should continue or not
-	if($continue) {
+	if($continue)
+	{
 
 		// Try and move the uploaded file
-		if(!move_uploaded_file($_FILES['img1']['tmp_name'],$newfile)) {
+		if(!move_uploaded_file($_FILES['img1']['tmp_name'], $newfile))
+		{
 			$continue = FALSE;
 			$reasons[] = 'Could not relocate uploaded file. Error reported, please try again later.';
 			ERROR::report('Failed to move an uploaded file');
-		} else {
-			if(!makethumb($newfile,$VAR['thdir'].$fname)) {
+		}
+		else
+		{
+			if(!makethumb($newfile, $VAR['thdir'].$fname))
+			{
 				echo '<div class="error">Thumbnail image failed. Generic image used.</div>';
 				ERROR::report('Failed to create thumb for image '.$newfile);
 			}
 		}
 	}
 
-	if($continue) {
+	if($continue)
+	{
 
 		// Try and create the thread
-		if(!$SQL->query('INSERT INTO `pst_threads` (`board_id`,`key`,`title`,`user`) VALUES(\''.$BINFO['board_id'].'\',\''.$threadkey.'\',\''.$title.'\',\''.$USR['user_id'].'\')')) {
+		if(!$SQL->query(
+'INSERT INTO `pst_threads` (
+	`board_id`,
+	`key`,
+	`title`,
+	`user`
+) VALUES (
+	\''.$BINFO['board_id'].'\',
+	\''.$threadkey.'\',
+	\''.$title.'\',
+	\''.$USR['user_id'].'\'
+)'
+		))
+		{
 
 			// If the thread could not be created, stop and delete the uploaded file
 			$continue = FALSE;
 			$reasons[] = 'Database error, Could not create thread. Please try again later.';
-			ERROR::report('Could not create thread, database said: '.$SQL->error);
+			ERROR::report('Could not create thread, database said: '.
+				$SQL->error);
 
-			if(!unlink($newfile)) {
+			if(!unlink($newfile))
+			{
 				ERROR::report('Could not delete uploaded file after thread insert failed. File: '.$newfile);
 			}
 		}
 	}
 
-	if($continue) {
+	if($continue)
+	{
 
 		// Select newly created thread to verify it was actually posted and to obtain the DB set thread ID and DATE
-		$nudes = $SQL->query('SELECT `thread_id`,`posted` FROM `pst_threads` WHERE `key` = \''.$threadkey.'\' AND `user` = \''.$USR['user_id'].'\' ORDER BY `thread_id` DESC LIMIT 0,1');
+		$nudes = $SQL->query(
+'SELECT `thread_id`,`posted`
+FROM `pst_threads`
+WHERE `key` = \''.$threadkey.'\'
+AND `user` = \''.$USR['user_id'].'\'
+ORDER BY `thread_id` DESC
+LIMIT 0,1'
+		);
 
-		if(!is_object($nudes)) {
+		if(!is_object($nudes))
+		{
 			$continue = FALSE;
 			$reasons[] = 'Database Error, please try again later.';
-			ERROR::report('Error selecting created thread. Threadkey: \''.$threadkey.'\' DB said: '.$SQL->error);
+			ERROR::report('Error selecting created thread. Threadkey: \''.
+				$threadkey.'\' DB said: '.$SQL->error);
 
 			if(!unlink($newfile)) {
 				ERROR::report('Could not delete uploaded file after threadselect failed. File: '.$newfile);
@@ -170,24 +229,57 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['post_min_
 			$nudez = $nudes->fetch_assoc();
 
 			// Insert the post into the database
-			if(!$SQL->query('INSERT INTO `pst_posts` (`thread_id`,`user_id`,`post_time`,`image`,`text`) VALUES (\''.$nudez['thread_id'].'\',\''.$USR['user_id'].'\',\''.$nudez['posted'].'\',\''.$fname.'\',\''.$text.'\')')) {
+			if(!$SQL->query(
+'INSERT INTO `pst_posts` (
+	`thread_id`,
+	`user_id`,
+	`post_time`,
+	`image`,
+	`text`
+) VALUES (
+	\''.$nudez['thread_id'].'\',
+	\''.$USR['user_id'].'\',
+	\''.$nudez['posted'].'\',
+	\''.$fname.'\',
+	\''.$text.'\'
+)'
+			))
+			{
 
 				$continue = FALSE;
 				$reasons[] = 'Database error, could not create post. Please try again later.';
 				ERROR::report('Could not create post, attempting to remove traces. DB said: '.$SQL->error);
 
-				if(!$SQL->query('DELETE FROM `pst_threads` WHERE `pst_threads`.`key` = \''.$threadkey.'\' AND `pst_threads`.`title` = \''.$title.'\' LIMIT 1')) {
+				if(!$SQL->query(
+'DELETE FROM `pst_threads`
+WHERE `pst_threads`.`key` = \''.$threadkey.'\'
+AND `pst_threads`.`title` = \''.$title.'\'
+LIMIT 1'
+				))
+				{
 					ERROR::report('could not remove thread after post failed. Threadkey: \''.$threadkey.'\' DB said: '.$SQL->error);
 				}
 
-				if(!unlink($newfile)) {
+				if(!unlink($newfile))
+				{
 					ERROR::report('Could not delete uploaded file after post failed. File: '.$newfile);
 				}
-			} else {
-				$refreshq = $SQL->query('SELECT `post_id` FROM `pst_posts` WHERE `user_id` = \''.$USR['user_id'].'\' AND `thread_id` = \''.$nudez['thread_id'].'\' ORDER BY `post_time` DESC LIMIT 0,1');
+			}
+			else
+			{
+				$refreshq = $SQL->query(
+'SELECT `post_id`
+FROM `pst_posts`
+WHERE `user_id` = \''.$USR['user_id'].'\'
+AND `thread_id` = \''.$nudez['thread_id'].'\'
+ORDER BY `post_time` DESC
+LIMIT 0,1'
+				);
 				$refresha = $refreshq->fetch_assoc();
 				$_SESSION['postcooldown'] = time();
-				$P->set('headstuff','<meta http-equiv="refresh" content="0;url='.$VAR['base_url'].'/t.php?thread_id='.$nudez['thread_id'].'#i'.$refresha['post_id'].'" />');
+				$P->set('headstuff', '<meta http-equiv="refresh" content="0;url='
+					.$VAR['base_url'].'/t.php?thread_id='.$nudez['thread_id'].
+					'#i'.$refresha['post_id'].'" />');
 			}
 		}
 	}
@@ -197,9 +289,11 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['post_min_
 	 */
 
 	// if it errored out, there should be error messages to display
-	if($continue == FALSE) {
+	if($continue == FALSE)
+	{
 		$errorBoxHtml = '<div class="error"><ul>'."\n";
-		foreach($reasons as $reason) {
+		foreach($reasons as $reason)
+		{
 			$errorBoxHtml .= '<li>'.$reason.'</li>'."\n";
 		}
 		$errorBoxHtml .= '<ul></div>'."\n";
@@ -215,9 +309,9 @@ ini_restore('upload_max_filesize');
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-// Start the $body variable, if there was an error earlier in the script, this
-//  will set the error box, otherwise the $body variable is set to null.
-$body = $errorBoxHtml;
+// Start the $strPageHTML variable, if there was an error earlier in the script, this
+//  will set the error box, otherwise the $strPageHTML variable is set to null.
+$strPageHTML = $errorBoxHtml;
 
 // Begin the thread list
 $cherp = '<div id="thread">'."\n";
@@ -254,8 +348,10 @@ GROUP BY `a`.`thread_id`
 ORDER BY `a`.`posted` DESC');
 
 // Sift through the results and enter them into an array
-while($mrd = $dumo->fetch_assoc()) {
-	if($mrd['user_id'] == NULL || $mrd['user_id'] == '') {
+while($mrd = $dumo->fetch_assoc())
+{
+	if($mrd['name'] == NULL || $mrd['name'] == '')
+	{
 		$mrd['user_id'] = '0000000001';
 		$mrd['name'] = 'Anonymous';
 		$mrd['level'] = 1;
@@ -268,10 +364,12 @@ $SQL->close();
 
 
 // Create a blank instance of POST for the following loop
-$POST = new POST('','','','','','','','','','','');
+$POST = new POST('', '', '', '', '', '', '', '', '', '', '');
 
-if(is_array($durr)) {
-	foreach($durr as $v) {
+if(is_array($durr))
+{
+	foreach($durr as $v)
+	{
 
 		$v['text'] = $BBC->parse($v['text']);
 		$cherp .= $POST->threadview($v);
@@ -282,23 +380,25 @@ if(is_array($durr)) {
 // End the thread list
 $cherp .= "</div>\n";
 
-if($USR['level'] >= $BINFO['post_min_lvl']) {
-	$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new','post','multipart/form-data');
+if($USR['level'] >= $BINFO['post_min_lvl'])
+{
+	$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new', 'post',
+		'multipart/form-data');
 	$postForm->fieldStart('New Thread');
-	$postForm->inputText('ttle','Title','','','halfwidth');
-	$postForm->inputText('unme','Username',$USR['name'],'','halfwidth');
-	$postForm->inputTextarea('text','Text',FALSE,30,4,FALSE,'fullwidth');
-	$postForm->inputHidden('MAX_FILE_SIZE','2621440');
-	$postForm->inputFile('img1','Image',FALSE,'halfwidth');
-	$postForm->inputSubmit('Create Thread',FALSE,FALSE,FALSE,'halfwidth');
-	$body .= $postForm->formReturn();
+	$postForm->inputText('ttle', 'Title', '', '', 'halfwidth');
+	$postForm->inputText('unme', 'Username', $USR['name'], '', 'halfwidth');
+	$postForm->inputTextarea('text', 'Text', FALSE, 30, 4, FALSE, 'fullwidth');
+	$postForm->inputHidden('MAX_FILE_SIZE', '2621440');
+	$postForm->inputFile('img1', 'Image', FALSE, 'halfwidth');
+	$postForm->inputSubmit('Create Thread', FALSE, FALSE, FALSE, 'halfwidth');
+	$strPageHTML .= $postForm->formReturn();
 }
 
-// Add the thread list to the $body var
-$body .= $cherp;
+// Add the thread list to the $strPageHTML var
+$strPageHTML .= $cherp;
 
 // Render the page
-$P->set('body',$body);
+$P->set('body', $strPageHTML);
 $P->load('base.php');
 $P->render();
 
