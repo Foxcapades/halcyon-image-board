@@ -16,5 +16,13 @@
  *  You should have received a copy of the GNU General Public License along with
  *  this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+session_start();
+
+print_r($_SERVER);
+if(file_exists('../config/config.php')) {
+	require_once '../config/config.php';
+} else {
+	die('I have no idea whats going on right now.');
+}
 
 ?>

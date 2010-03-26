@@ -28,7 +28,7 @@ session_start();
 /**
  * Attempt to import the configuration file.
  */
-if(file_exists('conf/index.php')){require_once 'conf/index.php';} else {die('dude, wtf');}
+if(file_exists('config/config.php')){require_once 'config/config.php';} else {die('dude, wtf');}
 
 // TODO: set admin level view_min_lvlold in database
 if(!isset($_SESSION['user_id']) || $USR['level'] < 70) {index();}
