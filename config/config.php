@@ -82,12 +82,12 @@ if ($SQL->connect_error)
 $REQUIRED_FILES = array(
 
 //	'name' => 'path/to/file' (relative to the base directory for this script)
-	'Page Builder' 		=> 'c/pcc.php',
-	'Error Handler'		=> 'c/err.php',
-	'Form Validator'	=> 'c/frm.php',
-	'Form Builder' 		=> 'c/nfr.php',
-	'Post Builder'		=> 'c/pst.php',
-	'BBCode Parser'		=> 'c/bbc.php'
+	'Page Builder' 		=> 'classes/pcc.php',
+	'Error Handler'		=> 'classes/err.php',
+	'Form Validator'	=> 'classes/frm.php',
+	'Form Builder' 		=> 'classes/nfr.php',
+	'Post Builder'		=> 'classes/pst.php',
+	'BBCode Parser'		=> 'classes/bbc.php'
 
 );
 
