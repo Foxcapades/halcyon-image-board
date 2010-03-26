@@ -20,9 +20,9 @@ session_start();
 /**
  * Attempt to import the configuration file.
 **/
-if(file_exists('n/cnf.php'))
+if(file_exists('conf/index.php'))
 {
-	require_once 'n/cnf.php';
+	require_once 'conf/index.php';
 }
 else
 {

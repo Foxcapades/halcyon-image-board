@@ -66,7 +66,7 @@ $fileList=array(
 'i/crown-bronze.png',
 'i/crown.png',
 'i/crown-silver.png',
-'n/cnf.php',
+'conf/index.php',
 'n/index.html',
 's/base.css',
 's/html.css',
@@ -165,7 +165,7 @@ function check_email_address($email)
 switch($_SESSION['steps'])
 {
 	case 'install':
-		require_once 'n/cnf.php';
+		require_once 'conf/index.php';
 		$vars['h1'] = 'Installing Tables';
 		$vars['mes']= 'Almost finished...';
 		$html .= '<div class="box">Attempting to create tables...</div><br />';
@@ -531,11 +531,11 @@ PRIMARY KEY (`level`)
 				{
 					$html .= '<div class="green">DATABASE CONNECTION SUCCESSFUL</div>';
 					$html .= '<p class="box">Attempting to write login info to the config file.</p>';
-					$conf = file_get_contents('n/cnf.php');
+					$conf = file_get_contents('conf/index.php');
 					$with = array('\''.$host.'\'','\''.$username.'\'','\''.$password.'\'','\''.$database.'\'','\''.$port.'\'');
 					$replace = array('REPLACE_HOST_NAME','REPLACE_USERNAME','REPLACE_PASSWORD','REPLACE_DATABASE_NAME','REPLACE_DATABASE_PORT');
 					$newconf = str_replace($replace,$with,$conf);
-					if(file_put_contents('n/cnf.php',$newconf))
+					if(file_put_contents('conf/index.php',$newconf))
 					{
 						$html .= '<div class="green">Configuration successfully altered.</div>';
 						$html .= '<br />';

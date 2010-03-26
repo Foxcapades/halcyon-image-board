@@ -39,61 +39,69 @@ require_once '../../untitled.php';}
  *
  * Here we will check the existence of and then import files that are needed for
  * the script to run.
- *
- *
- *  Error Handling Class
  */
+//Error Handling Class
 if(file_exists('c/err.php'))
 {
-require_once 'c/err.php';}
+	require_once 'c/err.php';
+}
 else
 {
-die('lol wat');}
-
-
+	die('lol wat');
+}
 //Page Building Class
 if(file_exists('c/pcc.php'))
 {
-require_once 'c/pcc.php';}
+	require_once 'c/pcc.php';
+}
 else
 {
-ERROR::dead('Could not find page building class.');}
-
-
+	ERROR::dead('Could not find page building class.');
+}
 //BBCode Parsing Class
 if(file_exists('c/bbc.php'))
 {
-require_once 'c/bbc.php';}
+	require_once 'c/bbc.php';
+}
 else
 {
-ERROR::dead('Could not find bbCode class.');}
-
-
+	ERROR::dead('Could not find bbCode class.');
+}
 //Form Validation Class
 if(file_exists('c/frm.php'))
 {
-require_once 'c/frm.php';}
+	require_once 'c/frm.php';
+}
 else
 {
-ERROR::dead('Could not find form validating class.');}
-
-
+	ERROR::dead('Could not find form validating class.');
+}
 //Form Building Class
 if(file_exists('c/nfr.php'))
 {
-require_once 'c/nfr.php';}
+	require_once 'c/nfr.php';
+}
 else
 {
-ERROR::dead('Could not find form validating class.');}
-
-
+	ERROR::dead('Could not find form validating class.');
+}
 //Post Box Class
 if(file_exists('c/pst.php'))
 {
-require_once 'c/pst.php';}
+	require_once 'c/pst.php';
+}
 else
 {
-ERROR::dead('Could not find post creation class.');}
+	ERROR::dead('Could not find post creation class.');
+}
+if(file_exists('conf/functions.php'))
+{
+	require_once 'conf/functions.php';
+}
+else
+{
+	ERROR::dead('Could not find required functions.');
+}
 
 
 /**
@@ -202,31 +210,6 @@ if($userInfoResult->num_rows > 0)
 /**
  * Currently Online Table
  */
-function pingUser($forced = FALSE)
-{
-	global $SQL,$USR;
-	$timeNow = time();
-	$time5Ago = $timeNow - 300;
-
-	$SQL->query('DELETE FROM `user_online` WHERE `last_ping` <= \''.($time5Ago-300).'\'');
-
-	$countVerify = $SQL->query('SELECT * FROM `user_online` WHERE `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\' AND `user_id` = \''.$_SESSION['user_id'].'\'');
-	if($countVerify->num_rows == '0')
-	{
-
-		$SQL->query('INSERT INTO `user_online` VALUES (\''.$_SESSION['user_id'].'\',\''.$timeNow.'\',\''.$_SERVER['REMOTE_ADDR'].'\')');
-
-	}
-	else
-	{
-
-		$SQL->query('UPDATE `user_online` SET `last_ping` = \''.$timeNow.'\' WHERE `user_id` = \''.$_SESSION['user_id'].'\' AND `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\'');
-
-	}
-
-
-
-}
 pingUser();
 if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online` `o` INNER JOIN `user_accounts` `a` ON `o`.`user_id` = `a`.`user_id` WHERE `o`.`last_ping` >= \''.$time5Ago.'\' ORDER BY `o`.`last_ping` DESC'))
 {
@@ -251,28 +234,6 @@ if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online
  * @param $sql
  * @return unknown_type
  */
-function navbuild(&$sql)
-{
-	Global $SQL,$USR,$BINFO;
-	$cheese = $SQL->query('SELECT * FROM `ste_navbar` ORDER BY `position` ASC');
-	$out="<ul>\n";
-	while($nim = $cheese->fetch_assoc())
-	{
-		$nim['usr_max'] = ($nim['usr_max'] == 0) ? 9001 : $nim['usr_max'];
-		if($USR['level'] >= $nim['usr_thresh'] && $USR['level'] <= $nim['usr_max'])
-		{
-
-			$out .= '<li><a href="'.$nim['href'].'" title="'.$nim['title'].'"';
-
-			$out .= ($nim['class']!='' && $nim['text'] == $BINFO['dir']) ? ' class="'.$nim['class'].' here"' : '';
-			$out .= ($nim['class']!='' && $nim['text'] =! $BINFO['dir']) ? ' class="'.$nim['class'].'"' : '';
-			$out .= ($nim['class']=='' && $nim['text'] == $BINFO['dir']) ? ' class="here"' : '';
-
-			$out .= '>'.$nim['text'].'</a></li>';
-		}
-	}
-	return $out."</ul>\n";
-}
 /**
  * This randomly placed code assembles an array of site vars that are stored in
  * the database.
@@ -304,158 +265,5 @@ if($levelListResult->num_rows > 0)
 
 $VAR['userLevelList'] = $tempList;
 
-/**
- * Random string generator
- *
- * 	Used in generating keys for posts, names for files etc...
- *
- * @param int $length Length of the return string
- * @param string $chars Character pool to pull from
- * @return string
- */
-function rand_str($length = 24, $pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_-')
-{
-
-	$poolcount = strlen($pool) - 1;
-
-	$string = $pool{rand(0, $poolcount)};
-
-	for ($i = 1; $i < $length; $i = strlen($string))
-	{
-
-		$r = $pool{rand(0, $poolcount)};
-		if ($r != $string{$i - 1}) $string .=  $r;
-
-	}
-
-	return $string;
-
-} // - END rand_str()
-// FIXME unsecure mimetype discovery
-function mime_type($filename)
-{
-
-	$mime_types = array(
-		'bmp' => 'image/bmp',
-		'gif' => 'image/gif',
-		'jpe' => 'image/jpeg',
-		'jpeg' => 'image/jpeg',
-		'jpg' => 'image/jpeg',
-		'png' => 'image/png',
-		'svg' => 'image/svg+xml',
-		'svgz' => 'image/svg+xml',
-		'tif' => 'image/tiff',
-		'tiff' => 'image/tiff'
-	);
-
-	$ext = strtolower(array_pop(explode('.',$filename)));
-	if (array_key_exists($ext, $mime_types))
-	{
-		return $mime_types[$ext];
-	}
-	else
-	{
-		return FALSE;
-	}
-}
-/**
- * Image Thumbnail generator
- *
- * 	Takes the user uploaded image and attempts to create a thumbnail for it.
- *
- * TODO: Use a generic thumbnail on error
- * TODO: Simplify function, 'cause i know there are some extra steps
- *
- * @param string $image Source Image Path - 'i/up/images/name.file'
- * @param string $thumb Target Thumbnail Path - 'i/up/thumbs/name.file'
- * @return boolean
- */
-function makethumb($image,$thumb)
-{
-
-	$memin = getimagesize($image);
-	$size = (memory_get_usage()+ceil($memin[0]*$memin[1]*$memin['bits']))*1.5;
-
-	ini_set('memory_limit', $size);
-
-	$mType = mime_type($image);
-
-	if($memin[0] != $memin[1])
-	{
-		if($memin[0] > $memin[1])
-		{
-
-			$newx = 150;
-			$tarp = round(150/$memin[0],4);
-			$newy = round($memin[1]*$tarp);
-
-		}
-		else
-{
-			$newy = 150;
-			$tarp = round(150/$memin[1],4);
-			$newx = round($memin[0]*$tarp);
-
-		}
-
-	}
-	else
-{
-		$newx = 150;
-		$newy = 150;
-
-	}
-
-	if($mType == 'image/jpeg')
-	{
-	$gump = imagecreatefromjpeg($image);}
-	elseif ($mType == 'image/gif')
-	{
-	$gump = imagecreatefromgif($image);}
-	elseif ($mType == 'image/png')
-	{
-	$gump = imagecreatefrompng($image);}
-	else
-	{
-	return FALSE;}
-
-	$gimp = imagecreatetruecolor($newx,$newy);
-	imagecopyresampled($gimp,$gump,0,0,0,0,$newx,$newy,$memin[0],$memin[1]);
-
-	imagedestroy($gump);
-
-	if($mType == 'image/jpeg')
-	{
-	imagejpeg($gimp,$thumb);}
-	elseif ($mType == 'image/gif')
-	{
-	imagegif($gimp,$thumb);}
-	elseif ($mType == 'image/png')
-	{
-	imagepng($gimp,$thumb);}
-	else
-	{
-	return FALSE;}
-
-	imagedestroy($gimp);
-	ini_restore('memory_limit');
-	return TRUE;
-
-} // - END makethumb()
-
-function index()
-{
-	global $P,$VAR;
-	$P->set('title',$VAR['site_title']);
-	$P->set('h1',$VAR['base_header']);
-	$P->set('mes',$VAR['base_mes']);
-	$strPageHTML = "<div class=\"boards\">\n";
-	$strPageHTML .= navbuild($SQL);
-	$strPageHTML .= "	\n</div>";
-	$P->set('body',$strPageHTML);
-	$P->load('base.php');
-	$P->render();
-	die();
-}
 unset($userInfoResult,$cheese,$nim);
 ?>

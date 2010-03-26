@@ -20,8 +20,8 @@ session_start();
 
 
 
-if(file_exists('n/cnf.php')) {
-	require_once 'n/cnf.php';
+if(file_exists('conf/index.php')) {
+	require_once 'conf/index.php';
 } else {
 	die('I have no idea whats going on right now.');
 }
