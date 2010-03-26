@@ -28,7 +28,7 @@ session_start();
 /**
  * Attempt to import the configuration file.
  */
-if(file_exists('n/cnf.php')){require_once 'n/cnf.php';} else {die('dude, wtf');}
+if(file_exists('conf/index.php')){require_once 'conf/index.php';} else {die('dude, wtf');}
 // Set some base page variables
 $P->set('title',$VAR['site_title'].' / User Management');
 $P->set('h1','User Management');

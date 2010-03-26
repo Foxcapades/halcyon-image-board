@@ -20,9 +20,9 @@ session_start();
 /**
  * Attempt to import the configuration file.
  */
-if(file_exists('n/cnf.php'))
+if(file_exists('conf/index.php'))
 {
-	require_once 'n/cnf.php';
+	require_once 'conf/index.php';
 }
 else
 {
@@ -115,7 +115,7 @@ $USR['level'] >= $BINFO['post_min_lvl'] &&
 	$file = &$_FILES;
 
 	// Clean and check the length of the user given thread title
-	$title = $FORM->scrub_text($_POST['ttle']);
+	$title = (strlen($FORM->scrub_text($_POST['ttle'])) < 1) ? 'Untitled Thread' : $FORM->scrub_text($_POST['ttle']);
 	$title = (strlen($title) < 1) ? 'Untitled Thread' : $title;
 
 	// Clean and check the length of the user given post text
@@ -203,7 +203,7 @@ $USR['level'] >= $BINFO['post_min_lvl'] &&
 	{
 
 		// Select newly created thread to verify it was actually posted and to obtain the DB set thread ID and DATE
-		$nudes = $SQL->query(
+		$objThreadVerify = $SQL->query(
 'SELECT `thread_id`,`posted`
 FROM `pst_threads`
 WHERE `key` = \''.$threadkey.'\'
@@ -212,7 +212,7 @@ ORDER BY `thread_id` DESC
 LIMIT 0,1'
 		);
 
-		if(!is_object($nudes))
+		if(!is_object($objThreadVerify))
 		{
 			$continue = FALSE;
 			$reasons[] = 'Database Error, please try again later.';
