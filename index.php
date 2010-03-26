@@ -20,8 +20,8 @@ session_start();
 
 
 
-if(file_exists('conf/index.php')) {
-	require_once 'conf/index.php';
+if(file_exists('config/config.php')) {
+	require_once 'config/config.php';
 } else {
 	die('I have no idea whats going on right now.');
 }
