@@ -34,9 +34,10 @@ $P->set('title',$VAR['site_title'].' / User Management');
 $P->set('h1','User Management');
 
 // Start the body
-$body = '<div class="body">'."\n";
+$strPageHTML = '<div class="body">'."\n";
 
-switch($_GET['mode']) {
+switch($_GET['mode'])
+{
 
 
 // TODO: PHP, USER: Fix login script error handler
@@ -67,16 +68,20 @@ case 'login':
 			$selUser = $SQL->query('SELECT * FROM `user_accounts` WHERE `name` = \''.$cleanUserName.'\' AND `password` = \''.$cleanPassword.'\'');
 
 			// If the database returns a number other than 1 then something is wrong
-			if($selUser->num_rows != 1) {
+			if($selUser->num_rows != 1)
+			{
 
 				// If the number is greater than 1, you have duplicate entries in your database.
-				if($selUser->num_rows > 1) {
+				if($selUser->num_rows > 1)
+				{
 					ERROR::report('Duplicate entries found in database for User: '.$cleanUserName);
 				}
 
 				$e += 2;
 
-			} else {
+			}
+			else
+			{
 
 				$userRow = $selUser->fetch_row();
 				$_SESSION['user_id'] = $userRow[0];
@@ -84,7 +89,7 @@ case 'login':
 				$HERE = (strpos($_SESSION['return'],$VAR['base_url']) === FALSE) ? $VAR['base_url'] : $_SESSION['return'];
 				$P->set('headstuff','<meta http-equiv="refresh" content="3;url='.$HERE.'" />');
 				unset($_SESSION['return']);
-				$body .= '<p>Login successful.<br /><br />Redirecting to <a href="'.$HERE.'" class="cd">'.$HERE.'</a> after 3 seconds.</p>'."\n";
+				$strPageHTML .= '<p>Login successful.<br /><br />Redirecting to <a href="'.$HERE.'" class="cd">'.$HERE.'</a> after 3 seconds.</p>'."\n";
 				pingUser(TRUE);
 				break;
 
@@ -109,9 +114,9 @@ case 'login':
 			}
 		}
 
-		$body .= '<p class="error">';
-		$body .= implode("<br />\n",$errors);
-		$body .= '</p>';
+		$strPageHTML .= '<p class="error">';
+		$strPageHTML .= implode("<br />\n",$errors);
+		$strPageHTML .= '</p>';
 
 	} else {
 		$_SESSION['return'] = $_SERVER['HTTP_REFERER'];
@@ -130,7 +135,7 @@ case 'login':
 
 	unset($cleanPassword,$cleanUserName,$selUser,$userRow,$e,$c,$errors,$formVars);
 
-	$body .= $P->vars['page_content'];
+	$strPageHTML .= $P->vars['page_content'];
 	break;
 
 	// Logout
@@ -138,7 +143,7 @@ case 'logout':
 	session_destroy();
 	$HERE = (strpos($_SERVER['HTTP_REFERER'],$VAR['base_url']) === FALSE) ? $VAR['base_url'] : $_SERVER['HTTP_REFERER'];
 	$P->set('headstuff','<meta http-equiv="refresh" content="3;url='.$HERE.'" />');
-	$body .= '<p>Session successfully terminated.<br /><br />Redirecting to <a href="'.$HERE.'" class="cd">'.$HERE.'</a> after 3 seconds.</p>';
+	$strPageHTML .= '<p>Session successfully terminated.<br /><br />Redirecting to <a href="'.$HERE.'" class="cd">'.$HERE.'</a> after 3 seconds.</p>';
 	break;
 
 	// New User Account
@@ -155,7 +160,8 @@ case 'nac':
 	$regForm->inputPassword('vpss','Verify Password');
 	$regForm->inputSubmit('Register');
 		// Check to see if the user has submited the form
-	if(count($_POST)) {
+	if(count($_POST))
+	{
 
 		// Validate username
 		$e += (!$FORM->validate_text($_POST['unme'])) ? 1 : 0;
@@ -167,7 +173,8 @@ case 'nac':
 		$e += ($_POST['upss'] != $_POST['vpss']) ? 4 : 0;
 
 		// If no errors have occured, then continue
-		if($e === 0) {
+		if($e === 0)
+		{
 
 			// TODO: HTML, FORMS: make a note for the user that mentions the passwords not being recoverable
 			// TODO: PHP, USER: make a password reset page
@@ -179,10 +186,11 @@ case 'nac':
 			$pass = md5($_POST['upss']);
 
 			// Try and insert the new user
-			if($SQL->query('INSERT INTO `user_accounts` VALUES (NULL,\''.$_POST['unme'].'\',2,\''.$_POST['mail'].'\',\''.$pass.'\',0,\'anon.png\')')) {
+			if($SQL->query('INSERT INTO `user_accounts` VALUES (NULL,\''.$_POST['unme'].'\',2,\''.$_POST['mail'].'\',\''.$pass.'\',0,\'anon.png\')'))
+			{
 
 				// If it went without any problems, say so and end.
-				$body .= '<p class="green">Registration Complete, you may now log in.</p>';
+				$strPageHTML .= '<p class="green">Registration Complete, you may now log in.</p>';
 				break;
 
 			}
@@ -202,17 +210,19 @@ case 'nac':
 
 		krsort($ErrorCodes,SORT_NUMERIC);
 
-		foreach($ErrorCodes as $k => $v) {
-			if($e >= $k) {
+		foreach($ErrorCodes as $k => $v)
+		{
+			if($e >= $k)
+			{
 				$e -= $k;
 				$errors[] = $v;
 			}
 		}
 
 		// Let the user know what went wrong
-		$body .= '<p class="error">';
-		$body .= implode("<br />\n",$errors);
-		$body .= '</p>';
+		$strPageHTML .= '<p class="error">';
+		$strPageHTML .= implode("<br />\n",$errors);
+		$strPageHTML .= '</p>';
 
 
 		// Set some vars before returning the form
@@ -222,7 +232,7 @@ case 'nac':
 	}
 
 	// If we have reached this then just show the form
-	$body .= $regForm->formReturn();
+	$strPageHTML .= $regForm->formReturn();
 	break;
 
 case 'uac':
@@ -233,17 +243,17 @@ $P->set('mes','Set / Change your account options');
 	$form->fieldStart('Avatar Settings');
 	$form->inputCheckbox('grav',1,'Use Gravatar?',FALSE,FALSE,TRUE);
 	$form->inputSubmit();
-	$body .= $form->formReturn();
+	$strPageHTML .= $form->formReturn();
 	break;
 
 default:
-	$body .= 'Why are you here again?';
+	$strPageHTML .= 'Why are you here again?';
 	break;
 }
-$body .= "\n".'</div>';
+$strPageHTML .= "\n".'</div>';
 $navbar = navbuild($SQL);
 $P->set('navbar',$navbar);
-$P->set('body',$body);
+$P->set('body',$strPageHTML);
 $P->load('base.php');
 $P->render();
 ?>
