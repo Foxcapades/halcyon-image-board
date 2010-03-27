@@ -25,5 +25,50 @@ else
 	die('I have no idea whats going on right now.');
 }
 
+$object_TopNav = new navBar();
+$object_SubNav = new navBar();
 
+$P->set('h1','Halcyon Admin Panel');
+
+/**
+ * Build the top navigation bar
+ */
+
+$array_QString = explode('&',$_SERVER['QUERY_STRING']);
+$a=$b=$c=$d=$e=$f=FALSE;
+switch($array_QString[0])
+{
+	case 'control=boards':
+		$b = TRUE;
+		$P->set('mes','Board Setup and options');
+		break;
+	case 'control=users':
+		$c = TRUE;
+		$P->set('mes','User Management');
+		break;
+	case 'control=modules':
+		$d = TRUE;
+		$P->set('mes','Plugin and Module management');
+		break;
+	case 'control=info':
+		$e = TRUE;
+		$P->set('mes','Stats &amp; Information');
+		break;
+	default:
+		$a = TRUE;
+		$P->set('mes','Site Control');
+		break;
+}
+
+$object_TopNav->addLink($VAR['base_url'].'/admin/index.php','General','General Site Settings',(($a)?'here':''));
+$object_TopNav->addLink($VAR['base_url'].'/admin/index.php?control=boards','Boards','Board Settings',(($b)?'here':''));
+$object_TopNav->addLink($VAR['base_url'].'/admin/index.php?control=users','Users','User Management',(($c)?'here':''));
+$object_TopNav->addLink($VAR['base_url'].'/admin/index.php?control=modules','Modules','Plugin and module management',(($d)?'here':''));
+$object_TopNav->addLink($VAR['base_url'].'/admin/index.php?control=info','Info','Stats and information',(($e)?'here':''));
+
+unset($a,$b,$c,$d,$e,$f);
+
+$P->set('navbar',$object_TopNav->assemble());
+$P->load('base.php');
+$P->render();
 ?>

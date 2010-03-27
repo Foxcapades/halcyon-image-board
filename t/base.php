@@ -23,10 +23,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?=$title; ?></title>
-<link href="s/base.css" rel="stylesheet" type="text/css" />
-<link href="s/bbcd.css" rel="stylesheet" type="text/css" />
-<link href="s/html.css" rel="stylesheet" type="text/css" />
-<link rel="shortcut icon" href="http://bbs.halcyonbbs.com/favicon.ico" />
+<link href="<?=$base_url; ?>/s/base.css" rel="stylesheet" type="text/css" />
+<link href="<?=$base_url; ?>/s/bbcd.css" rel="stylesheet" type="text/css" />
+<link href="<?=$base_url; ?>/s/html.css" rel="stylesheet" type="text/css" />
+<link rel="shortcut icon" href="<?=$base_url; ?>/favicon.ico" />
 <script type="text/javascript" src="c/bbsrc.js"></script>
 <?=$headstuff; ?>
 <script type="text/javascript">function yeOldeSwitcheroo(id,imagename)
