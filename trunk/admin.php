@@ -611,6 +611,10 @@ default:
 	$strPageHTML .= 'No Default Message.';
 	break;
 }
-$strPageHTML.="\n";$P->set('body',$strPageHTML);$navi=navbuild($SQL);$P->set('navbar',$navi);
-$P->load('admin.php');$P->render();
+$strPageHTML.="\n";
+$P->set('body',$strPageHTML);
+$navi=navbuild($SQL);
+$P->set('navbar',$navi);
+$P->load('admin.php');
+$P->render();
 ?>

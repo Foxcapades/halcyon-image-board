@@ -25,16 +25,19 @@
  *
  */
 
-class templateForge {
+class templateForge
+{
 
 	public $vars = array();
 	public $html;
 	private $conf = array();
 
 
-	function loadtovar($varname, $filename) {
+	function loadtovar($varname, $filename)
+	{
 
-		if ($html = $this->load($filename)) {
+		if ($html = $this->load($filename))
+		{
 
 			$this->set($varname, $html);
 
@@ -48,7 +51,8 @@ class templateForge {
 
 	}
 
-	function formtovar($varname,$filename,$form,$array = array()) {
+	function formtovar($varname,$filename,$form,$array = array())
+	{
 
 		extract($array);
 
@@ -80,33 +84,47 @@ class templateForge {
 
 	}
 
-	function load($filename) {
+	function load($filename)
+	{
 
+		$thisPage = explode('/',$_SERVER['PHP_SELF']);
+		array_pop($thisPage);
+		unset($thisPage[0]);
+		$cd = '';
+		if(count($thisPage) > 0)
+		{
+			foreach($thisPage as $v)
+			{
+				$cd .= '../';
+			}
+		}
+		
 		extract($this->vars);
 		ob_start();
-
-		include('t/' . $filename);
+		
+		include($cd.'t/'.$filename);
 
 		$this->html = ob_get_clean();
 
 		return $this->html;
 	}
 
-	function render($return = false) {
+	function render($return = false)
+	{
 
 		$this->vars['pagebody'] = $this->html;
 
-		if ($this->layout) {
+//		if ($this->layout) {
 
-			ob_start();
-			echo $this->load($this->layout);
-			$html = ob_get_clean();
+//			ob_start();
+//			echo $this->load($this->layout);
+//			$html = ob_get_clean();
 
-		} else {
+//		} else {
 
 			$html = $this->html;
 
-		}
+//		}
 
 		if (!$return) {
 

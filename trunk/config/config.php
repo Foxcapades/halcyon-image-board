@@ -29,6 +29,7 @@
  * TODO: allow choosing nav bar position when creating a board
  *
  */
+//error_reporting(E_ALL);
 //REMOVE
 if(file_exists('../../untitled.php'))
 {
@@ -140,6 +141,53 @@ $FORM = new formValidate();
 //Open an instance of the BBCode Parser
 $BBC = new BBCode();
 
+class navBar
+{
+	private $array_Links = array();
+	
+	public function addLink($url, $title, $desc ='', $class ='', $id ='')
+	{
+		$array_LinkArray = array('type'=>'link', 'href'=> $url, 'text'=>$title);
+		if($desc != '') $array_LinkArray['tip'] = $desc;
+		if($class != '') $array_LinkArray['class'] = $class;
+		if($id != '') $array_LinkArray['id'] = $id;
+		$this->array_Links[] = $array_LinkArray;
+	}
+	public function addGroup($title, $class = '', $id = '')
+	{
+		$array_LinkArray = array('type'=>'group', 'text'=>$title);
+		if($class != '') $array_LinkArray['class'] = $class;
+		if($id != '') $array_LinkArray['id'] = $id;
+		$this->array_Links[] = $array_LinkArray;
+	}
+	public function assemble($class='',$id='')
+	{
+		
+		$string_HTML = '<ul'.(($class != '')?' class="'.$class.'"':'').
+			(($id != '')?' id="'.$id.'"':'').'>';
+		foreach($this->array_Links as $linkArray)
+		{
+			if($linkArray['type'] == 'group')
+			{
+				$string_HTML .= '<li><h3'.((isset($linkArray['class'])) ?
+					''.$linkArray['class'].'"' : '').((isset($linkArray['id']))?
+					' id="'.$linkArray['id'].'"' : '').'>'.$linkArray['text'].
+					'</h3></li>';
+			}
+			elseif($linkArray['type'] == 'link')
+			{
+				$string_HTML .= '<li><a href="'.$linkArray['url'].'" title="'.
+					((isset($linkArray['tip'])) ? $linkArray['tip'] :
+					$linkArray['title']).'" '.((isset($linkArray['id'])) ?
+					' id="'.$linkArray['id'].'"' : '').((isset(
+					$linkArray['class'])) ? ' class="'.$linkArray['class'].'"' :
+					'').'>'.$linkArray['text'].'</a></li>';
+			}
+		}
+		$string_HTML .= '</ul>';
+		return $string_HTML;
+	}
+}
 
 
 
@@ -199,7 +247,7 @@ if($userInfoResult->num_rows > 0)
  * Currently Online Table
  */
 pingUser();
-if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online` `o` INNER JOIN `user_accounts` `a` ON `o`.`user_id` = `a`.`user_id` WHERE `o`.`last_ping` >= \''.$time5Ago.'\' ORDER BY `o`.`last_ping` DESC'))
+if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online` `o` INNER JOIN `user_accounts` `a` ON `o`.`user_id` = `a`.`user_id` WHERE `o`.`last_ping` >= \''.($timeNow - 300).'\' ORDER BY `o`.`last_ping` DESC'))
 {
 	$userbox = "<ul>\n";
 	if($userBox->num_rows > 0)
