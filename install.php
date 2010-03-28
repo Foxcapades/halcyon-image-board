@@ -462,6 +462,12 @@ PRIMARY KEY (`level`)
 		break;
 
 	case '1492':
+		$username = '';
+		$database = '';
+		$admin_name = '';
+		$admin_pass = '';
+		$admin_veri = '';
+		$admin_mail = '';
 		$host	=  'localhost';
 		$port	=  '3306';
 		$site_title = 'Halcyon Image Board';
