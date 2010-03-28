@@ -39,21 +39,22 @@ if($USR['level'] < $VAR['userLevelList']['Administrator'])
 	index();
 }
 
+$string_MyURL = $VAR['base_url'].'/admin/index.php';
 /**
  * Instance of the navBar class for the top nav bar
- * 
+ *
  * @var object
  */
 $object_TopNav = new navBar();
 /**
  * Instance of the navBar class for the side nav menu
- * 
+ *
  * @var object
  */
 $object_SubNav = new navBar();
 /**
  * String containing the HTML to fill the body variable in the template
- * 
+ *
  * @var string
  */
 $string_BodyHTML = '<div id="admin_body">'."\n";
@@ -61,7 +62,7 @@ $string_BodyHTML = '<div id="admin_body">'."\n";
  * String containing the current section of the admin panel the user is in,
  * if this value is blank or null the script will default to the 'General
  * Settings' section.
- * 
+ *
  * @var string
  */
 $string_Section	= $_GET['section'];
@@ -69,7 +70,7 @@ $string_Section	= $_GET['section'];
  * String containing the current action or function the user is viewing /
  * attempting in the admin panel section they are in.  If this value is blank or
  * null the script will default to the home page for the current section.
- * 
+ *
  * @var string
  */
 $string_Mode	= $_GET['mode'];
@@ -82,29 +83,29 @@ $P->set('h1','Halcyon Admin Panel');
 /**
  * Build the top navigation bar
  */
-$object_TopNav->addLink($VAR['base_url'].'/admin/index.php', 'General', 'General Site Settings', (($string_Section == '' || $string_Section == NULL) ? 'here' : ''));
-$object_TopNav->addLink($VAR['base_url'].'/admin/index.php?section=boards', 'Boards', 'Board Settings', (($string_Section == 'boards') ? 'here' : ''));
-$object_TopNav->addLink($VAR['base_url'].'/admin/index.php?section=users', 'Users', 'User Management', (($string_Section == 'users') ? 'here':''));
-$object_TopNav->addLink($VAR['base_url'].'/admin/index.php?section=modules', 'Modules', 'Plugin and module management', (($string_Section == 'modules') ? 'here' : ''));
-$object_TopNav->addLink($VAR['base_url'].'/admin/index.php?section=info', 'Info', 'Stats and information', (($string_Section == 'info') ? 'here':''));
+$object_TopNav->addLink($string_MyURL, 'General', 'General Site Settings', (($string_Section == '' || $string_Section == NULL) ? 'here' : ''));
+$object_TopNav->addLink($string_MyURL.'?section=boards', 'Boards', 'Board Settings', (($string_Section == 'boards') ? 'here' : ''));
+$object_TopNav->addLink($string_MyURL.'?section=users', 'Users', 'User Management', (($string_Section == 'users') ? 'here':''));
+$object_TopNav->addLink($string_MyURL.'?section=modules', 'Modules', 'Plugin and module management', (($string_Section == 'modules') ? 'here' : ''));
+$object_TopNav->addLink($string_MyURL.'?section=info', 'Info', 'Stats and information', (($string_Section == 'info') ? 'here':''));
 $object_TopNav->addLink($VAR['base_url'], 'Home', 'Go back to the boards');
 
 /**
- * Functions for the boards section. 
+ * Functions for the boards section.
  */
 switch($string_Section)
 {
 	case 'boards':
-		
+
 		/**
 		 * Set the sub-header
 		 */
 		$P->set('mes','Board Settings and Options');
-		
+
 		/**
 		 * Result class for the query that should pull all info for all the boards
 		 * in the database.
-		 * 
+		 *
 		 * @var object
 		 */
 		$object_boardResult = $SQL->query(
@@ -112,26 +113,26 @@ switch($string_Section)
 FROM `ste_boards`
 ORDER BY `board_id` ASC'
 		);
-		
+
 		/**
 		 * Array that will contain a set of sub arrays that represent the boards on
 		 * the site.
-		 * 
+		 *
 		 * @var array
 		 */
 		$array_boardList = array();
-		
+
 		/**
 		 * A string that will hold the HTML for the list of boards on the home page
 		 * for the boards section.
-		 * 
+		 *
 		 * @var string
 		 */
 		$string_BoardListHTML  = '<table id="admin_board_list">'."\n";
 		$string_BoardListHTML .= '	<col class="bdLstCol1" />'."\n";
 		$string_BoardListHTML .= '	<col class="bdLstCol2" />'."\n";
 		$string_BoardListHTML .= "	<tbody>\n";
-		
+
 		/**
 		 * Put together a table of the boards with links to various options to
 		 * manipulate them
@@ -151,14 +152,20 @@ ORDER BY `board_id` ASC'
 		}
 		$string_BoardListHTML .= "	</tbody>\n";
 		$string_BoardListHTML .= "</table>\n";
-		
+
 		$object_SubNav->addGroup('Board Management');
-		$object_SubNav->addLink($VAR['base_url'] . '/admin/index.php?section=boards', 'View Boards', 'View and edit the boards', (($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
-		$object_SubNav->addLink($VAR['base_url'].'/admin/index.php?section=boards&mode=newBoard', 'Create a Board', 'Create a new board', (($string_Mode == 'newBoard') ? 'here' : ''));
+		$object_SubNav->addLink($string_MyURL.'?section=boards', 'View Boards', 'View and edit the boards', (($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
+		$object_SubNav->addLink($string_MyURL.'?section=boards&mode=newBoard', 'Create a Board', 'Create a new board', (($string_Mode == 'newBoard') ? 'here' : ''));
 		$string_BodyHTML .= '<div id="admin_nav_menu">'.$object_SubNav->assemble().'</div>';
 		$string_BodyHTML .= '<div id="admin_body_content">'.$string_BoardListHTML.'</div>';
 		break;
 	case 'users':
+		$P->set('mes','User Management');
+		$object_SubNav->addGroup('User Control');
+		$object_SubNav->addLink($string_MyURL.'?section=users','User Stats','View User Stats',(($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
+		$object_SubNav->addLink($string_MyURL.'?section=users&mode=selEdit','Edit User','Select and Edit a user',(($string_Mode == 'selEdit' || $string_Mode == 'edit') ? 'here' : ''));
+		$string_BodyHTML .= '<div id="admin_nav_menu">'.$object_SubNav->assemble().'</div>';
+		break;
 	case 'modules':
 	case 'info':
 	case NULL:
@@ -169,8 +176,8 @@ ORDER BY `board_id` ASC'
 		 */
 		$P->set('mes','General Site Settings');
 		$object_SubNav->addGroup('Site Control');
-		$object_SubNav->addLink($VAR['base_url'].'/admin/index.php','View Status','View the sites current status',(($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
-		$object_SubNav->addLink($VAR['base_url'].'/admin/index.php?mode=base','Edit Settings','Edit the base settings for the site',(($string_Mode == 'base') ? 'here' : ''));
+		$object_SubNav->addLink($string_MyURL,'View Status','View the sites current status',(($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
+		$object_SubNav->addLink($string_MyURL.'?mode=base','Edit Settings','Edit the base settings for the site',(($string_Mode == 'base') ? 'here' : ''));
 		$string_BodyHTML .= '<div id="admin_nav_menu">'.$object_SubNav->assemble().'</div>';
 
 		$string_BodyHTML .= '<div id="admin_body_content">'.'</div>';
