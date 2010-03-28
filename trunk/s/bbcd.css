@@ -65,9 +65,9 @@ pre {
 	text-decoration: underline;
 }
 
-.link {
+.url_link {
 	color:#A91D1D;
 }
-.link:hover, .link:focus {
+.url_link:hover, .link:focus {
 	text-decoration:underline;
 }

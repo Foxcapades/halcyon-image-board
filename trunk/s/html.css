@@ -40,6 +40,13 @@ h1 {
 	text-align: center;
 }
 
+h2 {
+	display:none;
+}
+
+h3 {
+	font-size:1em;
+}
 input,textarea,select {
 	display: block;
 	margin-left: 2px;

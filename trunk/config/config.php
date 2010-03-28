@@ -29,7 +29,7 @@
  * TODO: allow choosing nav bar position when creating a board
  *
  */
-//error_reporting(E_ALL);
+error_reporting(E_ALL);
 //REMOVE
 if(file_exists('../../untitled.php'))
 {
@@ -169,19 +169,19 @@ class navBar
 		{
 			if($linkArray['type'] == 'group')
 			{
-				$string_HTML .= '<li><h3'.((isset($linkArray['class'])) ?
-					''.$linkArray['class'].'"' : '').((isset($linkArray['id']))?
-					' id="'.$linkArray['id'].'"' : '').'>'.$linkArray['text'].
-					'</h3></li>';
+				$string_HTML .= '<li class="group"><h3'.((isset(
+					$linkArray['class']))?' class="'.$linkArray['class'].'"':'')
+					.((isset($linkArray['id']))?' id="'.$linkArray['id'].'"':'')
+					.'>'.$linkArray['text'].'</h3></li>';
 			}
 			elseif($linkArray['type'] == 'link')
 			{
-				$string_HTML .= '<li><a href="'.$linkArray['url'].'" title="'.
-					((isset($linkArray['tip'])) ? $linkArray['tip'] :
-					$linkArray['title']).'" '.((isset($linkArray['id'])) ?
-					' id="'.$linkArray['id'].'"' : '').((isset(
-					$linkArray['class'])) ? ' class="'.$linkArray['class'].'"' :
-					'').'>'.$linkArray['text'].'</a></li>';
+				$string_HTML .= '<li class="link"><a href="'.$linkArray['href'].
+					'" title="'.((isset($linkArray['tip'])) ? $linkArray['tip']:
+					$linkArray['title']).'" '.((isset($linkArray['id']))?' id="'
+					.$linkArray['id'].'"' : '').((isset($linkArray['class'])) ?
+					' class="'.$linkArray['class'].'"':'').'>'.
+					$linkArray['text'].'</a></li>';
 			}
 		}
 		$string_HTML .= '</ul>';
@@ -295,7 +295,7 @@ if($levelListResult->num_rows > 0)
 {
 	while($returnValue=$levelListResult->fetch_assoc())
 	{
-		$tempList[$returnValue['level']] = $returnValue['rank'];
+		$tempList[$returnValue['rank']] = $returnValue['level'];
 	}
 }
 

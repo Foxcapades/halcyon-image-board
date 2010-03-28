@@ -196,7 +196,7 @@ private function url() {
 				//what?
 				unset($matches[0][$t],$matches[1][$t],$matches[2][$t],$matches[3][$t]);
 			} else {
-				$matches[1][$t]= '<a href="'.$matches[3][$t].'" class="link">'.$matches[3][$t].'</a>';
+				$matches[1][$t]= '<a href="'.$matches[3][$t].'" class="url_link">'.$matches[3][$t].'</a>';
 			}
 		} else {
 			$matches[1][$t]= '<a href="'.$matches[2][$t].'" class="link">'.$matches[3][$t].'</a>';
