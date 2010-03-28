@@ -179,8 +179,49 @@ ORDER BY `board_id` ASC'
 		$object_SubNav->addLink($string_MyURL,'View Status','View the sites current status',(($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
 		$object_SubNav->addLink($string_MyURL.'?mode=base','Edit Settings','Edit the base settings for the site',(($string_Mode == 'base') ? 'here' : ''));
 		$string_BodyHTML .= '<div id="admin_nav_menu">'.$object_SubNav->assemble().'</div>';
-
-		$string_BodyHTML .= '<div id="admin_body_content">'.'</div>';
+		$array_SiteStats = array();
+		$object_StatsResult = $SQL->query('SELECT * FROM `site_stats`');
+		while($temp = $object_StatsResult->fetch_assoc())
+		{
+			$array_SiteStats[$temp['stat']] = $temp['value'];
+		}
+		$string_TableHTML  = '
+	<table id="admin_stat_table">
+		<thead>
+			<tr>
+				<th>Description</th>
+				<th>Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Installed</td>
+				<td>'.date('l F d, Y',$array_SiteStats['installed']).'</td>
+			</tr>
+			<tr>
+				<td>Board Version</td>
+				<td>'.$VAR['version'].'</td>
+			</tr>
+			<tr>
+				<td>Posts</td>
+				<td>'.$array_SiteStats['posts'].'</td>
+			<tr>
+			<tr>
+				<td>Images</td>
+				<td>'.$array_SiteStats['image_posts'].'</td>
+			<tr>
+						<tr>
+				<td>Threads</td>
+				<td>'.$array_SiteStats['threads'].'</td>
+			<tr>
+			<tr>
+				<td>Registered Users</td>
+				<td>'.$array_SiteStats['reg_users'].'</td>
+			<tr>
+		</tbody>
+	</table>
+';
+		$string_BodyHTML .= '<div id="admin_body_content">'.$string_TableHTML.'</div>';
 		break;
 }
 $string_BodyHTML .= '</div>';

@@ -16,7 +16,8 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#admin_board_list {
+#admin_board_list,
+#admin_stat_table {
 	border:1px solid #A9A9A9;
 	width:99%;
 	margin:0px auto;
@@ -83,6 +84,13 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 	background:url(../i/arrow-000-small.png) no-repeat left center;
 }
 
+#admin_stat_table th {
+	background:#f5f5f5;
+}
+#admin_stat_table th,
+#admin_stat_table td {
+	padding:5px;
+}
 .bdLstCol1 {
 	background:#F5f5f5;
 }
