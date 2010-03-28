@@ -57,7 +57,7 @@ input,textarea,select {
 
 
 input[type="submit"] {
-	padding: 4px 0px;
+	padding: 4px 5px;
 }
 
 input[type="hidden"] {
