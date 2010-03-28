@@ -57,7 +57,7 @@ $object_SubNav = new navBar();
  *
  * @var string
  */
-$string_BodyHTML = '<div id="admin_body">'."\n";
+$string_HTML_Body = '<div id="admin_body">'."\n";
 /**
  * String containing the current section of the admin panel the user is in,
  * if this value is blank or null the script will default to the 'General
@@ -95,6 +95,9 @@ $object_TopNav->addLink($VAR['base_url'], 'Home', 'Go back to the boards');
  */
 switch($string_Section)
 {
+	/**
+	 * Board setup and management
+	 */
 	case 'boards':
 
 		/**
@@ -128,10 +131,10 @@ ORDER BY `board_id` ASC'
 		 *
 		 * @var string
 		 */
-		$string_BoardListHTML  = '<table id="admin_board_list">'."\n";
-		$string_BoardListHTML .= '	<col class="bdLstCol1" />'."\n";
-		$string_BoardListHTML .= '	<col class="bdLstCol2" />'."\n";
-		$string_BoardListHTML .= "	<tbody>\n";
+		$string_HTML_BoardList  = '<table id="admin_board_list">'."\n";
+		$string_HTML_BoardList .= '	<col class="bdLstCol1" />'."\n";
+		$string_HTML_BoardList .= '	<col class="bdLstCol2" />'."\n";
+		$string_HTML_BoardList .= "	<tbody>\n";
 
 		/**
 		 * Put together a table of the boards with links to various options to
@@ -140,36 +143,43 @@ ORDER BY `board_id` ASC'
 		while($temp = $object_boardResult->fetch_assoc())
 		{
 			$array_boardList[] = $temp;
-			$string_BoardListHTML .= '		<tr id="btd_'.$temp['board_id'].'">'."\n";
-			$string_BoardListHTML .= '			<td class="bdLstTitle">'.$temp['name']."</td>\n";
-			$string_BoardListHTML .= "			<td class=\"bdLstOps\">\n";
-			$string_BoardListHTML .= "				<ul>\n";
-			$string_BoardListHTML .= '					<li><a href="'.$VAR['base_url'].'/admin/index.php?section=boards&mode=delBoard&board='.$temp['board_id'].'" title="Delete this board?"><img src="../i/cross.png" alt="Delete" /></a></li>'."\n";
-			$string_BoardListHTML .= '					<li><a href="'.$VAR['base_url'].'/admin/index.php?section=boards&mode=editBoard&board='.$temp['board_id'].'" title="Edit this board?"><img src="../i/gear.png" alt="Edit" /></a></li>'."\n";
-			$string_BoardListHTML .= "				</ul>\n";
-			$string_BoardListHTML .= "			</td>\n";
-			$string_BoardListHTML .= "		</tr>\n";
+			$string_HTML_BoardList .= '		<tr id="btd_'.$temp['board_id'].'">'."\n";
+			$string_HTML_BoardList .= '			<td class="bdLstTitle">'.$temp['name']."</td>\n";
+			$string_HTML_BoardList .= "			<td class=\"bdLstOps\">\n";
+			$string_HTML_BoardList .= "				<ul>\n";
+			$string_HTML_BoardList .= '					<li><a href="'.$VAR['base_url'].'/admin/index.php?section=boards&mode=delBoard&board='.$temp['board_id'].'" title="Delete this board?"><img src="../i/cross.png" alt="Delete" /></a></li>'."\n";
+			$string_HTML_BoardList .= '					<li><a href="'.$VAR['base_url'].'/admin/index.php?section=boards&mode=editBoard&board='.$temp['board_id'].'" title="Edit this board?"><img src="../i/gear.png" alt="Edit" /></a></li>'."\n";
+			$string_HTML_BoardList .= "				</ul>\n";
+			$string_HTML_BoardList .= "			</td>\n";
+			$string_HTML_BoardList .= "		</tr>\n";
 		}
-		$string_BoardListHTML .= "	</tbody>\n";
-		$string_BoardListHTML .= "</table>\n";
+		$string_HTML_BoardList .= "	</tbody>\n";
+		$string_HTML_BoardList .= "</table>\n";
 
 		$object_SubNav->addGroup('Board Management');
 		$object_SubNav->addLink($string_MyURL.'?section=boards', 'View Boards', 'View and edit the boards', (($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
 		$object_SubNav->addLink($string_MyURL.'?section=boards&mode=newBoard', 'Create a Board', 'Create a new board', (($string_Mode == 'newBoard') ? 'here' : ''));
-		$string_BodyHTML .= '<div id="admin_nav_menu">'.$object_SubNav->assemble().'</div>';
-		$string_BodyHTML .= '<div id="admin_body_content">'.$string_BoardListHTML.'</div>';
+		$string_HTML_Body .= '<div id="admin_nav_menu"><h2>Navigation</h2>'.$object_SubNav->assemble().'</div>';
+		$string_HTML_Body .= '<div id="admin_body_content"><h2>Active Boards</h2>'.$string_HTML_BoardList.'</div>';
 		break;
+
+	/**
+	 * User control and manegment menu
+	 */
 	case 'users':
 		$P->set('mes','User Management');
 		$object_SubNav->addGroup('User Control');
 		$object_SubNav->addLink($string_MyURL.'?section=users','User Stats','View User Stats',(($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
 		$object_SubNav->addLink($string_MyURL.'?section=users&mode=selEdit','Edit User','Select and Edit a user',(($string_Mode == 'selEdit' || $string_Mode == 'edit') ? 'here' : ''));
-		$string_BodyHTML .= '<div id="admin_nav_menu">'.$object_SubNav->assemble().'</div>';
+		$string_HTML_Body .= '<div id="admin_nav_menu"><h2>Navigation</h2>'.$object_SubNav->assemble().'</div>';
 		break;
 	case 'modules':
 	case 'info':
-	case NULL:
-	case '':
+
+	/**
+	 * This will show the admin panel home page when the user hits the home page
+	 * as well as when the script doesn't recognize the section the user tried.
+	 */
 	default:
 		/**
 		 * Set the sub-header
@@ -177,15 +187,39 @@ ORDER BY `board_id` ASC'
 		$P->set('mes','General Site Settings');
 		$object_SubNav->addGroup('Site Control');
 		$object_SubNav->addLink($string_MyURL,'View Status','View the sites current status',(($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
-		$object_SubNav->addLink($string_MyURL.'?mode=base','Edit Settings','Edit the base settings for the site',(($string_Mode == 'base') ? 'here' : ''));
-		$string_BodyHTML .= '<div id="admin_nav_menu">'.$object_SubNav->assemble().'</div>';
-		$array_SiteStats = array();
-		$object_StatsResult = $SQL->query('SELECT * FROM `site_stats`');
-		while($temp = $object_StatsResult->fetch_assoc())
+		$object_SubNav->addLink($string_MyURL.'?mode=base','Edit Settings','Edit the base settings for the site',(($string_Mode == 'base' || $string_Mode == 'baseEdit') ? 'here' : ''));
+		$object_SubNav->addLink($string_MyURL.'?mode=adv','Advanced Settings','Edit the advanced options for the site',(($string_Mode == 'adv') ? 'here' : ''));
+		$string_HTML_Body .= '<div id="admin_nav_menu"><h2>Navigation</h2>'.$object_SubNav->assemble().'</div>';
+
+		switch($string_Mode)
 		{
-			$array_SiteStats[$temp['stat']] = $temp['value'];
-		}
-		$string_TableHTML  = '
+			case 'base':
+				$object_Form_Base = new newForm('?mode=baseEdit');
+				$object_Form_Base->inputHTML('<div class="long_form">');
+				$object_Form_Base->inputText('site_title','Site Title',$VAR['site_title']);
+				$object_Form_Base->inputHTML('<div class="form_explain">The title for the site. (used with the HTML &lt;title&gt; tag)</div></div><div class="long_form">');
+				$object_Form_Base->inputText('base_header','Site Header',$VAR['base_header']);
+				$object_Form_Base->inputHTML('<div class="form_explain">The default header for the site. (shows on the home page)</div></div><div class="long_form">');
+				$object_Form_Base->inputText('base_mes','Site Header Message',$VAR['base_mes']);
+				$object_Form_Base->inputHTML('<div class="form_explain">The header message for the site. (shows on the home page)</div></div><div class="long_form">');
+				$object_Form_Base->inputText('base_url','Base URL',$VAR['base_url']);
+				$object_Form_Base->inputHTML('<div class="form_explain">The base url for the site, CANNOT CONTAIN A TRAILING SLASH (good:http://a.b.c/path bad:http://a.b.c/path/).</div></div>');
+				$object_Form_Base->inputSubmit();
+				$string_HTML_Body .= '<div id="admin_body_content"><h2>Basic Site Settings</h2>'.$object_Form_Base->formReturn().'</div>';
+				break;
+			default:
+				/**
+				 * An array to hold the info pulled from the database for the table
+				 *
+				 * @var array
+				 */
+				$array_SiteStats = array();
+				$object_StatsResult = $SQL->query('SELECT * FROM `site_stats`');
+				while($temp = $object_StatsResult->fetch_assoc())
+				{
+					$array_SiteStats[$temp['stat']] = $temp['value'];
+				}
+				$string_HTML_Table = '
 	<table id="admin_stat_table">
 		<thead>
 			<tr>
@@ -221,12 +255,14 @@ ORDER BY `board_id` ASC'
 		</tbody>
 	</table>
 ';
-		$string_BodyHTML .= '<div id="admin_body_content">'.$string_TableHTML.'</div>';
+				$string_HTML_Body .= '<div id="admin_body_content"><h2>Site Info</h2>'.$string_HTML_Table.'</div>';
+				break;
+		}
 		break;
 }
-$string_BodyHTML .= '</div>';
+$string_HTML_Body .= '</div>';
+$P->set('body',$string_HTML_Body);
 $P->set('navbar',$object_TopNav->assemble());
-$P->set('body',$string_BodyHTML);
 $P->load('base.php');
 $P->render();
 ?>

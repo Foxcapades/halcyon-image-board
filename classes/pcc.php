@@ -98,11 +98,11 @@ class templateForge
 				$cd .= '../';
 			}
 		}
-		
+
 		extract($this->vars);
 		ob_start();
-		
-		include($cd.'t/'.$filename);
+
+		include($cd.'templates/'.$filename);
 
 		$this->html = ob_get_clean();
 
