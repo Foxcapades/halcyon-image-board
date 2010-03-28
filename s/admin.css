@@ -72,7 +72,7 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 	border-bottom:1px dotted #d9d9d9;
 }
 #admin_nav_menu li.link a {
-	display:block;
+	padding-left:16px;
 }
 
 #admin_nav_menu li.link a:hover,
@@ -80,7 +80,7 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 	text-decoration:underline;
 }
 #admin_nav_menu li.link a.here {
-	background:url(../i/arrow-180-small.png) no-repeat right center;
+	background:url(../i/arrow-000-small.png) no-repeat left center;
 }
 
 .bdLstCol1 {

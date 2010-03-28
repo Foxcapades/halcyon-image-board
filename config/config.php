@@ -144,7 +144,7 @@ $BBC = new BBCode();
 class navBar
 {
 	private $array_Links = array();
-	
+
 	public function addLink($url, $title, $desc ='', $class ='', $id ='')
 	{
 		$array_LinkArray = array('type'=>'link', 'href'=> $url, 'text'=>$title);
@@ -162,7 +162,7 @@ class navBar
 	}
 	public function assemble($class='',$id='')
 	{
-		
+
 		$string_HTML = '<ul'.(($class != '')?' class="'.$class.'"':'').
 			(($id != '')?' id="'.$id.'"':'').'>';
 		foreach($this->array_Links as $linkArray)
@@ -265,11 +265,6 @@ if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online
 	$userbox .= '</ul>';
 }
 
-/**
- *
- * @param $sql
- * @return unknown_type
- */
 /**
  * This randomly placed code assembles an array of site vars that are stored in
  * the database.
