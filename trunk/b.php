@@ -48,7 +48,13 @@ if(strlen($directory) > 10 || strlen($directory) == 0)
  *
  */
 
-$q = $SQL->query('SELECT * FROM `ste_boards` WHERE `dir` = \''.$directory.'\'');
+$q = $SQL->query(
+
+'SELECT *
+FROM `ste_boards`
+WHERE `dir` = \''.$directory.'\''
+
+);
 
 
 // If the number of rows found less than 1 then show the index.
@@ -172,7 +178,8 @@ $USR['level'] >= $BINFO['post_min_lvl'] &&
 
 		// Try and create the thread
 		if(!$SQL->query(
-'INSERT INTO `pst_threads` (
+
+'INSERT INTO `'.$databaseTables['threads'].'` (
 	`board_id`,
 	`key`,
 	`title`,
@@ -183,7 +190,8 @@ $USR['level'] >= $BINFO['post_min_lvl'] &&
 	\''.$title.'\',
 	\''.$USR['user_id'].'\'
 )'
-		))
+
+))
 		{
 
 			// If the thread could not be created, stop and delete the uploaded file
@@ -204,12 +212,14 @@ $USR['level'] >= $BINFO['post_min_lvl'] &&
 
 		// Select newly created thread to verify it was actually posted and to obtain the DB set thread ID and DATE
 		$objThreadVerify = $SQL->query(
+
 'SELECT `thread_id`,`posted`
-FROM `pst_threads`
+FROM `'.$databaseTables['threads'].'`
 WHERE `key` = \''.$threadkey.'\'
 AND `user` = \''.$USR['user_id'].'\'
 ORDER BY `thread_id` DESC
 LIMIT 0,1'
+
 		);
 
 		if(!is_object($objThreadVerify))
@@ -226,11 +236,12 @@ LIMIT 0,1'
 		} else {
 
 			// Get the pulled thread ID and DATE to attach to the post
-			$nudez = $nudes->fetch_assoc();
+			$nudez = $objThreadVerify->fetch_assoc();
 
 			// Insert the post into the database
 			if(!$SQL->query(
-'INSERT INTO `pst_posts` (
+
+'INSERT INTO `'.$databaseTables['posts'].'` (
 	`thread_id`,
 	`user_id`,
 	`post_time`,
@@ -243,6 +254,7 @@ LIMIT 0,1'
 	\''.$fname.'\',
 	\''.$text.'\'
 )'
+
 			))
 			{
 
@@ -251,10 +263,12 @@ LIMIT 0,1'
 				ERROR::report('Could not create post, attempting to remove traces. DB said: '.$SQL->error);
 
 				if(!$SQL->query(
-'DELETE FROM `pst_threads`
-WHERE `pst_threads`.`key` = \''.$threadkey.'\'
-AND `pst_threads`.`title` = \''.$title.'\'
+
+'DELETE FROM `'.$databaseTables['threads'].'`
+WHERE `'.$databaseTables['threads'].'`.`key` = \''.$threadkey.'\'
+AND `'.$databaseTables['threads'].'`.`title` = \''.$title.'\'
 LIMIT 1'
+
 				))
 				{
 					ERROR::report('could not remove thread after post failed. Threadkey: \''.$threadkey.'\' DB said: '.$SQL->error);
@@ -268,12 +282,14 @@ LIMIT 1'
 			else
 			{
 				$refreshq = $SQL->query(
+
 'SELECT `post_id`
-FROM `pst_posts`
+FROM `'.$databaseTables['posts'].'`
 WHERE `user_id` = \''.$USR['user_id'].'\'
 AND `thread_id` = \''.$nudez['thread_id'].'\'
 ORDER BY `post_time` DESC
 LIMIT 0,1'
+
 				);
 				$refresha = $refreshq->fetch_assoc();
 				$_SESSION['postcooldown'] = time();
@@ -327,13 +343,13 @@ FROM (
 		`o`.`last_ping`,
 		`p`.`post_id`, `p`.`post_time`, `p`.`text`, `p`.`image`,
 		`t`.`thread_id`, `t`.`posted`, `t`.`title`
-	FROM `pst_threads` AS `t`
+	FROM `'.$databaseTables['threads'].'` AS `t`
 	INNER JOIN (
 
-		`pst_posts` AS `p`
+		`'.$databaseTables['posts'].'` AS `p`
 		LEFT JOIN (
 
-			`user_accounts` AS `u`
+			`'.$databaseTables['user_list'].'` AS `u`
 			LEFT JOIN `user_online` AS `o`
 			USING (`user_id`)
 

@@ -211,6 +211,17 @@ class formValidate {
 
 		return FALSE;
 	}
+	public function validate_url($input)
+	{
+		if(!preg_match('#^http(?:s)?://[a-z0-9_-]+\.[a-z0-9-_]+(?:\.[a-z0-9-_]+)*(?:/[a-z0-9-_]+)*$#',$input))
+		{
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
 
 }
 
