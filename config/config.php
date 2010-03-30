@@ -29,13 +29,43 @@
  * TODO: allow choosing nav bar position when creating a board
  *
  */
-error_reporting(E_ALL);
+//error_reporting(E_ALL);
 //REMOVE
 if(file_exists('../../untitled.php'))
 {
 	require_once '../../untitled.php';
 }
 //END REMOVE
+
+/**
+ * Prefix to prepend to the table names in the database
+ * @var string
+ */
+$tablePrefix = '';
+
+/**
+ * Array containing a list of the tables in the database
+ *
+ * WARNING:
+ * DO NOT CHANGE THIS UNLESS YOU HAVE OR PLAN TO CHANGE YOUR DATABASE STRUCTURE
+ * TO MATCH
+ *
+ * @var array
+ */
+$databaseTables = array(
+
+	'global_vars'	=>	$tablePrefix	.	'ste_vars',
+	'statistics'	=>	$tablePrefix	.	'site_stats',
+	'modules'		=>	$tablePrefix	.	'site_modules',
+	'nav_bar'		=>	$tablePrefix	.	'ste_navbar',
+	'boards'		=>	$tablePrefix	.	'ste_boards',
+	'threads'		=>	$tablePrefix	.	'pst_threads',
+	'posts'			=>	$tablePrefix	.	'pst_posts',
+	'user_list'		=>	$tablePrefix	.	'user_accounts',
+	'online_users'	=>	$tablePrefix	.	'user_online',
+	'level_list'	=>	$tablePrefix	.	'user_levels'
+
+);
 
 /**
  * Here we are starting our MySQLi instance... You will need to set your own
@@ -199,15 +229,28 @@ class navBar
  */
 if(!isset($_SESSION['user_id']))
 {
-$_SESSION['user_id'] = 1;}
+	$_SESSION['user_id'] = 1;
+}
+
 if(!$FORM->length($_SESSION['user_id'],1,10))
 {
-$_SESSION['user_id'] = 1;}
+	$_SESSION['user_id'] = 1;
+}
+
+
 /**
  * Pull your info from the database
  * @var mixed
  */
-$userInfoResult = $SQL->query('SELECT * FROM `user_accounts` WHERE `user_id`=\''.$_SESSION['user_id'].'\'');
+$userInfoResult = $SQL->query(
+
+'SELECT *
+FROM `'.$databaseTables['user_list'].'`
+WHERE `user_id`=\''.$_SESSION['user_id'].'\''
+
+);
+
+
 /**
  * If there are multiple results for the same userID then there is a database
  * issue that needs to be sorted out.  Since we can't know for sure what result
@@ -217,6 +260,8 @@ if($userInfoResult->num_rows > 1)
 {
 	ERROR::dead('Duplicate entries found for UID:'.$_SESSION['user_id']);
 }
+
+
 /**
  * If that userID doesn't show up in the database at all then we will call you
  * anonymous and continue
@@ -225,18 +270,25 @@ if ($userInfoResult->num_rows == 0)
 {
 	ERROR::report('Invalid UID:'.$_SESSION['user_id'].' for IP:'.$_SERVER['REMOTE_ADDR'].'. Changed to anon.');
 	$_SESSION['user_id'] = 1;
-	$userInfoResult = $SQL->query('SELECT * FROM `user_accounts` WHERE `user_id`=\'1\'');
+	$userInfoResult = $SQL->query(
+
+'SELECT *
+FROM `'.$databaseTables['user_list'].'`
+WHERE `user_id`=\'1\''
+
+	);
 }
+
 if($userInfoResult->num_rows > 0)
 {
-/**
- * User Information
- *
- * An array that contains all the information contained in the database about
- * the current user.
- *
- * @var array
- */
+	/**
+	 * User Information
+	 *
+	 * An array that contains all the information contained in the database about
+	 * the current user.
+	 *
+	 * @var array
+	 */
 	$USR = $userInfoResult->fetch_assoc();
 }
 /**
@@ -247,7 +299,17 @@ if($userInfoResult->num_rows > 0)
  * Currently Online Table
  */
 pingUser();
-if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online` `o` INNER JOIN `user_accounts` `a` ON `o`.`user_id` = `a`.`user_id` WHERE `o`.`last_ping` >= \''.($timeNow - 300).'\' ORDER BY `o`.`last_ping` DESC'))
+
+if($userBox = $SQL->query(
+
+'SELECT DISTINCT `o`.`user_id`,`a`.*
+FROM `'.$databaseTables['online_users'].'` `o`
+INNER JOIN `'.$databaseTables['user_list'].'` `a`
+ON `o`.`user_id` = `a`.`user_id`
+WHERE `o`.`last_ping` >= \''.($timeNow - 300).'\'
+ORDER BY `o`.`last_ping` DESC'
+
+))
 {
 	$userbox = "<ul>\n";
 	if($userBox->num_rows > 0)
@@ -269,7 +331,13 @@ if($userBox = $SQL->query('SELECT DISTINCT `o`.`user_id`,`a`.* FROM `user_online
  * This randomly placed code assembles an array of site vars that are stored in
  * the database.
  */
-$cheese = $SQL->query('SELECT * FROM `ste_vars`');
+$cheese = $SQL->query(
+
+'SELECT *
+FROM `'.$databaseTables['global_vars'].'`'
+
+);
+
 $VAR = array();
 if($cheese->num_rows > 0)
 {
@@ -285,7 +353,13 @@ $P->set('imagedir',$VAR['updir']);
 
 $tempList = array();
 
-$levelListResult = $SQL->query('SELECT * FROM `user_levels`');
+$levelListResult = $SQL->query(
+
+'SELECT *
+FROM `'.$databaseTables['level_list'].'`'
+
+);
+
 if($levelListResult->num_rows > 0)
 {
 	while($returnValue=$levelListResult->fetch_assoc())
@@ -451,8 +525,14 @@ function index()
 }
 function navbuild(&$sql)
 {
-	Global $SQL,$USR,$BINFO;
-	$cheese = $SQL->query('SELECT * FROM `ste_navbar` ORDER BY `position` ASC');
+	global $SQL,$USR,$BINFO,$databaseTables;
+	$cheese = $SQL->query(
+
+'SELECT *
+FROM `'.$databaseTables['nav_bar'].'`
+ORDER BY `position` ASC'
+
+	);
 	$out="<ul>\n";
 	while($nim = $cheese->fetch_assoc())
 	{
@@ -460,7 +540,7 @@ function navbuild(&$sql)
 		if($USR['level'] >= $nim['usr_thresh'] && $USR['level'] <= $nim['usr_max'])
 		{
 
-			$out .= '<li><a href="'.$nim['href'].'" title="'.$nim['title'].'"';
+			$out .= '<li><a href="'.$VAR['base_url'].'/'.$nim['href'].'" title="'.$nim['title'].'"';
 
 			$out .= ($nim['class']!='' && $nim['text'] == $BINFO['dir']) ? ' class="'.$nim['class'].' here"' : '';
 			$out .= ($nim['class']!='' && $nim['text'] =! $BINFO['dir']) ? ' class="'.$nim['class'].'"' : '';
@@ -473,24 +553,62 @@ function navbuild(&$sql)
 }
 function pingUser($forced = FALSE)
 {
-	global $SQL,$USR;
+	global $SQL,$USR,$databaseTables;
 	$timeNow = time();
 	$time5Ago = $timeNow - 300;
 
-	$SQL->query('DELETE FROM `user_online` WHERE `last_ping` <= \''.($time5Ago-300).'\'');
+	$SQL->query(
 
-	$countVerify = $SQL->query('SELECT * FROM `user_online` WHERE `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\' AND `user_id` = \''.$_SESSION['user_id'].'\'');
+'DELETE FROM `'.$databaseTables['online_users'].'`
+WHERE `last_ping` <= \''.($time5Ago-300).'\''
+
+	);
+
+	$countVerify = $SQL->query(
+
+'SELECT *
+FROM `'.$databaseTables['online_users'].'`
+WHERE `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\'
+AND `user_id` = \''.$_SESSION['user_id'].'\''
+
+	);
 	if($countVerify->num_rows == '0')
 	{
 
-		$SQL->query('INSERT INTO `user_online` VALUES (\''.$_SESSION['user_id'].'\',\''.$timeNow.'\',\''.$_SERVER['REMOTE_ADDR'].'\')');
+		$SQL->query(
+
+'INSERT INTO `'.$databaseTables['online_users'].'`
+VALUES (
+	\''.$_SESSION['user_id'].'\',
+	\''.$timeNow.'\',
+	\''.$_SERVER['REMOTE_ADDR'].'\'
+)'
+
+		);
 
 	}
 	else
 	{
 
-		$SQL->query('UPDATE `user_online` SET `last_ping` = \''.$timeNow.'\' WHERE `user_id` = \''.$_SESSION['user_id'].'\' AND `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\'');
+		$SQL->query(
 
+'UPDATE `'.$databaseTables['online_users'].'`
+SET `last_ping` = \''.$timeNow.'\'
+WHERE `user_id` = \''.$_SESSION['user_id'].'\'
+AND `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\''
+
+		);
+
+	}
+	if($_SESSION['user_id'] != 1)
+	{
+		$SQL->query(
+
+'UPDATE `'.$databaseTables['user_list'].'`
+SET `user_last_online` = \''.$timeNow.'\', `user_last_ip` = \''.$_SESSION['REMOTE_ADDR'].'\'
+WHERE `user_id` = \''.$_SESSION['user_id'].'\''
+
+		);
 	}
 
 }

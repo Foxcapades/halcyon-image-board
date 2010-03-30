@@ -71,11 +71,11 @@ function newBoard(&$strPageHTML)
 
 			$strPageHTML.= '<div>Attempting to create board...<br />';
 
-			if($SQL->query('INSERT INTO `ste_boards` VALUES (NULL,\''.$_POST['bnm'].'\',\''.$_POST['bttl'].'\',\''.$_POST['bms'].'\',\''.$_POST['hdn'].'\',\''.$_POST['lkd'].'\',\''.$_POST['plvl'].'\',\''.$_POST['blvl'].'\',\''.$_POST['rlvl'].'\')')) {
+			if($SQL->query('INSERT INTO `'.$databaseTables['boards'].'` VALUES (NULL,\''.$_POST['bnm'].'\',\''.$_POST['bttl'].'\',\''.$_POST['bms'].'\',\''.$_POST['hdn'].'\',\''.$_POST['lkd'].'\',\''.$_POST['plvl'].'\',\''.$_POST['blvl'].'\',\''.$_POST['rlvl'].'\')')) {
 
 				if($posarr = $SQL->query('SELECT `position` FROM `ste_navbar` WHERE `position` < 250 ORDER BY `position` DESC LIMIT 0,1')) {
 
-					if($chud = $SQL->query('SELECT `board_id` FROM `ste_boards` WHERE `dir` = \''.$_POST['bnm'].'\' ORDER BY `board_id` DESC LIMIT 0,1')) {
+					if($chud = $SQL->query('SELECT `board_id` FROM `'.$databaseTables['boards'].'` WHERE `dir` = \''.$_POST['bnm'].'\' ORDER BY `board_id` DESC LIMIT 0,1')) {
 
 						$nurm = $posarr->fetch_assoc();
 						$hurp = $chud->fetch_assoc();
@@ -112,7 +112,7 @@ function deleteBoard(&$strPageHTML)
 	{
 
 		// Pull a list of all the boards in the database
-		$sqlResult = $SQL->query('SELECT `board_id`,`dir` FROM `ste_boards`');
+		$sqlResult = $SQL->query('SELECT `board_id`,`dir` FROM `'.$databaseTables['boards'].'`');
 
 		$delForm = new newForm('?mode=bd');
 
@@ -155,7 +155,7 @@ function deleteBoard(&$strPageHTML)
 		$_SESSION['boards'] = $boards;
 
 		// Get the names of the boards they want to delete
-		$sqlResult = $SQL->query('SELECT `dir` FROM `ste_boards` WHERE `board_id` IN (\''.$boards.'\')');
+		$sqlResult = $SQL->query('SELECT `dir` FROM `'.$databaseTables['boards'].'` WHERE `board_id` IN (\''.$boards.'\')');
 		while($fetch = $sqlResult->fetch_assoc())
 		{
 			$pageHTML .= '<li>'.$fetch['dir'].'</li>';
@@ -182,7 +182,7 @@ function deleteBoard(&$strPageHTML)
 		$strPageHTML .= '	<li>Pulling thread IDs from database...';
 
 		// Pull the threads
-		if($threadQuery = $SQL->query('SELECT * FROM `pst_threads` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+		if($threadQuery = $SQL->query('SELECT * FROM `'.$databaseTables['threads'].'` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
 		{
 
 			// If all went well alert the user and tell them whats next
@@ -212,7 +212,7 @@ function deleteBoard(&$strPageHTML)
 			$strPageHTML .= '	<li>Pulling posts from database...';
 
 			// Next query, lets get all the posts contained in the affected threads
-			if($postQuery = $SQL->query('SELECT * FROM `pst_posts` WHERE `thread_id` IN (\''.$thread_ids.'\')'))
+			if($postQuery = $SQL->query('SELECT * FROM `'.$databaseTables['posts'].'` WHERE `thread_id` IN (\''.$thread_ids.'\')'))
 			{
 
 				// More updates for the user
@@ -272,19 +272,19 @@ function deleteBoard(&$strPageHTML)
 				$strPageHTML .= '	<li>Attempting to delete posts...';
 
 				// Now lets hit the posts
-				if($SQL->query('DELETE FROM `pst_posts` WHERE `thread_id` IN (\''.$thread_ids.'\')'))
+				if($SQL->query('DELETE FROM `'.$databaseTables['posts'].'` WHERE `thread_id` IN (\''.$thread_ids.'\')'))
 				{
 					$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
 					$strPageHTML .= '	<li>Attempting to delete threads...';
 
 					// Followed by the threads
-					if($SQL->query('DELETE FROM `pst_threads` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+					if($SQL->query('DELETE FROM `'.$databaseTables['threads'].'` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
 					{
 						$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
 						$strPageHTML .= '	<li>Attempting to delete board...';
 
 						// And now the board itself
-						if($SQL->query('DELETE FROM `ste_boards` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+						if($SQL->query('DELETE FROM `'.$databaseTables['boards'].'` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
 						{
 							$strPageHTML .= '<span class="green">OK.</span></li>'."\n";
 							$strPageHTML .= '	<li>Deleting Link...';

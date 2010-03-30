@@ -45,9 +45,8 @@ form.miniform input[type="submit"] {
 }
 form div {
 	text-align: left;
-	width: 250px;
-	float: left;
 	clear: both;
+	overflow:auto;
 }
 
 .imgbox a img {

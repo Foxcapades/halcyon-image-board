@@ -15,49 +15,70 @@ FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 session_start();
+
+/**
+ * Try and include the config file
+ */
 if(file_exists('../config/config.php'))
 {
 	require_once '../config/config.php';
 }
 else
 {
-	die('I have no idea whats going on right now.');
+	die('Could not include config.php.');
 }
+
+/**
+ * Try and include the functions file
+ */
 if(file_exists('admin_functions.php'))
 {
 	require_once 'admin_functions.php';
 }
 else
 {
-	die('I have no idea whats going on right now.');
+	die('Could not include admin_functions.php.');
 }
 
-// If the user is not an admin, show the index
+/**
+ * If the user is not an admin, show the index
+ */
 if($USR['level'] < $VAR['userLevelList']['Administrator'])
 {
 	index();
 }
 
-$string_MyURL = $VAR['base_url'].'/admin/index.php';
+
+/**
+ * The full url to the current file
+ *
+ * @var string
+ */
+$string_MyURL = $VAR['base_url'].$_SERVER['PHP_SELF'];
+
 /**
  * Instance of the navBar class for the top nav bar
  *
  * @var object
  */
 $object_TopNav = new navBar();
+
 /**
  * Instance of the navBar class for the side nav menu
  *
  * @var object
  */
 $object_SubNav = new navBar();
+
 /**
  * String containing the HTML to fill the body variable in the template
  *
  * @var string
  */
 $string_HTML_Body = '<div id="admin_body">'."\n";
+
 /**
  * String containing the current section of the admin panel the user is in,
  * if this value is blank or null the script will default to the 'General
@@ -66,6 +87,7 @@ $string_HTML_Body = '<div id="admin_body">'."\n";
  * @var string
  */
 $string_Section	= $_GET['section'];
+
 /**
  * String containing the current action or function the user is viewing /
  * attempting in the admin panel section they are in.  If this value is blank or
@@ -105,62 +127,44 @@ switch($string_Section)
 		 */
 		$P->set('mes','Board Settings and Options');
 
-		/**
-		 * Result class for the query that should pull all info for all the boards
-		 * in the database.
-		 *
-		 * @var object
-		 */
-		$object_boardResult = $SQL->query(
-'SELECT *
-FROM `ste_boards`
-ORDER BY `board_id` ASC'
-		);
-
-		/**
-		 * Array that will contain a set of sub arrays that represent the boards on
-		 * the site.
-		 *
-		 * @var array
-		 */
-		$array_boardList = array();
-
-		/**
-		 * A string that will hold the HTML for the list of boards on the home page
-		 * for the boards section.
-		 *
-		 * @var string
-		 */
-		$string_HTML_BoardList  = '<table id="admin_board_list">'."\n";
-		$string_HTML_BoardList .= '	<col class="bdLstCol1" />'."\n";
-		$string_HTML_BoardList .= '	<col class="bdLstCol2" />'."\n";
-		$string_HTML_BoardList .= "	<tbody>\n";
-
-		/**
-		 * Put together a table of the boards with links to various options to
-		 * manipulate them
-		 */
-		while($temp = $object_boardResult->fetch_assoc())
-		{
-			$array_boardList[] = $temp;
-			$string_HTML_BoardList .= '		<tr id="btd_'.$temp['board_id'].'">'."\n";
-			$string_HTML_BoardList .= '			<td class="bdLstTitle">'.$temp['name']."</td>\n";
-			$string_HTML_BoardList .= "			<td class=\"bdLstOps\">\n";
-			$string_HTML_BoardList .= "				<ul>\n";
-			$string_HTML_BoardList .= '					<li><a href="'.$VAR['base_url'].'/admin/index.php?section=boards&mode=delBoard&board='.$temp['board_id'].'" title="Delete this board?"><img src="../i/cross.png" alt="Delete" /></a></li>'."\n";
-			$string_HTML_BoardList .= '					<li><a href="'.$VAR['base_url'].'/admin/index.php?section=boards&mode=editBoard&board='.$temp['board_id'].'" title="Edit this board?"><img src="../i/gear.png" alt="Edit" /></a></li>'."\n";
-			$string_HTML_BoardList .= "				</ul>\n";
-			$string_HTML_BoardList .= "			</td>\n";
-			$string_HTML_BoardList .= "		</tr>\n";
-		}
-		$string_HTML_BoardList .= "	</tbody>\n";
-		$string_HTML_BoardList .= "</table>\n";
-
 		$object_SubNav->addGroup('Board Management');
 		$object_SubNav->addLink($string_MyURL.'?section=boards', 'View Boards', 'View and edit the boards', (($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
 		$object_SubNav->addLink($string_MyURL.'?section=boards&mode=newBoard', 'Create a Board', 'Create a new board', (($string_Mode == 'newBoard') ? 'here' : ''));
 		$string_HTML_Body .= '<div id="admin_nav_menu"><h2>Navigation</h2>'.$object_SubNav->assemble().'</div>';
-		$string_HTML_Body .= '<div id="admin_body_content"><h2>Active Boards</h2>'.$string_HTML_BoardList.'</div>';
+
+		switch($string_Mode) {
+			case 'newBoard':
+				if(file_exists('board_create.php'))
+				{
+					require_once 'board_create.php';
+				}
+				else
+				{
+					die('A required admin function is missing.');
+				}
+				break;
+			case 'delBoard':
+				if(file_exists('board_delete.php'))
+				{
+					require_once 'board_delete.php';
+				}
+				else
+				{
+					die('A required admin function is missing.');
+				}
+				break;
+			default:
+				if(file_exists('board_view.php'))
+				{
+					require_once 'board_view.php';
+				}
+				else
+				{
+					die('A required admin function is missing.');
+				}
+				break;
+		}
+		$string_HTML_Body .= '<div id="admin_body_content"><h2>Active Boards</h2>'.$string_HTML_Return.'</div>';
 		break;
 
 	/**
@@ -181,6 +185,7 @@ ORDER BY `board_id` ASC'
 	 * as well as when the script doesn't recognize the section the user tried.
 	 */
 	default:
+
 		/**
 		 * Set the sub-header
 		 */
@@ -191,71 +196,47 @@ ORDER BY `board_id` ASC'
 		$object_SubNav->addLink($string_MyURL.'?mode=adv','Advanced Settings','Edit the advanced options for the site',(($string_Mode == 'adv') ? 'here' : ''));
 		$string_HTML_Body .= '<div id="admin_nav_menu"><h2>Navigation</h2>'.$object_SubNav->assemble().'</div>';
 
+		/**
+		 * Copy the site vars so we can alter them
+		 */
+		$array_VarsCopy = $VAR;
 		switch($string_Mode)
 		{
+			case 'baseEdit':
+				if(file_exists('general_settings.php'))
+				{
+					require_once 'general_settings.php';
+				}
+				else
+				{
+					die('A required admin function is missing.');
+				}
+				$string_HTML_Body .= '<div id="admin_body_content"><h2>Settings Update</h2>'.$string_HTML_Return.'</div>';
+				if($continue) {break;}
 			case 'base':
 				$object_Form_Base = new newForm('?mode=baseEdit');
+				$object_Form_Base->inputHTML($ERRORMES);
 				$object_Form_Base->inputHTML('<div class="long_form">');
-				$object_Form_Base->inputText('site_title','Site Title',$VAR['site_title']);
+				$object_Form_Base->inputText('site_title','Site Title',$array_VarsCopy['site_title']);
 				$object_Form_Base->inputHTML('<div class="form_explain">The title for the site. (used with the HTML &lt;title&gt; tag)</div></div><div class="long_form">');
-				$object_Form_Base->inputText('base_header','Site Header',$VAR['base_header']);
+				$object_Form_Base->inputText('base_header','Site Header',$array_VarsCopy['base_header']);
 				$object_Form_Base->inputHTML('<div class="form_explain">The default header for the site. (shows on the home page)</div></div><div class="long_form">');
-				$object_Form_Base->inputText('base_mes','Site Header Message',$VAR['base_mes']);
+				$object_Form_Base->inputText('base_mes','Site Header Message',$array_VarsCopy['base_mes']);
 				$object_Form_Base->inputHTML('<div class="form_explain">The header message for the site. (shows on the home page)</div></div><div class="long_form">');
-				$object_Form_Base->inputText('base_url','Base URL',$VAR['base_url']);
+				$object_Form_Base->inputText('base_url','Base URL',$array_VarsCopy['base_url']);
 				$object_Form_Base->inputHTML('<div class="form_explain">The base url for the site, CANNOT CONTAIN A TRAILING SLASH (good:http://a.b.c/path bad:http://a.b.c/path/).</div></div>');
 				$object_Form_Base->inputSubmit();
 				$string_HTML_Body .= '<div id="admin_body_content"><h2>Basic Site Settings</h2>'.$object_Form_Base->formReturn().'</div>';
 				break;
 			default:
-				/**
-				 * An array to hold the info pulled from the database for the table
-				 *
-				 * @var array
-				 */
-				$array_SiteStats = array();
-				$object_StatsResult = $SQL->query('SELECT * FROM `site_stats`');
-				while($temp = $object_StatsResult->fetch_assoc())
+				if(file_exists('general_view.php'))
 				{
-					$array_SiteStats[$temp['stat']] = $temp['value'];
+					require_once 'general_view.php';
 				}
-				$string_HTML_Table = '
-	<table id="admin_stat_table">
-		<thead>
-			<tr>
-				<th>Description</th>
-				<th>Value</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>Installed</td>
-				<td>'.date('l F d, Y',$array_SiteStats['installed']).'</td>
-			</tr>
-			<tr>
-				<td>Board Version</td>
-				<td>'.$VAR['version'].'</td>
-			</tr>
-			<tr>
-				<td>Posts</td>
-				<td>'.$array_SiteStats['posts'].'</td>
-			<tr>
-			<tr>
-				<td>Images</td>
-				<td>'.$array_SiteStats['image_posts'].'</td>
-			<tr>
-						<tr>
-				<td>Threads</td>
-				<td>'.$array_SiteStats['threads'].'</td>
-			<tr>
-			<tr>
-				<td>Registered Users</td>
-				<td>'.$array_SiteStats['reg_users'].'</td>
-			<tr>
-		</tbody>
-	</table>
-';
-				$string_HTML_Body .= '<div id="admin_body_content"><h2>Site Info</h2>'.$string_HTML_Table.'</div>';
+				else
+				{
+					die('A required admin function is missing.');
+				}
 				break;
 		}
 		break;

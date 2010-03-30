@@ -23,10 +23,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?=$title; ?></title>
-<link href="<?=$base_url; ?>/s/base.css" rel="stylesheet" type="text/css" />
-<link href="<?=$base_url; ?>/s/bbcd.css" rel="stylesheet" type="text/css" />
-<link href="<?=$base_url; ?>/s/html.css" rel="stylesheet" type="text/css" />
-<link href="<?=$base_url; ?>/s/admin.css" rel="stylesheet" type="text/css" />
+<link href="<?=$base_url; ?>/stylesheets/base.css" rel="stylesheet" type="text/css" />
+<link href="<?=$base_url; ?>/stylesheets/bbcd.css" rel="stylesheet" type="text/css" />
+<link href="<?=$base_url; ?>/stylesheets/html.css" rel="stylesheet" type="text/css" />
+<link href="<?=$base_url; ?>/stylesheets/admin.css" rel="stylesheet" type="text/css" />
 <link rel="shortcut icon" href="<?=$base_url; ?>/favicon.ico" />
 <script type="text/javascript" src="c/bbsrc.js"></script>
 <?=$headstuff; ?>
