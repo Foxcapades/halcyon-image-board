@@ -1,0 +1,150 @@
+@CHARSET "UTF-8";
+
+#admin_board_list,
+#admin_stat_table {
+	border:1px solid #A9A9A9;
+	width:650px;
+	margin:0px auto;
+}
+
+#admin_board_list tr:hover {
+	background:#D9D9D9;
+}
+
+#admin_board_list tr td {
+		padding:10px 5px;
+}
+
+#admin_board_list tr td ul li {
+	float:right;
+}
+
+#admin_board_list tr td ul li {
+	margin-left:5px;
+}
+
+#admin_body {
+	margin:0px auto;
+	width:850px;
+	overflow:auto;
+}
+
+#admin_body_content {
+	width:660px;
+	float:left;
+}
+
+#admin_body_content form {
+	width:650px;
+	margin:0px auto;
+}
+
+#admin_body_content form legend,
+#admin_body_content h2 {
+	display:inherit;
+	width:650px;
+	margin:0px auto 5px auto;
+	padding:2px 0px;
+	text-align:center;
+	border:none;
+	border-bottom:1px dotted #d9d9d9;
+	font-size:1.2em;
+}
+
+#admin_body_content form div.long_form {
+	border:1px solid #a9a9a9;
+	width:648px;
+	margin:2px 0px;
+}
+#admin_body_content form div label {
+	font-size:.9em;
+	float:left;
+	width:150px;
+	padding:1em 5px;
+	text-align:right;
+	background:#f5f5f5;
+	border-right:1px solid #a9a9a9;
+}
+#admin_body_content form div input[type="text"], 
+#admin_body_content form div input[type="password"],
+#admin_body_content form div select,
+#admin_body_content form div textarea {
+	display:inline;
+	font-size:.9em;
+	width:200px;
+	padding:1em 5px;
+	border:none;
+	margin:0px;
+	border-right:1px solid #a9a9a9;
+}
+#admin_body_content form div select {
+	padding:13px 5px 14px;
+}
+#admin_body_content form div input[type="checkbox"],
+#admin_body_content form div input[type="radio"] {
+	margin:15px 5px;
+	width:200px;
+	display:inline;
+	border:none;
+} 
+
+#admin_body_content form div div {
+	margin:0px;
+	background:none;
+	border:none;
+	width:372px;
+	display:inline;
+	position:relative;
+}
+#admin_body_content form div div.form_explain {
+	font-size:.6em;
+	padding:2px;
+	width:270px;
+	position:absolute;
+	overflow:auto;
+}
+#admin_nav_menu {
+	float:right;
+	width:185px;
+}
+
+#admin_nav_menu li.group {
+	border-bottom:1px solid #a9a9a9;
+}
+
+#admin_nav_menu li.link {
+	padding:2px 0px;
+	border-bottom:1px dotted #d9d9d9;
+}
+
+
+#admin_nav_menu li.link a {
+	padding-left:16px;
+}
+
+#admin_nav_menu li.link a:hover,
+#admin_nav_menu li.link a:focus {
+	text-decoration:underline;
+}
+#admin_nav_menu li.link a.here {
+	background:url(../../iconsets/default/arrow-000-small.png) no-repeat left center;
+}
+
+#admin_stat_table th {
+	background:#f5f5f5;
+}
+#admin_stat_table th,
+#admin_stat_table td {
+	padding:5px;
+}
+.bdLstCol0 {
+	background:#F9f9f9;
+	width:125px;
+}
+.bdLstCol1 {
+	background:#F5f5f5;
+}
+.bdLstCol2 {
+	width: 100px;
+	background:#E9E9E9;
+}

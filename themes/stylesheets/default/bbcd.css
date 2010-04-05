@@ -1,0 +1,56 @@
+@charset "utf-8";
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ * BBCode Stylesheet
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.bold {
+	font-weight: bold;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.underline {
+	text-decoration: underline;
+}
+
+.strike {
+	text-decoration: line-through;
+}
+
+.cd, pre {
+	font-family: "Courier New", Courier, monospace;
+}
+
+/*
+.code
+*/
+.quote, pre {
+	background: #fff;
+	border: 1px solid #a9a9a9;
+	padding: 5px;
+	margin: 5px;
+}
+
+pre {
+	overflow:auto;
+	font-size:.9em;
+}
+
+.quote .author {
+	color: #181818;
+}
+
+.quote .author:hover {
+	text-decoration: underline;
+}
+
+.url_link {
+	color:#A91D1D;
+}
+.url_link:hover, .link:focus {
+	text-decoration:underline;
+}
