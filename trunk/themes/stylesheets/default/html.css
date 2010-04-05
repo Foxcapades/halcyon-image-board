@@ -1,0 +1,69 @@
+@charset "utf-8";
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ * HTML Tag Stylesheet
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+a {
+	color:#A91D1D;
+}
+fieldset {
+	padding: 5px;
+	border: none;
+	margin-bottom:2em;
+}
+
+form {
+	margin: 5px auto;
+	width: 750px;
+}
+
+h1 {
+	text-align: center;
+}
+
+h2 {
+	display:none;
+}
+
+h3 {
+	font-size:1em;
+}
+input,textarea,select {
+	display: block;
+	margin-left: 2px;
+	border: 1px solid #a9a9a9;
+	padding: 2px;
+	margin-bottom: 5px;
+}
+
+
+input[type="submit"] {
+	padding: 4px 5px;
+}
+
+input[type="hidden"] {
+	display: none;
+}
+
+input[type="file"] {
+	border: none;
+}
+
+label {
+	padding: 5px 0px 5px 5px;
+	display: block;
+}
+
+img {
+	border: none;
+}
+
+legend {
+	border: 1px solid #a9a9a9;
+	padding: 3px;
+}
+
+textarea {
+}
