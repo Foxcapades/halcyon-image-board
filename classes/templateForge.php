@@ -87,22 +87,11 @@ class templateForge
 	function load($filename)
 	{
 
-		$thisPage = explode('/',$_SERVER['PHP_SELF']);
-		array_pop($thisPage);
-		unset($thisPage[0]);
-		$cd = '';
-		if(count($thisPage) > 0)
-		{
-			foreach($thisPage as $v)
-			{
-				$cd .= '../';
-			}
-		}
 
 		extract($this->vars);
 		ob_start();
 
-		include($cd.'templates/'.$filename);
+		include($filename);
 
 		$this->html = ob_get_clean();
 

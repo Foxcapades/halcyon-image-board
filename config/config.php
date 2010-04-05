@@ -1,22 +1,21 @@
 <?php
-/**
- *	Halcyon Image Board
- *  Copyright (C) 2010  Steven Utiger
- *
- *    This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or any later version.
- *
- *    This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
- * more details.
- *
- *    You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Configuration file
- *
+/*
+	Halcyon Image Board
+	Copyright (C) 2010 Halcyon Bulletin Board Systems
+
+  This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or any later version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+/* *
  * To Do's:
  * TODO: User's Avatars will be named with the user's ID
  * TODO: Allow up to 4 uploads per post, as an option in the admin panel
@@ -30,12 +29,6 @@
  *
  */
 //error_reporting(E_ALL);
-//REMOVE
-if(file_exists('../../untitled.php'))
-{
-	require_once '../../untitled.php';
-}
-//END REMOVE
 
 /**
  * Prefix to prepend to the table names in the database
@@ -113,26 +106,14 @@ if ($SQL->connect_error)
 $REQUIRED_FILES = array(
 
 //	'name' => 'path/to/file' (relative to the base directory for this script)
-	'Page Builder' 		=> 'classes/pcc.php',
-	'Error Handler'		=> 'classes/err.php',
-	'Form Validator'	=> 'classes/frm.php',
-	'Form Builder' 		=> 'classes/nfr.php',
-	'Post Builder'		=> 'classes/pst.php',
-	'BBCode Parser'		=> 'classes/bbc.php'
+	'Page Builder' 		=> 'classes/templateForge.php',
+	'Error Handler'		=> 'classes/error.php',
+	'Form Validator'	=> 'classes/formValidate.php',
+	'Form Builder' 		=> 'classes/newForm.php',
+	'Post Builder'		=> 'classes/post.php',
+	'BBCode Parser'		=> 'classes/BBCode.php'
 
 );
-
-$thisPage = explode('/',$_SERVER['PHP_SELF']);
-array_pop($thisPage);
-unset($thisPage[0]);
-$cd = '';
-if(count($thisPage) > 0)
-{
-	foreach($thisPage as $v)
-	{
-		$cd .= '../';
-	}
-}
 
 foreach($REQUIRED_FILES as $key => $value)
 {
@@ -141,10 +122,9 @@ foreach($REQUIRED_FILES as $key => $value)
 	{
 		$value = substr($value,1);
 	}
-	$path = $cd.$value;
-	if(file_exists($path))
+	if(file_exists($value))
 	{
-		require_once $path;
+		require_once $value;
 	}
 	else
 	{
@@ -306,7 +286,7 @@ if($userBox = $SQL->query(
 FROM `'.$databaseTables['online_users'].'` `o`
 INNER JOIN `'.$databaseTables['user_list'].'` `a`
 ON `o`.`user_id` = `a`.`user_id`
-WHERE `o`.`last_ping` >= \''.($timeNow - 300).'\'
+WHERE `o`.`last_ping` >= \''.(time() - 300).'\'
 ORDER BY `o`.`last_ping` DESC'
 
 ))
@@ -350,6 +330,7 @@ if($cheese->num_rows > 0)
 $P->set('base_url',$VAR['base_url']);
 $P->set('thumbdir',$VAR['thdir']);
 $P->set('imagedir',$VAR['updir']);
+$P->set('stylesheet_dir',$VAR['stylesheet_dir']);
 
 $tempList = array();
 
@@ -519,13 +500,13 @@ function index()
 	$strPageHTML .= navbuild($SQL);
 	$strPageHTML .= "	\n</div>";
 	$P->set('body',$strPageHTML);
-	$P->load('base.php');
+	$P->load('themes/templates/'.$VAR['template_dir'].'base.php');
 	$P->render();
 	die();
 }
 function navbuild(&$sql)
 {
-	global $SQL,$USR,$BINFO,$databaseTables;
+	global $SQL,$USR,$BINFO,$databaseTables,$VAR;
 	$cheese = $SQL->query(
 
 'SELECT *

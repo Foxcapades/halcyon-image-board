@@ -1,7 +1,7 @@
 <?php
 /*
 	Halcyon Image Board
-	Copyright (C) 2010 Steven Utiger
+	Copyright (C) 2010 Halcyon Bulletin Board Systems
 
   This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -15,7 +15,6 @@ FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-
 // To delete the board we will need to remove all posts and files associated with the board, so it may be slow
 
 /**

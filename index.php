@@ -16,9 +16,8 @@
  *    You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+header('Location: ./install.php'); exit;
 session_start();
-
-
 
 if(file_exists('config/config.php')) {
 	require_once 'config/config.php';
@@ -80,7 +79,7 @@ $body = '<div class="longnote thread"><h2>Privacy Policy</h2>
 $navbar = navbuild($SQL);
 $P->set('navbar',$navbar);
 $P->set('body',$body);
-$P->load('base.php');
+$P->load('themes/templates/'.$VAR['template_dir'].'base.php');
 $P->render();
 
 } else {index();}

@@ -1,7 +1,7 @@
 <?php
 /*
 	Halcyon Image Board
-	Copyright (C) 2010 Steven Utiger
+	Copyright (C) 2010 Halcyon Bulletin Board Systems
 
   This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -55,12 +55,13 @@ while($temp = $object_boardResult->fetch_assoc())
 {
 	$array_boardList[] = $temp;
 	$string_HTML_Return .= '		<tr id="btd_'.$temp['board_id'].'">'."\n";
-	$string_HTML_Return .= '			<td class="bdLstTitle">/'.$temp['dir']."</td>\n";
+	$string_HTML_Return .= '			<td class="bdLstTitle">'.$temp['dir']."</td>\n";
 	$string_HTML_Return .= '			<td class="bdLstTitle">'.$temp['name']."</td>\n";
 	$string_HTML_Return .= "			<td class=\"bdLstOps\">\n";
 	$string_HTML_Return .= "				<ul>\n";
-	$string_HTML_Return .= '					<li><a href="'.$VAR['base_url'].'/admin/index.php?section=boards&mode=delBoard&board='.$temp['board_id'].'" title="Delete this board?"><img src="../i/cross.png" alt="Delete" /></a></li>'."\n";
-	$string_HTML_Return .= '					<li><a href="'.$VAR['base_url'].'/admin/index.php?section=boards&mode=editBoard&board='.$temp['board_id'].'" title="Edit this board?"><img src="../i/gear.png" alt="Edit" /></a></li>'."\n";
+	$string_HTML_Return .= '					<li><a href="'.$VAR['base_url'].'/admin/index.php?section=boards&mode=delBoard&board='.$temp['board_id'].'" title="Delete this board?"><img src="../themes/iconsets/'.$VAR['iconset_dir'].'cross.png" alt="Delete" /></a></li>'."\n";
+	$string_HTML_Return .= '					<li><a href="'.$VAR['base_url'].'/admin/index.php?section=boards&mode=editBoard&board='.$temp['board_id'].'" title="Edit this board?"><img src="../themes/iconsets/'.$VAR['iconset_dir'].'/gear.png" alt="Edit" /></a></li>'."\n";
+	$string_HTML_Return .= '					<li><a href="'.$VAR['base_url'].'/admin/index.php?section=boards&mode=clearBoard&board='.$temp['board_id'].'" title="Clear this board?"><img src="../themes/iconsets/'.$VAR['iconset_dir'].'/bin.png" alt="Clear" /></a></li>'."\n";
 	$string_HTML_Return .= "				</ul>\n";
 	$string_HTML_Return .= "			</td>\n";
 	$string_HTML_Return .= "		</tr>\n";

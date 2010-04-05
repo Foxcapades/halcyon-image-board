@@ -1,7 +1,7 @@
 <?php
 /*
 	Halcyon Image Board
-	Copyright (C) 2010 Steven Utiger
+	Copyright (C) 2010 Halcyon Bulletin Board Systems
 
   This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -19,28 +19,36 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 session_start();
 
 /**
+ * Simple Solution for the config includes
+ */
+chdir('../');
+
+
+/**
  * Try and include the config file
  */
-if(file_exists('../config/config.php'))
+if(file_exists('./config/config.php'))
 {
-	require_once '../config/config.php';
+	require_once './config/config.php';
 }
 else
 {
 	die('Could not include config.php.');
 }
 
+
 /**
  * Try and include the functions file
  */
-if(file_exists('admin_functions.php'))
+if(file_exists('admin/admin_functions.php'))
 {
-	require_once 'admin_functions.php';
+	require_once 'admin/admin_functions.php';
 }
 else
 {
 	die('Could not include admin_functions.php.');
 }
+
 
 /**
  * If the user is not an admin, show the index
@@ -56,7 +64,8 @@ if($USR['level'] < $VAR['userLevelList']['Administrator'])
  *
  * @var string
  */
-$string_MyURL = $VAR['base_url'].$_SERVER['PHP_SELF'];
+$string_MyURL = $VAR['base_url'].'/admin/index.php';
+
 
 /**
  * Instance of the navBar class for the top nav bar
@@ -65,12 +74,14 @@ $string_MyURL = $VAR['base_url'].$_SERVER['PHP_SELF'];
  */
 $object_TopNav = new navBar();
 
+
 /**
  * Instance of the navBar class for the side nav menu
  *
  * @var object
  */
 $object_SubNav = new navBar();
+
 
 /**
  * String containing the HTML to fill the body variable in the template
@@ -126,6 +137,7 @@ switch($string_Section)
 		 * Set the sub-header
 		 */
 		$P->set('mes','Board Settings and Options');
+		$string_H2 = 'Active Boards';
 
 		$object_SubNav->addGroup('Board Management');
 		$object_SubNav->addLink($string_MyURL.'?section=boards', 'View Boards', 'View and edit the boards', (($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
@@ -133,10 +145,30 @@ switch($string_Section)
 		$string_HTML_Body .= '<div id="admin_nav_menu"><h2>Navigation</h2>'.$object_SubNav->assemble().'</div>';
 
 		switch($string_Mode) {
-			case 'newBoard':
-				if(file_exists('board_create.php'))
+			case 'clearBoard':
+				if(file_exists('admin/board_clear.php'))
 				{
-					require_once 'board_create.php';
+					require_once 'admin/board_clear.php';
+				}
+				else
+				{
+					die('A required admin function is missing.');
+				}
+				break;
+			case 'editBoard':
+				if(file_exists('admin/board_edit.php'))
+				{
+					require_once 'admin/board_edit.php';
+				}
+				else
+				{
+					die('A required admin function is missing.');
+				}
+				break;
+			case 'newBoard':
+				if(file_exists('admin/board_create.php'))
+				{
+					require_once 'admin/board_create.php';
 				}
 				else
 				{
@@ -144,9 +176,9 @@ switch($string_Section)
 				}
 				break;
 			case 'delBoard':
-				if(file_exists('board_delete.php'))
+				if(file_exists('admin/board_delete.php'))
 				{
-					require_once 'board_delete.php';
+					require_once 'admin/board_delete.php';
 				}
 				else
 				{
@@ -154,9 +186,9 @@ switch($string_Section)
 				}
 				break;
 			default:
-				if(file_exists('board_view.php'))
+				if(file_exists('admin/board_view.php'))
 				{
-					require_once 'board_view.php';
+					require_once 'admin/board_view.php';
 				}
 				else
 				{
@@ -164,7 +196,7 @@ switch($string_Section)
 				}
 				break;
 		}
-		$string_HTML_Body .= '<div id="admin_body_content"><h2>Active Boards</h2>'.$string_HTML_Return.'</div>';
+		$string_HTML_Body .= '<div id="admin_body_content"><h2>'.$string_H2.'</h2>'.$string_HTML_Return.'</div>';
 		break;
 
 	/**
@@ -193,7 +225,6 @@ switch($string_Section)
 		$object_SubNav->addGroup('Site Control');
 		$object_SubNav->addLink($string_MyURL,'View Status','View the sites current status',(($string_Mode == '' || $string_Mode == NULL) ? 'here' : ''));
 		$object_SubNav->addLink($string_MyURL.'?mode=base','Edit Settings','Edit the base settings for the site',(($string_Mode == 'base' || $string_Mode == 'baseEdit') ? 'here' : ''));
-		$object_SubNav->addLink($string_MyURL.'?mode=adv','Advanced Settings','Edit the advanced options for the site',(($string_Mode == 'adv') ? 'here' : ''));
 		$string_HTML_Body .= '<div id="admin_nav_menu"><h2>Navigation</h2>'.$object_SubNav->assemble().'</div>';
 
 		/**
@@ -203,9 +234,9 @@ switch($string_Section)
 		switch($string_Mode)
 		{
 			case 'baseEdit':
-				if(file_exists('general_settings.php'))
+				if(file_exists('admin/general_settings.php'))
 				{
-					require_once 'general_settings.php';
+					require_once 'admin/general_settings.php';
 				}
 				else
 				{
@@ -229,9 +260,9 @@ switch($string_Section)
 				$string_HTML_Body .= '<div id="admin_body_content"><h2>Basic Site Settings</h2>'.$object_Form_Base->formReturn().'</div>';
 				break;
 			default:
-				if(file_exists('general_view.php'))
+				if(file_exists('admin/general_view.php'))
 				{
-					require_once 'general_view.php';
+					require_once 'admin/general_view.php';
 				}
 				else
 				{
@@ -244,6 +275,6 @@ switch($string_Section)
 $string_HTML_Body .= '</div>';
 $P->set('body',$string_HTML_Body);
 $P->set('navbar',$object_TopNav->assemble());
-$P->load('base.php');
+$P->load('themes/templates/'.$VAR['template_dir'].'base.php');
 $P->render();
 ?>
