@@ -49,9 +49,9 @@ class POST {
 	$ptx,
 	$pim,
 	$thread_id,
-	$avdir = 'i/av/',
-	$updir = 'i/up/images/',
-	$thdir = 'i/up/thumbs/'
+	$avdir = 'images/av/',
+	$updir = 'images/up/images/',
+	$thdir = 'images/up/thumbs/'
 	) {
 
 		// Path to user avatars

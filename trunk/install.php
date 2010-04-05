@@ -16,7 +16,7 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 session_start();
-$welcomepost = 'Welcome to [url=http://bbs.halcyonbbs.com]Halcyon Image Board[/url] Pre-Alpha 2.
+$welcomepost = 'Welcome to [url=http://bbs.halcyonbbs.com]Halcyon Image Board[/url] Pre-Alpha 3.
 
 Please remember this is not a finished image board, and [b]SHOULD NOT BE USED FOR ANYTHING BUT TESTING[/b].  Many functions, especially in the admin panel are not finished yet.
 
@@ -30,53 +30,86 @@ If you choose to keep this board, this post will remain, as there is no function
 Everything else in the admin panel should be fairly self explanatory.
 
 Thank you for choosing Halcyon BBS';
-if(!file_exists('classes/nfr.php'))
+if(!file_exists('classes/newForm.php'))
 {
 	die('<br><br><h1>Fatal Error</h1><p>Could Not find one of the required files, please re-upload all files.</p>');
 }
 else
 {
-	require_once 'classes/nfr.php';
+	require_once 'classes/newForm.php';
 }
-if(!file_exists('classes/pcc.php'))
+if(!file_exists('classes/templateForge.php'))
 {
 	die('<br><br><h1>Fatal Error</h1><p>Could not find one of the required files, please re-upload all files.</p>');
 }
 else
 {
-	require_once 'classes/pcc.php';
+	require_once 'classes/templateForge.php';
 }
 $fileList=array(
-'classes/bbc.php',
+
+'admin/admin_functions.php',
+'admin/board_clear.php',
+'admin/board_create.php',
+'admin/board_delete.php',
+'admin/board_edit.php',
+'admin/board_view.php',
+'admin/general_advanced.php',
+'admin/general_settings.php',
+'admin/general_view.php',
+'admin/index.php',
+
+'classes/BBCode.php',
 'classes/bbsrc.js',
-'classes/err.php',
-'classes/frm.php',
+'classes/error.php',
+'classes/formValidate.php',
 'classes/index.html',
-'classes/nfr.php',
-'classes/pcc.php',
-'classes/pst.php',
-'i/av/index.html',
-'i/av/anon.png',
-'i/up/index.html',
-'i/up/images/index.html',
-'i/up/thumbs/index.html',
-'i/index.html',
-'i/001.png',
-'i/002.png',
-'i/crown-bronze.png',
-'i/crown.png',
-'i/crown-silver.png',
+'classes/newForm.php',
+'classes/post.php',
+'classes/templateForge.php',
+'classes/user.php',
+
 'config/config.php',
 'config/index.php',
-'s/base.css',
-'s/html.css',
-'s/bbcd.css',
-'s/index.html',
-'t/base.php',
-'t/admin.php',
-'t/forms.php',
-'t/index.html',
-'admin.php',
+
+'images/av/index.html',
+'images/av/anon.png',
+'images/up/index.html',
+'images/up/images/sample.jpg',
+'images/up/thumbs/sample.jpg',
+'images/up/images/index.html',
+'images/up/thumbs/index.html',
+'images/index.html',
+
+'themes/index.html',
+
+'themes/iconsets/index.html',
+'themes/iconsets/default/001.png',
+'themes/iconsets/default/002.png',
+'themes/iconsets/default/arrow-000-small.png',
+'themes/iconsets/default/arrow-180-small.png',
+'themes/iconsets/default/bin.png',
+'themes/iconsets/default/cross.png',
+'themes/iconsets/default/crown-bronze.png',
+'themes/iconsets/default/crown-silver.png',
+'themes/iconsets/default/crown.png',
+'themes/iconsets/default/external.png',
+'themes/iconsets/default/gear.png',
+'themes/iconsets/default/index.html',
+'themes/iconsets/default/online.gif',
+'themes/iconsets/default/wrench.png',
+
+'themes/stylesheets/index.html',
+'themes/stylesheets/default/admin.css',
+'themes/stylesheets/default/base.css',
+'themes/stylesheets/default/bbcd.css',
+'themes/stylesheets/default/html.css',
+'themes/stylesheets/default/index.php',
+
+'themes/templates/index.html',
+'themes/templates/default/base.php',
+'themes/templates/default/index.html',
+
 'b.php',
 'faq.php',
 'favicon.ico',
@@ -85,6 +118,7 @@ $fileList=array(
 'u.php',
 'usr.php'
 );
+
 foreach($fileList as $v)
 {
 	if(!file_exists($v))
@@ -162,7 +196,7 @@ function check_email_address($email)
 	return $isValid;
 }
 
-switch($_SESSION['steps'])
+switch($_GET['steps'])
 {
 	case 'install':
 		require_once 'config/config.php';
@@ -200,6 +234,46 @@ PRIMARY KEY (`post_id`)
 PRIMARY KEY (`thread_id`),
 KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1'
+		))
+		{
+			$html .= '<span class="error">FAILED</span>';
+			$ok = FALSE;
+		}
+		else
+		{
+			$html .= '<span class="green">OK</span>';
+		}
+		$html .= '<br />';
+		$html .= 'Creating Module table: ';
+		if(!$SQL->query(
+'CREATE TABLE IF NOT EXISTS `site_modules` (
+  `mod_name` varchar(64) NOT NULL,
+  `created` varchar(64) NOT NULL,
+  `author` varchar(64) NOT NULL,
+  `version` varchar(16) NOT NULL,
+  `installed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `file_name` varchar(24) NOT NULL,
+  `enabled` enum(\'Enabled\',\'Disabled\') NOT NULL DEFAULT \'Enabled\',
+  `description` text NOT NULL,
+  PRIMARY KEY (`mod_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1'
+		))
+		{
+			$html .= '<span class="error">FAILED</span>';
+			$ok = FALSE;
+		}
+		else
+		{
+			$html .= '<span class="green">OK</span>';
+		}
+		$html .= '<br />';
+		$html .= 'Creating Stats table: ';
+		if(!$SQL->query(
+'CREATE TABLE IF NOT EXISTS `site_stats` (
+  `stat` varchar(32) NOT NULL,
+  `value` int(11) NOT NULL,
+  PRIMARY KEY (`stat`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1'
 		))
 		{
 			$html .= '<span class="error">FAILED</span>';
@@ -336,6 +410,24 @@ PRIMARY KEY (`level`)
 		$html .= '<br /><br />';
 		$html .= '<div class="box">Attempting to insert default Values into the database...</div>';
 		$html .= '<br />';
+		$html .= 'Adding Default Site Stats: ';
+		if(!$SQL->query(
+'INSERT INTO `site_stats` (`stat`, `value`) VALUES
+(\'installed\', '.time().'),
+(\'posts\', 0),
+(\'threads\', 0),
+(\'reg_users\', 1),
+(\'image_posts\', 0)'
+		))
+		{
+			$html .= '<span class="error">FAILED</span>';
+			$ok = FALSE;
+		}
+		else
+		{
+			$html .= '<span class="green">OK</span>';
+		}
+		$html .= '<br />';
 		$html .= 'Adding NavBar Links: ';
 		if(!$SQL->query(
 'INSERT INTO `ste_navbar` (`id`, `position`, `href`, `title`, `text`, `class`, `usr_thresh`, `usr_max`, `board_id`) VALUES
@@ -344,7 +436,7 @@ PRIMARY KEY (`level`)
 (00005, 252, \'usr.php?mode=uac\', \'Account Control Panel\', \'Account\', \'\', 2, 0, 00000000),
 (00007, 254, \'usr.php?mode=logout\', \'Logout\', \'Logout\', \'\', 2, 0, 00000000),
 (00008, 251, \'faq.php\', \'Frequently Asked Questions\', \'FAQ\', \'\', 0, 0, 00000000),
-(00009, 255, \'admin.php\', \'Administration Panel\', \'APanel\', \'\', 70, 0, 00000000),
+(00009, 255, \'admin/index.php\', \'Administration Panel\', \'APanel\', \'\', 70, 0, 00000000),
 (00010, 1, \'b.php?board=Welcome\', \'Sample Board\', \'Welcome\', \'\', 1, 0, 00000001)'
 		))
 		{
@@ -364,10 +456,17 @@ PRIMARY KEY (`level`)
 (\'base_mes\', \''.$_SESSION['array']['bms'].'\'),
 (\'board_active\', \'1\'),
 (\'base_url\', \''.$_SESSION['array']['url'].'\'),
-(\'updir\', \'i/up/images/\'),
-(\'avdir\', \'i/av/\'),
-(\'thdir\', \'i/up/thumbs/\'),
-(\'maxFileSize\', \'2621440\')'
+(\'updir\', \'images/up/images/\'),
+(\'avdir\', \'images/av/\'),
+(\'thdir\', \'images/up/thumbs/\'),
+(\'maxFileSize\', \'2621440\'),
+(\'version\', \'PreAlpha 3\'),
+(\'iconset\', \'Default\'),
+(\'iconset_dir\', \'default/\'),
+(\'template\', \'Default\'),
+(\'template_dir\', \'default/\'),
+(\'stylesheet\', \'Default\'),
+(\'stylesheet_dir\', \'default/\')'
 		))
 		{
 			$html .= '<span class="error">FAILED</span>';
@@ -453,12 +552,15 @@ PRIMARY KEY (`level`)
 		else
 		{
 			$html .= '<span class="green">OK</span>';
+			$index = file_get_contents('./index.php');
+			$index = str_replace('header(\'Location: ./install.php\'); exit;','',$index);
+			file_put_contents('./index.php',$index);
 		}
 
 		$_SESSION['steps'] = 'admin';
 		$html .= ($ok) ? '<div class="green">Tables Installed</div>' : '<div class="error">Something went wrong</div>';
 		$html .= '<br />';
-		$html .= '<a href="'.$_SESSION['array']['url'].'" title="continue">Continue</a>';
+		$html .= ($ok) ? '<a href="'.$_SESSION['array']['url'].'" title="continue">Continue</a>' : '';
 		break;
 
 	case '1492':
@@ -545,8 +647,7 @@ PRIMARY KEY (`level`)
 					{
 						$html .= '<div class="green">Configuration successfully altered.</div>';
 						$html .= '<br />';
-						$html .= '<a href="install.php" title="continue">Install Tables</a>';
-						$_SESSION['steps'] = 'install';
+						$html .= '<a href="install.php?steps=install" title="continue">Install Tables</a>';
 						$_SESSION['array'] = array(
 							'anm' => $admin_name,
 							'aps' => md5($admin_pass),
@@ -603,7 +704,8 @@ PRIMARY KEY (`level`)
 
 	case 'connect':
 		break;
-	default:
+
+	case 'perms':
 		$vars['h1'] = 'Verifying Permissions';
 		$vars['mes'] = 'Checking to see if we can create and delete files on the server';
 		$html .= 'Attempting to create test file...';
@@ -650,17 +752,25 @@ PRIMARY KEY (`level`)
 		if($ok)
 		{
 			$html .= '<p>It appears that everything checks out, click the link below to continue to the next step.</p><br />';
-			$_SESSION['steps'] = '1492';
-			$html .= '<a href="install.php" title="continue to next step">Continue to setup site</a>';
+			$html .= '<a href="install.php?steps=1492" title="continue to next step">Continue to setup site</a>';
 		}
 		else
 		{
-			$html .= '<p>It seems there was an error in the filesystem verification, please check to make sure you have write permissions on your host server.';
+			$html .= '<p>It seems there was an error in the filesystem verification, please check to make sure you have write permissions on your host server.</p>';
 		}
 		break;
+
+	default:
+		$vars['h1'] = 'Welcome';
+		$vars['mes'] = 'Please follow the steps in this installer';
+		$html .= 'Welcome to the Halcyon Image Board Pre-Alpha 3 Installer, to get started please click the link below.<br /><br /><a href="install.php?steps=perms" title="Continue on to checking the filesystem permissions.">Check Permissions</a>';
+		break;
 }
+$html .= '</div>';
+$vars['base_url'] = '.';
+$vars['stylesheet_dir'] = 'default/';
 $page->set($vars);
 $page->set('body',$html.'</div>');
-$page->load('base.php');
+$page->load('themes/templates/default/base.php');
 $page->render();
 ?>

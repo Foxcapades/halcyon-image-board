@@ -304,7 +304,7 @@ public function inputHidden
 	if($this->selectOpen !== FALSE) {$this->endSelect($return);}
 	$id = ($id === FALSE) ? $name : $id;
 
-	$html .= '<input type="hidden" name="'.$name.'" value="'.htmlentities($value).'"';
+	$html = '<input type="hidden" name="'.$name.'" value="'.htmlentities($value).'"';
 	$html .= ($id			!== FALSE)	? ' id="'.$id.'"' : '';
 	$html .= ($class		!== FALSE)	? ' class="'.$class.'"' : '';
 	$html .= ($extra		!== FALSE)	? ' '.$extra : '';

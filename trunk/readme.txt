@@ -1,6 +1,6 @@
 
  *	Halcyon Image Board
- *  Copyright (C) 2010  Steven Utiger
+ *  Copyright (C) 2010 Halcyon Bulletin Board Systems
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software

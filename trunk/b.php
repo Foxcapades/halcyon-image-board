@@ -1,21 +1,20 @@
 <?php
-/**
- *
- *	Halcyon Image Board
- *  Copyright (C) 2010  Steven Utiger
- *
- *    This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or any later version.
- *
- *    This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
- * more details.
- *
- *    You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+/*
+	Halcyon Image Board
+	Copyright (C) 2010 Halcyon Bulletin Board Systems
+
+  This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or any later version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
 session_start();
 /**
  * Attempt to import the configuration file.
@@ -327,7 +326,7 @@ ini_restore('upload_max_filesize');
 
 // Start the $strPageHTML variable, if there was an error earlier in the script, this
 //  will set the error box, otherwise the $strPageHTML variable is set to null.
-$strPageHTML = $errorBoxHtml;
+$strPageHTML = (isset($errorBoxHtml)) ? $errorBoxHtml : '';
 
 // Begin the thread list
 $cherp = '<div id="thread">'."\n";
@@ -364,6 +363,8 @@ GROUP BY `a`.`thread_id`
 ORDER BY `a`.`posted` DESC');
 
 // Sift through the results and enter them into an array
+$durr = array();
+
 while($mrd = $dumo->fetch_assoc())
 {
 	if($mrd['name'] == NULL || $mrd['name'] == '')
@@ -382,7 +383,7 @@ $SQL->close();
 // Create a blank instance of POST for the following loop
 $POST = new POST('', '', '', '', '', '', '', '', '', '', '');
 
-if(is_array($durr))
+if(count($durr))
 {
 	foreach($durr as $v)
 	{
@@ -415,7 +416,7 @@ $strPageHTML .= $cherp;
 
 // Render the page
 $P->set('body', $strPageHTML);
-$P->load('base.php');
+$P->load('themes/templates/'.$VAR['template_dir'].'base.php');
 $P->render();
 
 
