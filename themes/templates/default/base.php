@@ -53,7 +53,7 @@
 <div class="navbar upper"><?=$navbar; ?></div>
 <?=$body; ?>
 <div class="navbar lower"><?=$navbar; ?></div>
-<div id="footer">&copy; 2010 <a href="http://www.halcyonbbs.com/" title="Halcyon BBS">Halcyon Bulletin Board Systems</a> | <a href="index.php?privacy" title="Privacy Policy">Privacy Policy</a></div>
+<div id="footer">&copy; 2010 <a href="http://www.halcyonbbs.com/" title="Halcyon BBS">Halcyon Bulletin Board Systems</a></div>
 
 </body>
 
