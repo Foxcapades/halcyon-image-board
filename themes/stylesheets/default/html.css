@@ -32,9 +32,8 @@ h3 {
 }
 input,textarea,select {
 	display: block;
-	margin-left: 2px;
 	border: 1px solid #a9a9a9;
-	padding: 2px;
+	padding: 5px;
 	margin-bottom: 5px;
 }
 

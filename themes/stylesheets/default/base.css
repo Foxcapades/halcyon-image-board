@@ -198,7 +198,9 @@ a.edtbut:hover {background-position: -16px -112px;}
 	line-height: 2em;
 }
 
-
+.hidden {
+	display:none;
+}
 /* Thread Template */
 .post {
 	width: 750px;
@@ -207,6 +209,20 @@ a.edtbut:hover {background-position: -16px -112px;}
 	background: #c9c9c9;
 	clear: both;
 }
+
+.post .post_header {
+	width:750px;
+	padding:5px 0px;
+	min-height:1em;
+	border-bottom:1px solid #a9a9a9;
+	background:#fff;
+}
+
+.post_header span {
+	font-weight:bold;
+	padding:0px 5px;
+}
+
 
 .post .imgbox {
 	margin: 5px;
@@ -302,11 +318,11 @@ div.bottom {
 .thread {
 	border: 1px solid #c9c9c9;
 	margin: 10px auto;
-	width: 750px;
+	width: 698px;
 }
 
 .thread .post {
-	width:740px;
+	width:688px;
 }
 
 .boards {
@@ -372,10 +388,40 @@ form div.halfwidth {
 	clear:none;
 }
 form div.fullwidth {
-	width:99%;
+	width:700px;
 	clear:both;
 }
 
+form div.fullwidth input,
+form div.fullwidth select,
+form div.fullwidth textarea {
+	width:680px;
+}
+
+#page_body {
+	width:950px;
+	margin:0px auto;
+	overflow:auto;
+}
+
+#thread_box {
+	width:700px;
+	float:left;
+}
+
+#side_box {
+	width:225px;
+	float:right;
+}
+
+#user_info_box {
+	padding:10px;
+	border:1px solid #a9a9a9;
+}
+
+#side_nav_bar {
+	padding:11px;
+}
 form.admForm fieldset legend {
 	width:200px;
 	border:1px solid #a9a9a9;

@@ -64,7 +64,13 @@ case 'login':
 		if($e == 0) {
 
 			// Try and pull the user info from the database
-			$selUser = $SQL->query('SELECT * FROM `'.$databaseTables['user_list'].'` WHERE `name` = \''.$cleanUserName.'\' AND `password` = \''.$cleanPassword.'\'');
+			$selUser = $SQL->query(
+
+'SELECT *
+FROM `'.DB_TABLE_USER_LIST.'`
+WHERE `name` = \''.$cleanUserName.'\' AND `password` = \''.$cleanPassword.'\''
+
+			);
 
 			// If the database returns a number other than 1 then something is wrong
 			if($selUser->num_rows != 1)
@@ -185,7 +191,20 @@ case 'nac':
 			$pass = md5($_POST['upss']);
 
 			// Try and insert the new user
-			if($SQL->query('INSERT INTO `'.$databaseTables['user_list'].'` VALUES (NULL,\''.$_POST['unme'].'\',2,\''.$_POST['mail'].'\',\''.$pass.'\',0,\'anon.png\')'))
+			if($SQL->query(
+
+'INSERT INTO `'.DB_TABLE_USER_LIST.'`
+VALUES (
+	NULL,
+	\''.$_POST['unme'].'\',
+	2,
+	\''.$_POST['mail'].'\',
+	\''.$pass.'\',
+	0,
+	\'anon.png\'
+)'
+
+			))
 			{
 
 				// If it went without any problems, say so and end.

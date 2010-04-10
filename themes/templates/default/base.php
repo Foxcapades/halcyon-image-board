@@ -2,7 +2,7 @@
 /**
  *
  *	Halcyon Image Board
- *  Copyright (C) 2010  Steven Utiger
+	Copyright (C) 2010 Halcyon Bulletin Board Systems
  *
  *    This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -25,7 +25,7 @@
 <title><?=$title; ?></title>
 <link href="<?=$base_url; ?>/themes/stylesheets/<?=$stylesheet_dir; ?>index.php" rel="stylesheet" type="text/css" />
 <link rel="shortcut icon" href="<?=$base_url; ?>/favicon.ico" />
-<script type="text/javascript" src="c/bbsrc.js"></script>
+<script type="text/javascript" src="classes/bbsrc.js"></script>
 <?=$headstuff; ?>
 <script type="text/javascript">function yeOldeSwitcheroo(id,imagename)
 {
@@ -50,10 +50,16 @@
 	<span><?=$mes; ?></span>
 
 </div>
+
 <div class="navbar upper"><?=$navbar; ?></div>
+<div id="page_body">
 <?=$body; ?>
+</div>
 <div class="navbar lower"><?=$navbar; ?></div>
-<div id="footer">&copy; 2010 <a href="http://www.halcyonbbs.com/" title="Halcyon BBS">Halcyon Bulletin Board Systems</a></div>
+
+<div id="footer">
+	&copy; 2010 <a href="http://www.halcyonbbs.com/" title="Halcyon BBS">Halcyon Bulletin Board Systems</a>
+</div>
 
 </body>
 

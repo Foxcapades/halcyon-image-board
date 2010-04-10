@@ -44,7 +44,7 @@ if(count($_POST))
 	{
 		$string_HTML_Return = '<div class="box">Attempting to insert values...</div>';
 		if($SQL->query(
-'UPDATE `'.$databaseTables['global_vars'].'` SET
+'UPDATE `'.DB_TABLE_GLOBAL_VARS.'` SET
 `value` =
 CASE `key`
 	WHEN \'site_title\' THEN \''.$_POST['site_title'].'\'

@@ -1,7 +1,7 @@
 <?php
 /*
 	Halcyon Image Board
-	Copyright (C) 2010 Steven Utiger
+	Copyright (C) 2010 Halcyon Bulletin Board Systems
 
   This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -118,7 +118,7 @@ else
 		$string_HTML_Return = '<div>Updating Tables:</div>';
 		if($SQL->query(
 
-'UPDATE `'.$databaseTables['boards'].'`
+'UPDATE `'.DB_TABLE_BOARD_LIST.'`
 SET
 	`dir` = \''.$cleanArray['bnm'].'\',
 	`name` = \''.$cleanArray['bttl'].'\',
@@ -135,7 +135,7 @@ WHERE `board_id` = \''.$strBoardID.'\''
 			$string_HTML_Return .= '<div class="green">Board Table Updated</div>';
 			if($SQL->query(
 
-'UPDATE `'.$databaseTables['nav_bar'].'`
+'UPDATE `'.DB_TABLE_THREAD_LIST.'`
 SET
 	`href` = \'b.php?board='.$cleanArray['bnm'].'\',
 	`title` = \''.$cleanArray['bttl'].'\',

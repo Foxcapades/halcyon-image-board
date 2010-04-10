@@ -72,7 +72,7 @@ $string_MyURL = $VAR['base_url'].'/admin/index.php';
  *
  * @var object
  */
-$object_TopNav = new navBar();
+$object_TopNav = new navBar_mysqli();
 
 
 /**
@@ -80,7 +80,7 @@ $object_TopNav = new navBar();
  *
  * @var object
  */
-$object_SubNav = new navBar();
+$object_SubNav = new navBar_mysqli();
 
 
 /**

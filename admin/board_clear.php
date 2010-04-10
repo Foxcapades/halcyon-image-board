@@ -1,7 +1,7 @@
 <?php
 /*
 	Halcyon Image Board
-	Copyright (C) 2010 Steven Utiger
+	Copyright (C) 2010 Halcyon Bulletin Board Systems
 
   This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -22,7 +22,7 @@ $strBoardID = $SQL->real_escape_string($_GET['board']);
 $objBoardInfoResult = $SQL->query(
 
 'SELECT *
-FROM `'.$databaseTables['boards'].'`
+FROM `'.DB_TABLE_BOARD_LIST.'`
 WHERE `board_id` = \''.$strBoardID.'\'
 LIMIT 0,1'
 
@@ -53,7 +53,7 @@ else
 		if($threadQuery = $SQL->query(
 
 'SELECT *
-FROM `'.$databaseTables['threads'].'`
+FROM `'.DB_TABLE_THREAD_LIST.'`
 WHERE `board_id` = \''.$strBoardID.'\''
 
 		))
@@ -89,7 +89,7 @@ WHERE `board_id` = \''.$strBoardID.'\''
 			if($postQuery = $SQL->query(
 
 'SELECT *
-FROM `'.$databaseTables['posts'].'`
+FROM `'.DB_TABLE_POST_LIST.'`
 WHERE `thread_id` IN (\''.$thread_ids.'\')'
 
 			))
@@ -152,13 +152,23 @@ WHERE `thread_id` IN (\''.$thread_ids.'\')'
 				$string_HTML_Return .= '	<li>Attempting to delete posts...';
 
 				// Now lets hit the posts
-				if($SQL->query('DELETE FROM `'.$databaseTables['posts'].'` WHERE `thread_id` IN (\''.$thread_ids.'\')'))
+				if($SQL->query(
+
+'DELETE FROM `'.DB_TABLE_POST_LIST.'`
+WHERE `thread_id` IN (\''.$thread_ids.'\')'
+
+				))
 				{
 					$string_HTML_Return .= '<span class="green">OK.</span></li>'."\n";
 					$string_HTML_Return .= '	<li>Attempting to delete threads...';
 
 					// Followed by the threads
-					if($SQL->query('DELETE FROM `'.$databaseTables['threads'].'` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+					if($SQL->query(
+
+'DELETE FROM `'.DB_TABLE_THREAD_LIST.'`
+WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'
+
+					))
 					{
 						$string_HTML_Return .= '<span class="green">OK.</span></li>'."\n";
 

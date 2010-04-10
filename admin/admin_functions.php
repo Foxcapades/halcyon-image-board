@@ -23,7 +23,7 @@ Private $SQL;
 public $errors = array();
 
 public function __construct(&$SQL)
-{$this->SQL = $SQL;}
+{$this->SQL =& $SQL;}
 
 public function delete_post()
 {
@@ -34,7 +34,7 @@ public function delete_thread()
 {
 	if($SQL->query(
 
-'DELETE FROM `'.$databaseTables['threads'].'`
+'DELETE FROM `'.DB_TABLE_THREAD_LIST.'`
 WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'
 
 	))
@@ -69,7 +69,7 @@ public function delete_board($board_id)
 
 	if($SQL->query(
 
-'DELETE FROM `'.$databaseTables['boards'].'`
+'DELETE FROM `'.DB_TABLE_BOARD_LIST.'`
 WHERE `board_id` '.$where
 
 	))
@@ -119,7 +119,7 @@ private function delete_link($board_id)
 
 	if($this->SQL->query(
 
-'DELETE FROM `ste_navbar`
+'DELETE FROM `'.DB_TABLE_NAVIGATION.'`
 WHERE `board_id` '.$where
 
 	))

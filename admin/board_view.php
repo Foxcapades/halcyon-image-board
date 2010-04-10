@@ -23,7 +23,7 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 $object_boardResult = $SQL->query(
 'SELECT *
-FROM `ste_boards`
+FROM `'.DB_TABLE_BOARD_LIST.'`
 ORDER BY `board_id` ASC'
 );
 

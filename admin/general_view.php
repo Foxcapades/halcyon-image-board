@@ -21,7 +21,12 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
  * @var array
  */
 $array_SiteStats = array();
-$object_StatsResult = $SQL->query('SELECT * FROM `'.$databaseTables['statistics'].'`');
+$object_StatsResult = $SQL->query(
+
+'SELECT *
+FROM `'.DB_TABLE_STATISTICS.'`'
+
+);
 while($temp = $object_StatsResult->fetch_assoc())
 {
 	$array_SiteStats[$temp['stat']] = $temp['value'];

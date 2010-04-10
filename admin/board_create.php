@@ -65,24 +65,41 @@ if(!count($_POST)) {
 	 * hdn = hidden
 	 */
 	$ern = 0;
-	$ern += ($FORM->validate_text(htmlentities($_POST['bnm']),1,10)) ? 0 : 1;
-	$ern += ($FORM->validate_text(htmlentities($_POST['bttl']),3,48)) ? 0 : 2;
-	$ern += ($FORM->validate_text(htmlentities($_POST['bms']),3,128)) ? 0 : 4;
+	$ern += ($FORM->validate_text($_POST['bnm'],1,10)) ? 0 : 1;
+	$ern += ($FORM->validate_text($_POST['bttl'],3,48)) ? 0 : 2;
+	$ern += ($FORM->validate_text($_POST['bms'],3,128)) ? 0 : 4;
 	$ern += (is_numeric($_POST['blvl']) && $_POST['blvl'] < 100  && $_POST['blvl'] >= 0) ? 0 : 8;
 	$ern += (is_numeric($_POST['plvl']) && $_POST['plvl'] < 100  && $_POST['plvl'] >= 0) ? 0 : 16;
 	$ern += (is_numeric($_POST['plvl']) && $_POST['rlvl'] < 100  && $_POST['plvl'] >= 0) ? 0 : 32;
 	$_POST['lkd'] += ($_POST['lkd'] != 1) ? 0 : 1;
 	$_POST['hdn'] += ($_POST['hdn'] != 1) ? 0 : 1;
 
+	$bnm = $SQL->real_escape_string($_POST['bnm']);
+	$bttl = $SQL->real_escape_string($_POST['bttl']);
+	$bms = $SQL->real_escape_string($_POST['bms']);
 	if($ern == 0) {
 
 		$string_HTML_Return= '<div>Attempting to create board...<br />';
+		if($SQL->query(
 
-		if($SQL->query('INSERT INTO `'.$databaseTables['boards'].'` VALUES (NULL,\''.$_POST['bnm'].'\',\''.$_POST['bttl'].'\',\''.$_POST['bms'].'\',\''.$_POST['hdn'].'\',\''.$_POST['lkd'].'\',\''.$_POST['plvl'].'\',\''.$_POST['blvl'].'\',\''.$_POST['rlvl'].'\')')) {
+'INSERT INTO `'.DB_TABLE_BOARD_LIST.'`
+VALUES (
+	NULL,
+	\'image\',
+	\''.$bnm.'\',
+	\''.$bttl.'\',
+	\''.$bms.'\',
+	\''.$_POST['hdn'].'\',
+	\''.$_POST['lkd'].'\',
+	\''.$_POST['plvl'].'\',
+	\''.$_POST['blvl'].'\',
+	\''.$_POST['rlvl'].'\'
+)'
+		)) {
 
-			if($posarr = $SQL->query('SELECT `position` FROM `ste_navbar` WHERE `position` < 250 ORDER BY `position` DESC LIMIT 0,1')) {
+			if($posarr = $SQL->query('SELECT `position` FROM `'.DB_TABLE_NAVIGATION.'` WHERE `position` < 250 ORDER BY `position` DESC LIMIT 0,1')) {
 
-				if($chud = $SQL->query('SELECT `board_id` FROM `'.$databaseTables['boards'].'` WHERE `dir` = \''.$_POST['bnm'].'\' ORDER BY `board_id` DESC LIMIT 0,1')) {
+				if($chud = $SQL->query('SELECT `board_id` FROM `'.DB_TABLE_BOARD_LIST.'` WHERE `dir` = \''.$_POST['bnm'].'\' ORDER BY `board_id` DESC LIMIT 0,1')) {
 
 					$nurm = $posarr->fetch_assoc();
 					$hurp = $chud->fetch_assoc();
@@ -92,7 +109,24 @@ if(!count($_POST)) {
 					// TODO: find a way to do this with fewer queries
 					// TODO: auto attempt cleanup on failure
 
-					if($SQL->query('INSERT INTO `ste_navbar` VALUES (NULL,\''.$nurm['position'].'\',\'b.php?board='.$_POST['bnm'].'\',\''.$_POST['bttl'].'\',\''.$_POST['bnm'].'\',\'\',\''.$_POST['blvl'].'\',\'0\',\''.$hurp['board_id'].'\')')) {
+					if($SQL->query(
+
+'INSERT INTO `'.DB_TABLE_NAVIGATION.'`
+VALUES (
+	NULL,
+	\''.$nurm['position'].'\',
+	\'b.php?board='.$_POST['bnm'].'\',
+	\''.$_POST['bttl'].'\',
+	\''.$_POST['bnm'].'\',
+	\'\',
+	\''.$_POST['blvl'].'\',
+	\'0\',
+	\''.$hurp['board_id'].'\',
+	\'boards\',
+	\'image\'
+)'
+
+					)) {
 
 						// TODO: verify this
 						$string_HTML_Return .= '<span class="green">Board Created</span>';
