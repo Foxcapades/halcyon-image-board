@@ -39,6 +39,8 @@ $tablePrefix = '';
 /**
  * Array containing a list of the tables in the database
  *
+ * DELETE: Database Table List
+ *
  * WARNING:
  * DO NOT CHANGE THIS UNLESS YOU HAVE OR PLAN TO CHANGE YOUR DATABASE STRUCTURE
  * TO MATCH
@@ -59,6 +61,16 @@ $databaseTables = array(
 	'level_list'	=>	$tablePrefix	.	'user_levels'
 
 );
+define('DB_TABLE_GLOBAL_VARS',	$tablePrefix.'ste_vars');
+define('DB_TABLE_STATISTICS',	$tablePrefix.'site_stats');
+define('DB_TABLE_MODULES',		$tablePrefix.'site_modules');
+define('DB_TABLE_NAVIGATION',	$tablePrefix.'ste_navbar');
+define('DB_TABLE_BOARD_LIST',	$tablePrefix.'ste_boards');
+define('DB_TABLE_THREAD_LIST',	$tablePrefix.'pst_threads');
+define('DB_TABLE_POST_LIST',	$tablePrefix.'pst_posts');
+define('DB_TABLE_USER_LIST',	$tablePrefix.'user_accounts');
+define('DB_TABLE_ONLINE_USERS',	$tablePrefix.'user_online');
+define('DB_TABLE_LEVEL_LIST',	$tablePrefix.'user_levels');
 
 /**
  * Here we are starting our MySQLi instance... You will need to set your own
@@ -106,12 +118,13 @@ if ($SQL->connect_error)
 $REQUIRED_FILES = array(
 
 //	'name' => 'path/to/file' (relative to the base directory for this script)
-	'Page Builder' 		=> 'classes/templateForge.php',
-	'Error Handler'		=> 'classes/error.php',
+	'Page Builder'	=> 'classes/templateForge.php',
+	'Error Handler'	=> 'classes/error.php',
 	'Form Validator'	=> 'classes/formValidate.php',
-	'Form Builder' 		=> 'classes/newForm.php',
-	'Post Builder'		=> 'classes/post.php',
-	'BBCode Parser'		=> 'classes/BBCode.php'
+	'Form Builder'	=> 'classes/newForm.php',
+	'Post Builder'	=> 'classes/post.php',
+	'BBCode Parser'	=> 'classes/BBCode.php',
+	'Nav Builder'	=> 'classes/navBar.php'
 
 );
 
@@ -151,53 +164,6 @@ $FORM = new formValidate();
 //Open an instance of the BBCode Parser
 $BBC = new BBCode();
 
-class navBar
-{
-	private $array_Links = array();
-
-	public function addLink($url, $title, $desc ='', $class ='', $id ='')
-	{
-		$array_LinkArray = array('type'=>'link', 'href'=> $url, 'text'=>$title);
-		if($desc != '') $array_LinkArray['tip'] = $desc;
-		if($class != '') $array_LinkArray['class'] = $class;
-		if($id != '') $array_LinkArray['id'] = $id;
-		$this->array_Links[] = $array_LinkArray;
-	}
-	public function addGroup($title, $class = '', $id = '')
-	{
-		$array_LinkArray = array('type'=>'group', 'text'=>$title);
-		if($class != '') $array_LinkArray['class'] = $class;
-		if($id != '') $array_LinkArray['id'] = $id;
-		$this->array_Links[] = $array_LinkArray;
-	}
-	public function assemble($class='',$id='')
-	{
-
-		$string_HTML = '<ul'.(($class != '')?' class="'.$class.'"':'').
-			(($id != '')?' id="'.$id.'"':'').'>';
-		foreach($this->array_Links as $linkArray)
-		{
-			if($linkArray['type'] == 'group')
-			{
-				$string_HTML .= '<li class="group"><h3'.((isset(
-					$linkArray['class']))?' class="'.$linkArray['class'].'"':'')
-					.((isset($linkArray['id']))?' id="'.$linkArray['id'].'"':'')
-					.'>'.$linkArray['text'].'</h3></li>';
-			}
-			elseif($linkArray['type'] == 'link')
-			{
-				$string_HTML .= '<li class="link"><a href="'.$linkArray['href'].
-					'" title="'.((isset($linkArray['tip'])) ? $linkArray['tip']:
-					$linkArray['title']).'" '.((isset($linkArray['id']))?' id="'
-					.$linkArray['id'].'"' : '').((isset($linkArray['class'])) ?
-					' class="'.$linkArray['class'].'"':'').'>'.
-					$linkArray['text'].'</a></li>';
-			}
-		}
-		$string_HTML .= '</ul>';
-		return $string_HTML;
-	}
-}
 
 
 
@@ -271,6 +237,9 @@ if($userInfoResult->num_rows > 0)
 	 */
 	$USR = $userInfoResult->fetch_assoc();
 }
+
+$userInfoResult->close();
+
 /**
  * As you can probably guess by the name of this function, it builds the navbar.
  * In all reality it just assembles the links in a list format for later use.
@@ -307,6 +276,8 @@ ORDER BY `o`.`last_ping` DESC'
 	$userbox .= '</ul>';
 }
 
+$userBox->close();
+
 /**
  * This randomly placed code assembles an array of site vars that are stored in
  * the database.
@@ -326,6 +297,9 @@ if($cheese->num_rows > 0)
 		$VAR[$nim['key']]=$nim['value'];
 	}
 }
+
+$cheese->close();
+
 //TODO: move this to a more fitting location:
 $P->set('base_url',$VAR['base_url']);
 $P->set('thumbdir',$VAR['thdir']);
@@ -348,10 +322,10 @@ if($levelListResult->num_rows > 0)
 		$tempList[$returnValue['rank']] = $returnValue['level'];
 	}
 }
+$levelListResult->close();
 
 $VAR['userLevelList'] = $tempList;
 
-unset($userInfoResult,$cheese,$nim);
 /**
  * Random string generator
  *
@@ -492,18 +466,22 @@ function makethumb($image,$thumb)
 } // - END makethumb()function index()
 function index()
 {
-	global $P,$VAR;
+	global $P,$VAR,$USR,$SQL;
 	$P->set('title',$VAR['site_title']);
 	$P->set('h1',$VAR['base_header']);
 	$P->set('mes',$VAR['base_mes']);
 	$strPageHTML = "<div class=\"boards\">\n";
-	$strPageHTML .= navbuild($SQL);
+	$navbar = new navBar_mysqli('main',$SQL,$USR['level']);
+	$navbar->pre_load();
+	$P->set('navbar',$navbar->assemble());
+	//$strPageHTML .= navbuild($SQL);
 	$strPageHTML .= "	\n</div>";
 	$P->set('body',$strPageHTML);
 	$P->load('themes/templates/'.$VAR['template_dir'].'base.php');
 	$P->render();
 	die();
 }
+// DELETE: procedural navigation constructor
 function navbuild(&$sql)
 {
 	global $SQL,$USR,$BINFO,$databaseTables,$VAR;

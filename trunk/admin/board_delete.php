@@ -45,7 +45,13 @@ if($_GET['yesdb'] != 'yes')
 	$_SESSION['boards'] = $boards;
 
 	// Get the names of the boards they want to delete
-	$sqlResult = $SQL->query('SELECT `dir` FROM `'.$databaseTables['boards'].'` WHERE `board_id` IN (\''.$boards.'\')');
+	$sqlResult = $SQL->query(
+
+'SELECT `dir`
+FROM `'.DB_TABLE_BOARD_LIST.'`
+WHERE `board_id` IN (\''.$boards.'\')'
+
+	);
 	while($fetch = $sqlResult->fetch_assoc())
 	{
 		$pageHTML .= '<li>'.$fetch['dir'].'</li>';
@@ -72,7 +78,13 @@ else
 	$string_HTML_Return .= '	<li>Pulling thread IDs from database...';
 
 	// Pull the threads
-	if($threadQuery = $SQL->query('SELECT * FROM `'.$databaseTables['threads'].'` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+	if($threadQuery = $SQL->query(
+
+'SELECT *
+FROM `'.DB_TABLE_THREAD_LIST.'`
+WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'
+
+	))
 	{
 
 		// If all went well alert the user and tell them whats next
@@ -102,7 +114,13 @@ else
 		$string_HTML_Return .= '	<li>Pulling posts from database...';
 
 		// Next query, lets get all the posts contained in the affected threads
-		if($postQuery = $SQL->query('SELECT * FROM `'.$databaseTables['posts'].'` WHERE `thread_id` IN (\''.$thread_ids.'\')'))
+		if($postQuery = $SQL->query(
+
+'SELECT *
+FROM `'.DB_TABLE_POST_LIST.'`
+WHERE `thread_id` IN (\''.$thread_ids.'\')'
+
+		))
 		{
 
 			// More updates for the user
@@ -162,25 +180,43 @@ else
 			$string_HTML_Return .= '	<li>Attempting to delete posts...';
 
 			// Now lets hit the posts
-			if($SQL->query('DELETE FROM `'.$databaseTables['posts'].'` WHERE `thread_id` IN (\''.$thread_ids.'\')'))
+			if($SQL->query(
+
+'DELETE FROM `'.DB_TABLE_POST_LIST.'`
+WHERE `thread_id` IN (\''.$thread_ids.'\')'
+
+			))
 			{
 				$string_HTML_Return .= '<span class="green">OK.</span></li>'."\n";
 				$string_HTML_Return .= '	<li>Attempting to delete threads...';
 
 				// Followed by the threads
-				if($SQL->query('DELETE FROM `'.$databaseTables['threads'].'` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+				if($SQL->query(
+
+'DELETE FROM `'.DB_TABLE_THREAD_LIST.'`
+WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'
+
+				))
 				{
 					$string_HTML_Return .= '<span class="green">OK.</span></li>'."\n";
 					$string_HTML_Return .= '	<li>Attempting to delete board...';
 
 					// And now the board itself
-					if($SQL->query('DELETE FROM `'.$databaseTables['boards'].'` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+					if($SQL->query(
+
+'DELETE FROM `'.DB_TABLE_BOARD_LIST.'`
+WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'
+
+					))
 					{
 						$string_HTML_Return .= '<span class="green">OK.</span></li>'."\n";
 						$string_HTML_Return .= '	<li>Deleting Link...';
 
 						// And the last thing to remove is the link
-						if($SQL->query('DELETE FROM `ste_navbar` WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
+						if($SQL->query(
+
+'DELETE FROM `'.DB_TABLE_BOARD_LIST.'`
+WHERE `board_id` IN (\''.$_SESSION['boards'].'\')'))
 						{
 							$string_HTML_Return .= '<span class="green">OK.</span></li>'."\n";
 							$string_HTML_Return .= '	<li>Verifying...';

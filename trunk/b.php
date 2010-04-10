@@ -50,7 +50,7 @@ if(strlen($directory) > 10 || strlen($directory) == 0)
 $q = $SQL->query(
 
 'SELECT *
-FROM `ste_boards`
+FROM `'.DB_TABLE_BOARD_LIST.'`
 WHERE `dir` = \''.$directory.'\''
 
 );
@@ -73,6 +73,8 @@ elseif($q->num_rows > 1)
 
 // Pass off the pulled info to an easier to manage array.
 $BINFO = $q->fetch_assoc();
+
+$q->close();
 
 if($BINFO['view_min_lvl'] > $USR['level'])
 {
@@ -178,7 +180,7 @@ $USR['level'] >= $BINFO['post_min_lvl'] &&
 		// Try and create the thread
 		if(!$SQL->query(
 
-'INSERT INTO `'.$databaseTables['threads'].'` (
+'INSERT INTO `'.DB_TABLE_THREAD_LIST.'` (
 	`board_id`,
 	`key`,
 	`title`,
@@ -213,7 +215,7 @@ $USR['level'] >= $BINFO['post_min_lvl'] &&
 		$objThreadVerify = $SQL->query(
 
 'SELECT `thread_id`,`posted`
-FROM `'.$databaseTables['threads'].'`
+FROM `'.DB_TABLE_THREAD_LIST.'`
 WHERE `key` = \''.$threadkey.'\'
 AND `user` = \''.$USR['user_id'].'\'
 ORDER BY `thread_id` DESC
@@ -236,20 +238,23 @@ LIMIT 0,1'
 
 			// Get the pulled thread ID and DATE to attach to the post
 			$nudez = $objThreadVerify->fetch_assoc();
+			$objThreadVerify->close();
 
 			// Insert the post into the database
 			if(!$SQL->query(
 
-'INSERT INTO `'.$databaseTables['posts'].'` (
+'INSERT INTO `'.DB_TABLE_POST_LIST.'` (
 	`thread_id`,
 	`user_id`,
 	`post_time`,
+	`title`,
 	`image`,
 	`text`
 ) VALUES (
 	\''.$nudez['thread_id'].'\',
 	\''.$USR['user_id'].'\',
 	\''.$nudez['posted'].'\',
+	\''.$title.'\',
 	\''.$fname.'\',
 	\''.$text.'\'
 )'
@@ -263,10 +268,9 @@ LIMIT 0,1'
 
 				if(!$SQL->query(
 
-'DELETE FROM `'.$databaseTables['threads'].'`
-WHERE `'.$databaseTables['threads'].'`.`key` = \''.$threadkey.'\'
-AND `'.$databaseTables['threads'].'`.`title` = \''.$title.'\'
-LIMIT 1'
+'DELETE FROM `'.DB_TABLE_THREAD_LIST.'`
+WHERE `key` = \''.$threadkey.'\'
+AND `title` = \''.$title.'\''
 
 				))
 				{
@@ -283,7 +287,7 @@ LIMIT 1'
 				$refreshq = $SQL->query(
 
 'SELECT `post_id`
-FROM `'.$databaseTables['posts'].'`
+FROM `'.DB_TABLE_POST_LIST.'`
 WHERE `user_id` = \''.$USR['user_id'].'\'
 AND `thread_id` = \''.$nudez['thread_id'].'\'
 ORDER BY `post_time` DESC
@@ -291,6 +295,7 @@ LIMIT 0,1'
 
 				);
 				$refresha = $refreshq->fetch_assoc();
+				$refreshq->close();
 				$_SESSION['postcooldown'] = time();
 				$P->set('headstuff', '<meta http-equiv="refresh" content="0;url='
 					.$VAR['base_url'].'/t.php?thread_id='.$nudez['thread_id'].
@@ -340,15 +345,15 @@ FROM (
 	SELECT
 		`u`.`user_id`, `u`.`name`, `u`.`level`, `u`.`email`, `u`.`avatar`,
 		`o`.`last_ping`,
-		`p`.`post_id`, `p`.`post_time`, `p`.`text`, `p`.`image`,
+		`p`.`post_id`, `p`.`title` AS `post_title`, `p`.`post_time`, `p`.`text`, `p`.`image`,
 		`t`.`thread_id`, `t`.`posted`, `t`.`title`
-	FROM `'.$databaseTables['threads'].'` AS `t`
+	FROM `'.DB_TABLE_THREAD_LIST.'` AS `t`
 	INNER JOIN (
 
-		`'.$databaseTables['posts'].'` AS `p`
+		`'.DB_TABLE_POST_LIST.'` AS `p`
 		LEFT JOIN (
 
-			`'.$databaseTables['user_list'].'` AS `u`
+			`'.DB_TABLE_USER_LIST.'` AS `u`
 			LEFT JOIN `user_online` AS `o`
 			USING (`user_id`)
 
@@ -361,7 +366,6 @@ FROM (
 ) AS `a`
 GROUP BY `a`.`thread_id`
 ORDER BY `a`.`posted` DESC');
-
 // Sift through the results and enter them into an array
 $durr = array();
 
@@ -377,7 +381,7 @@ while($mrd = $dumo->fetch_assoc())
 }
 
 // Close the open $SQL connection
-$SQL->close();
+$dumo->close();
 
 
 // Create a blank instance of POST for the following loop
@@ -402,8 +406,7 @@ if($USR['level'] >= $BINFO['post_min_lvl'])
 	$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new', 'post',
 		'multipart/form-data');
 	$postForm->fieldStart('New Thread');
-	$postForm->inputText('ttle', 'Title', '', '', 'halfwidth');
-	$postForm->inputText('unme', 'Username', $USR['name'], '', 'halfwidth');
+	$postForm->inputText('ttle', 'Title', '', '', 'fullwidth');
 	$postForm->inputTextarea('text', 'Text', FALSE, 30, 4, FALSE, 'fullwidth');
 	$postForm->inputHidden('MAX_FILE_SIZE', '2621440');
 	$postForm->inputFile('img1', 'Image', FALSE, 'halfwidth');
@@ -415,7 +418,21 @@ if($USR['level'] >= $BINFO['post_min_lvl'])
 $strPageHTML .= $cherp;
 
 // Render the page
-$P->set('body', $strPageHTML);
+$userInfoArray = array(
+
+'current_user_name' => $USR['name'],
+'current_user_avatar' => $VAR['avdir'].$USR['avatar'],
+'current_user_rank' => 0,
+'current_user_unread_posts' => 0,
+'current_user_unread_messages' => 0,
+'current_user_total_messages' => 0
+
+);
+$side_nav = new navBar_mysqli('boards',$SQL,$USR['level'],TRUE);
+$P->set('side_nav',$side_nav->assemble());
+$P->set('thread_list', $strPageHTML);
+$P->set($userInfoArray);
+$P->loadtovar('body','themes/templates/'.$VAR['template_dir'].'thread_list.php');
 $P->load('themes/templates/'.$VAR['template_dir'].'base.php');
 $P->render();
 

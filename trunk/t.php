@@ -36,13 +36,22 @@ if(!is_numeric($threadID))
 	index();
 }
 
-$r = $SQL->query('SELECT * FROM `'.$databaseTables['threads'].'` INNER JOIN `'.$databaseTables['boards'].'` USING (`board_id`) WHERE `thread_id` = \''.$threadID.'\' LIMIT 0,1');
+$r = $SQL->query(
+
+'SELECT *
+FROM `'.DB_TABLE_THREAD_LIST.'`
+INNER JOIN
+	`'.DB_TABLE_BOARD_LIST.'`
+	USING (`board_id`)
+WHERE `thread_id` = \''.$threadID.'\'
+LIMIT 0,1'
+
+);
 
 $BINFO = $r->fetch_assoc();
 
 $P->set('title', $VAR['site_title'].' / '.$BINFO['title']);
 $P->set('h1', $BINFO['title']);
-//$P->set('mes', '&gt;&gt;<a href="b.php?board='.$BINFO['dir'].'" title="Return to '.$BINFO['dir'].'">Return to '.$BINFO['dir'].'</a>');
 
 $P->set('navbar', navbuild($SQL));
 
@@ -114,7 +123,21 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['reply_min
 
 	if($continue && $_GET['post'] == 'new') {
 
-		if(!$SQL->query('INSERT INTO `'.$databaseTables['posts'].'` (`thread_id`,`user_id`,`image`,`text`) VALUES (\''.$threadID.'\', \''.$USR['user_id'].'\', \''.$fname.'\', \''.$text.'\')')) {
+		if(!$SQL->query(
+
+'INSERT INTO `'.DB_TABLE_POST_LIST.'` (
+	`thread_id`,
+	`user_id`,
+	`image`,
+	`text`
+)
+VALUES (
+	\''.$threadID.'\',
+	\''.$USR['user_id'].'\',
+	\''.$fname.'\',
+	\''.$text.'\'
+)'
+		)) {
 			$continue = FALSE;
 			$reasons[] = 'Database error, could not create post. Please try again later.';
 			ERROR::report('Could not create post, attempting to remove traces. DB said: '.$SQL->error);
@@ -123,10 +146,23 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['reply_min
 				ERROR::report('Could not delete uploaded file after post failed. File: '.$newfile);
 			}
 		} else {
-			if(!$SQL->query('UPDATE `'.$databaseTables['threads'].'` SET `posted` = DEFAULT WHERE `thread_id` = \''.$BINFO['thread_id'].'\'')) {
+			if(!$SQL->query(
+
+'UPDATE `'.DB_TABLE_THREAD_LIST.'`
+SET `posted` = DEFAULT
+WHERE `thread_id` = \''.$BINFO['thread_id'].'\''
+
+			)) {
 				ERROR::report('Could not update thread posted time on '.$BINFO['thread_id']);
 			}
-			$refreshq = $SQL->query('SELECT `post_id` FROM `'.$databaseTables['posts'].'` WHERE `user_id` = \''.$USR['user_id'].'\' AND `thread_id` = \''.$threadID.'\' ORDER BY `post_time` DESC LIMIT 0,1');
+			$refreshq = $SQL->query(
+
+'SELECT `post_id`
+FROM `'.DB_TABLE_POST_LIST.'`
+WHERE `user_id` = \''.$USR['user_id'].'\' AND `thread_id` = \''.$threadID.'\'
+ORDER BY `post_time` DESC
+LIMIT 0,1'
+			);
 			$refresha = $refreshq->fetch_assoc();
 			$_SESSION['postcooldown'] = time();
 			$P->set('headstuff', '<meta http-equiv="refresh" content="0;url='.$VAR['base_url'].'/t.php?thread_id='.$threadID.'#i'.$refresha['post_id'].'" />');
@@ -157,9 +193,9 @@ ini_restore('upload_max_filesize');
 
 $postQuery = $SQL->query('
 SELECT *
-FROM `'.$databaseTables['posts'].'` as `p`
+FROM `'.DB_TABLE_POST_LIST.'` as `p`
 LEFT JOIN (
-	`'.$databaseTables['user_list'].'` as `u`
+	`'.DB_TABLE_USER_LIST.'` as `u`
 	LEFT JOIN `user_online` AS `o`
 	USING (`user_id`)
 ) USING (`user_id`)
@@ -197,6 +233,7 @@ while($postParam = $postQuery->fetch_assoc())
 		$postParam['last_ping'],
 		$postParam['email'],
 		$postParam['post_id'],
+		$postParam['title'],
 		$postParam['post_time'],
 		$postParam['text'],
 		$postParam['image'],

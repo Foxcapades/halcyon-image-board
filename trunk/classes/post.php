@@ -45,6 +45,7 @@ class POST {
 	$uon,
 	$mil,
 	$post_id,
+	$post_title,
 	$ptm,
 	$ptx,
 	$pim,
@@ -86,6 +87,9 @@ class POST {
 
 		// Post Time
 		$this->vars['post_time'] = $ptm;
+
+		// Post Title
+		$this->vars['post_title'] = $post_title;
 
 		// Post Text
 		$this->vars['text'] = $ptx;
@@ -137,7 +141,7 @@ class POST {
 
 	* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	public function postbox($class = '') {
+	public function postbox($class = '',$noheader = FALSE) {
 
 		$onlineClass = ((time()-300) > $this->vars['last_ping']) ? '' : ' online';
 
@@ -148,6 +152,12 @@ class POST {
 		$html  =
 '
 	<div id="i'.$this->vars['post_id'].'" class="post'.(($class == '') ? '">'."\n\n" : ' '.$class.'">'."\n\n");
+
+		$html .= (!$noheader) ?
+'		<div class="post_header">
+			<span class="post_title">'.$this->vars['post_title'].'</span>
+			<span class="post_number"></span>
+		</div>' : '';
 
 		$html .= (($this->vars['image'] != '' && $this->vars['image'] !=	NULL) ?
 '
@@ -230,7 +240,7 @@ class POST {
 	<a href="t.php?thread_id='.$arr1['thread_id'].'" title="'.$arr1['title'].'">'.$arr1['title'].'</a>'.$arr1['count'].$posts.' with '.$image_count.$images.'
 </div>'."\n\n";
 		$this->vars = $arr1;
-		$html .= $this->postbox();
+		$html .= $this->postbox('',TRUE);
 		$html .= "</div>\n\n";
 		$this->html = $html;
 		return $html;
