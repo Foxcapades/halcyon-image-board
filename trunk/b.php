@@ -97,10 +97,10 @@ $P->set('navbar', navbuild($SQL));
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 if(
-count($_POST) &&
-$_GET['post'] == 'new' &&
-$USR['level'] >= $BINFO['post_min_lvl'] &&
-(time() - $_SESSION['postcooldown']) > 1
+	count($_POST) &&
+	$_GET['post'] == 'new' &&
+	$USR['level'] >= $BINFO['post_min_lvl'] &&
+	(time() - $_SESSION['postcooldown']) > 1
 )
 {
 
