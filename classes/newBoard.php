@@ -16,18 +16,27 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-class newBoard {
-	public	$id,
-			$name,
-			$title,
-			$message,
-			$hidden,
-			$disabled,
-			$post_level,
-			$view_level,
-			$reply_level,
-			$last_error = FALSE,
-			$errors = array();
+/**
+ * @author Lucent
+ *
+ */
+class Board {
+
+	public
+		$id,
+		$name,
+		$title,
+		$message,
+		$hidden,
+		$disabled,
+		$post_level,
+		$view_level,
+		$reply_level,
+		$last_error = FALSE,
+		$errors = array();
+
+	protected
+		$threads = array();
 
 	/**
 	 * Constructor
@@ -46,7 +55,7 @@ class newBoard {
 	 * @param int $reply
 	 * @return bool
 	 */
-	public function newBoard
+	public function __construct
 	(
 		$id	= 0,
 		$name	= '',
@@ -70,6 +79,8 @@ class newBoard {
 		$this->reply_level = $reply;
 		return TRUE;
 	}
+
+
 	/**
 	 * Information
 	 *
@@ -91,23 +102,126 @@ class newBoard {
 		$info['reply_level'] = &$this->reply_level;
 		return $info;
 	}
-	public function create_thread() {}
+
+
+	/**
+	 * Create Thread
+	 *
+	 * 	This function will create a 'child' instance of the Thread class, store
+	 * it and return a reference to the created Thread instance for further
+	 * manipulation.
+	 *
+	 * @param int $id
+	 * @param string $title
+	 * @param int $author
+	 * @param int $date
+	 * @return Thread
+	 */
+	public function create_thread
+	(
+		$id = 0,
+		$title = '',
+		$author = 0,
+		$date = 0
+	)
+	{
+		$threads =& $this->threads;
+		$threads[$id] = new Thread($id,$this->id,$title,$author,$date);
+		return $threads[$id];
+	}
+
+
+	public function show_threads($start,$num){}
+
+
+	public function sort_threads(){}
+
 }
 
-class newThread {
-	public	$id,
-			$parent_id,
-			$user_id,
-			$title;
-	public function create_post(){}
+class Thread {
+
+	public
+		$id,
+		$parent_id,
+		$user_id,
+		$key,
+		$title,
+		$time;
+
+	protected
+		$posts = array();
+
+	public function __construct
+	(
+		$id = 0,
+		$parent = 0,
+		$title = '',
+		$author = 0,
+		$date = 0
+	)
+	{
+		$this->id = $id;
+		$this->parent_id = $parent;
+		$this->user_id = $author;
+		$this->time = $date;
+		$this->title = $title;
+	}
+
+
+	public function create_post
+	(
+		$id = 0,
+		$title = '',
+		$author = 0,
+		$date = 0
+	)
+	{
+		$post =& $this->posts;
+		$post[$id] = new Post($id,$this->id,$title,$author,$date);
+		return $post[$id];
+	}
+
+	public function show_posts($start,$num){}
+	public function sort_posts(){}
 }
 
-class newPost {
-	public	$id,
-			$parent_id,
-			$user_id,
-			$image,
-			$text;
+class Post {
 
+	public
+		$id,
+		$parent,
+		$user = array(),
+		$title,
+		$number,
+		$time,
+		$image = array(),
+		$text;
+
+	public function __construct
+	(
+		$id = '',
+		$parent = '',
+		$title = '',
+		$author = '',
+		$date = ''
+	)
+	{
+		$this->id = $id;
+		$this->parent_id = $parent;
+		$this->user_id = $author;
+		$this->time = $date;
+		$this->title = $title;
+	}
+
+	public function load_template($html)
+	{
+		$template_vars = array
+		(
+		);
+	}
+
+	public function render()
+	{}
 }
+
 ?>

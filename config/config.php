@@ -37,30 +37,14 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 $tablePrefix = '';
 
 /**
- * Array containing a list of the tables in the database
+ * Database Table Listing
  *
- * DELETE: Database Table List
  *
  * WARNING:
  * DO NOT CHANGE THIS UNLESS YOU HAVE OR PLAN TO CHANGE YOUR DATABASE STRUCTURE
  * TO MATCH
  *
- * @var array
  */
-$databaseTables = array(
-
-	'global_vars'	=>	$tablePrefix	.	'ste_vars',
-	'statistics'	=>	$tablePrefix	.	'site_stats',
-	'modules'		=>	$tablePrefix	.	'site_modules',
-	'nav_bar'		=>	$tablePrefix	.	'ste_navbar',
-	'boards'		=>	$tablePrefix	.	'ste_boards',
-	'threads'		=>	$tablePrefix	.	'pst_threads',
-	'posts'			=>	$tablePrefix	.	'pst_posts',
-	'user_list'		=>	$tablePrefix	.	'user_accounts',
-	'online_users'	=>	$tablePrefix	.	'user_online',
-	'level_list'	=>	$tablePrefix	.	'user_levels'
-
-);
 define('DB_TABLE_GLOBAL_VARS',	$tablePrefix.'ste_vars');
 define('DB_TABLE_STATISTICS',	$tablePrefix.'site_stats');
 define('DB_TABLE_MODULES',		$tablePrefix.'site_modules');
@@ -191,7 +175,7 @@ if(!$FORM->length($_SESSION['user_id'],1,10))
 $userInfoResult = $SQL->query(
 
 'SELECT *
-FROM `'.$databaseTables['user_list'].'`
+FROM `'.DB_TABLE_USER_LIST.'`
 WHERE `user_id`=\''.$_SESSION['user_id'].'\''
 
 );
@@ -219,7 +203,7 @@ if ($userInfoResult->num_rows == 0)
 	$userInfoResult = $SQL->query(
 
 'SELECT *
-FROM `'.$databaseTables['user_list'].'`
+FROM `'.DB_TABLE_USER_LIST.'`
 WHERE `user_id`=\'1\''
 
 	);
@@ -252,8 +236,8 @@ pingUser();
 if($userBox = $SQL->query(
 
 'SELECT DISTINCT `o`.`user_id`,`a`.*
-FROM `'.$databaseTables['online_users'].'` `o`
-INNER JOIN `'.$databaseTables['user_list'].'` `a`
+FROM `'.DB_TABLE_ONLINE_USERS.'` `o`
+INNER JOIN `'.DB_TABLE_USER_LIST.'` `a`
 ON `o`.`user_id` = `a`.`user_id`
 WHERE `o`.`last_ping` >= \''.(time() - 300).'\'
 ORDER BY `o`.`last_ping` DESC'
@@ -285,7 +269,7 @@ $userBox->close();
 $cheese = $SQL->query(
 
 'SELECT *
-FROM `'.$databaseTables['global_vars'].'`'
+FROM `'.DB_TABLE_GLOBAL_VARS.'`'
 
 );
 
@@ -306,12 +290,17 @@ $P->set('thumbdir',$VAR['thdir']);
 $P->set('imagedir',$VAR['updir']);
 $P->set('stylesheet_dir',$VAR['stylesheet_dir']);
 
+define('THEME_TEMPLATE_DIR','themes/templates/'.$VAR['template_dir']);
+define('THEME_ICONSET_DIR','themes/iconsets/'.$VAR['iconset_dir']);
+define('THEME_STYLESHEET_DIR','themes/stylesheets/'.$VAR['stylesheet_dir']);
+
+
 $tempList = array();
 
 $levelListResult = $SQL->query(
 
 'SELECT *
-FROM `'.$databaseTables['level_list'].'`'
+FROM `'.DB_TABLE_LEVEL_LIST.'`'
 
 );
 
@@ -518,7 +507,7 @@ function pingUser($forced = FALSE)
 
 	$SQL->query(
 
-'DELETE FROM `'.$databaseTables['online_users'].'`
+'DELETE FROM `'.DB_TABLE_ONLINE_USERS.'`
 WHERE `last_ping` <= \''.($time5Ago-300).'\''
 
 	);
@@ -526,7 +515,7 @@ WHERE `last_ping` <= \''.($time5Ago-300).'\''
 	$countVerify = $SQL->query(
 
 'SELECT *
-FROM `'.$databaseTables['online_users'].'`
+FROM `'.DB_TABLE_ONLINE_USERS.'`
 WHERE `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\'
 AND `user_id` = \''.$_SESSION['user_id'].'\''
 
@@ -536,7 +525,7 @@ AND `user_id` = \''.$_SESSION['user_id'].'\''
 
 		$SQL->query(
 
-'INSERT INTO `'.$databaseTables['online_users'].'`
+'INSERT INTO `'.DB_TABLE_ONLINE_USERS.'`
 VALUES (
 	\''.$_SESSION['user_id'].'\',
 	\''.$timeNow.'\',
@@ -551,7 +540,7 @@ VALUES (
 
 		$SQL->query(
 
-'UPDATE `'.$databaseTables['online_users'].'`
+'UPDATE `'.DB_TABLE_ONLINE_USERS.'`
 SET `last_ping` = \''.$timeNow.'\'
 WHERE `user_id` = \''.$_SESSION['user_id'].'\'
 AND `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\''
@@ -563,7 +552,7 @@ AND `current_ip` = \''.$_SERVER['REMOTE_ADDR'].'\''
 	{
 		$SQL->query(
 
-'UPDATE `'.$databaseTables['user_list'].'`
+'UPDATE `'.DB_TABLE_USER_LIST.'`
 SET `user_last_online` = \''.$timeNow.'\', `user_last_ip` = \''.$_SESSION['REMOTE_ADDR'].'\'
 WHERE `user_id` = \''.$_SESSION['user_id'].'\''
 

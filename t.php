@@ -128,16 +128,19 @@ if(count($_POST) && $_GET['post'] == 'new' && $USR['level'] >= $BINFO['reply_min
 'INSERT INTO `'.DB_TABLE_POST_LIST.'` (
 	`thread_id`,
 	`user_id`,
+	`title`,
 	`image`,
 	`text`
 )
 VALUES (
 	\''.$threadID.'\',
 	\''.$USR['user_id'].'\',
+	\'\',
 	\''.$fname.'\',
 	\''.$text.'\'
 )'
 		)) {
+
 			$continue = FALSE;
 			$reasons[] = 'Database error, could not create post. Please try again later.';
 			ERROR::report('Could not create post, attempting to remove traces. DB said: '.$SQL->error);
@@ -208,6 +211,16 @@ $strPageHTML = $errorBoxHtml;
 $strPageHTML .= '<div id="thread">'."\n";
 $now = 1;
 $onlineUsers = array_flip($onlineUsers);
+if($USR['level'] >= $BINFO['reply_min_lvl'])
+{
+	$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new', 'post', 'multipart/form-data');
+	$postForm->fieldStart('Reply');
+	$postForm->inputTextarea('text', 'Text', FALSE, 30, 3, FALSE, 'fullwidth');
+	$postForm->inputHidden('MAX_FILE_SIZE', '2621440');
+	$postForm->inputFile('img1', 'Image', FALSE, 'halfwidth');
+	$postForm->inputSubmit('Post Reply', FALSE, FALSE, FALSE, 'halfwidth');
+	$strPageHTML .= $postForm->formReturn();
+}
 while($postParam = $postQuery->fetch_assoc())
 {
 	if($postParam['name'] == NULL || $postParam['name'] == '')
@@ -246,22 +259,27 @@ while($postParam = $postQuery->fetch_assoc())
 	{
 		$strPageHTML .= $activePost->postbox();
 	}
-	if($USR['level'] >= $BINFO['reply_min_lvl']&& $now == 1)
-	{
-		$postForm = new newForm($_SERVER['REQUEST_URI'].'&amp;post=new', 'post', 'multipart/form-data');
-		$postForm->fieldStart('Reply');
-		$postForm->inputTextarea('text', 'Text', FALSE, 30, 3, FALSE, 'fullwidth');
-		$postForm->inputHidden('MAX_FILE_SIZE', '2621440');
-		$postForm->inputFile('img1', 'Image', FALSE, 'halfwidth');
-		$postForm->inputSubmit('Post Reply', FALSE, FALSE, FALSE, 'halfwidth');
-		$strPageHTML .= $postForm->formReturn();
-		$now --;
-	}
+	$now --;
+
 }
 
 $strPageHTML .= '</div>'."\n";
+// Render the page
+$userInfoArray = array(
 
-$P->set('body', $strPageHTML);
-$P->load('themes/templates/'.$VAR['template_dir'].'base.php');
+'current_user_name' => $USR['name'],
+'current_user_avatar' => $VAR['avdir'].$USR['avatar'],
+'current_user_rank' => 0,
+'current_user_unread_posts' => 0,
+'current_user_unread_messages' => 0,
+'current_user_total_messages' => 0
+
+);
+$side_nav = new navBar_mysqli('boards',$SQL,$USR['level'],TRUE);
+$P->set('side_nav',$side_nav->assemble());
+$P->set('thread_list', $strPageHTML);
+$P->set($userInfoArray);
+$P->loadtovar('body',THEME_TEMPLATE_DIR.'thread_list.php');
+$P->load(THEME_TEMPLATE_DIR.'base.php');
 $P->render();
 ?>

@@ -22,25 +22,16 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 <div id="side_box">
 	<h2>Side Bar</h2>
 	<div id="user_info_box">
+		<?=$user_box_content; ?>
 		<h3 class="hidden">User Info</h3>
+		<h4><a href="usr.php?mode=uac" title="Edit Account Settings"><?=$current_user_name; ?></a></h4>
+		<div id="usr_avatar">
+			<img src="<?=$current_user_avatar; ?>" alt="Avatar" title="<?=$current_user_name; ?>" />
+		</div>
 		<ul>
-			<li><a href="usr.php?mode=uac" title="Edit Account Settings"><?=$current_user_name; ?></a></li>
-			<li>
-				<div id="usr_avatar">
-					<img src="<?=$current_user_avatar; ?>" alt="Avatar" title="<?=$current_user_name; ?>" />
-				</div>
-			</li>
-			<li>
-				<dl>
-					<dt>Rank:</dt>
-						<dd><?=$current_user_rank; ?></dd>
-					<dt>Unread Posts:</dt>
-						<dd><?=$current_user_unread_posts; ?></dd>
-					<dt>Messages:</dt>
-						<dd><?=$current_user_unread_messages; ?> unread</dd>
-						<dd><?=$current_user_total_messages; ?> total</dd>
-				</dl>
-			</li>
+			<li>Rank: <?=$current_user_rank; ?></li>
+			<li><?=$current_user_unread_posts; ?> Unread Posts</li>
+			<li><?=$current_user_unread_messages; ?> Unread PMs</li>
 			<li><a href="usr.php?mode=logout" title="Logout">Logout</a></li>
 		</ul>
 	</div>

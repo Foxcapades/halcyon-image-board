@@ -201,9 +201,12 @@ a.edtbut:hover {background-position: -16px -112px;}
 .hidden {
 	display:none;
 }
+.block {
+	display:block;
+}
 /* Thread Template */
 .post {
-	width: 750px;
+	width: 698px;
 	border: 1px solid #a9a9a9;
 	margin: 0px auto 5px auto;
 	background: #c9c9c9;
@@ -211,7 +214,7 @@ a.edtbut:hover {background-position: -16px -112px;}
 }
 
 .post .post_header {
-	width:750px;
+	width:698px;
 	padding:5px 0px;
 	min-height:1em;
 	border-bottom:1px solid #a9a9a9;
@@ -399,7 +402,7 @@ form div.fullwidth textarea {
 }
 
 #page_body {
-	width:950px;
+	width:900px;
 	margin:0px auto;
 	overflow:auto;
 }
@@ -410,15 +413,28 @@ form div.fullwidth textarea {
 }
 
 #side_box {
-	width:225px;
+	width:175px;
 	float:right;
 }
 
 #user_info_box {
-	padding:10px;
+	padding:7px 10px 10px 10px;
 	border:1px solid #a9a9a9;
+	font-size:.7em;
+	overflow:auto;
 }
-
+#user_info_box h4 {
+	text-align:center;
+	padding-bottom:2px;
+	font-size:1.2em;
+}
+#user_info_box ul {
+	float:right;
+}
+#usr_avatar {
+	width:50px;
+	float:left;
+}
 #side_nav_bar {
 	padding:11px;
 }

@@ -48,7 +48,7 @@ function post_quote(id) {
 	wind = wind.toString();
 	
 	textarea.value = textarea.value + quote;
-	window.location = wind.replace(/(.+?)(?:#i(.+?))*$/gi,"$1") + "#text";
+	window.location = wind.replace(/(.+?)(?:#i(.+?))*$/gi,"$1") + "#page_body";
 
 
 }

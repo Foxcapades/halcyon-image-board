@@ -155,7 +155,7 @@ class POST {
 
 		$html .= (!$noheader) ?
 '		<div class="post_header">
-			<span class="post_title">'.$this->vars['post_title'].'</span>
+			<span class="post_title"><img src="'.THEME_ICONSET_DIR.(($this->vars['image'] != '' && $this->vars['image'] !=	NULL)?'image.png':'document-horizontal-text.png').'" alt="IMG" title="Image Post" /> '.$this->vars['post_title'].'</span>
 			<span class="post_number"></span>
 		</div>' : '';
 
